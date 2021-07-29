@@ -39,6 +39,8 @@ dependencies {
     implementation "dev.triumphteam:triumph-gui:3.0.3"
 
     implementation "com.yahoofinance-api:YahooFinanceAPI:3.15.0"
+
+    implementation 'com.github.ben-manes.caffeine:caffeine:3.0.3'
 }
 
 test {
@@ -59,6 +61,7 @@ shadowJar {
     relocate "yahoofinance", "${project.ext.groupId}.lib.yahoofinance"
     relocate "org.slf4j", "${project.ext.groupId}.lib.yahoofinance.slf4j"
     relocate "com.fasterxml.jackson", "${project.ext.groupId}.lib.yahoofinance.jackson"
+    relocate "com.github.benmanes.caffeine", "${project.ext.groupId}.lib.caffeine"
 }
 
 // Replace version information in src/main/resources

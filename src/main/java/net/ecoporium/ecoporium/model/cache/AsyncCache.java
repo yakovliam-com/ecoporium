@@ -1,20 +1,20 @@
 package net.ecoporium.ecoporium.model.cache;
 
-import com.google.common.cache.LoadingCache;
+import com.github.benmanes.caffeine.cache.AsyncLoadingCache;
 
-public abstract class Cache<K, V> {
+public class AsyncCache<K, V> {
 
     /**
      * Cache
      */
-    private final LoadingCache<K, V> cache;
+    private final AsyncLoadingCache<K, V> cache;
 
     /**
      * Cache
      *
      * @param cache cache
      */
-    protected Cache(LoadingCache<K, V> cache) {
+    public AsyncCache(AsyncLoadingCache<K, V> cache) {
         this.cache = cache;
     }
 
@@ -23,7 +23,8 @@ public abstract class Cache<K, V> {
      *
      * @return cache
      */
-    public LoadingCache<K, V> getCache() {
+    public AsyncLoadingCache<K, V> getCache() {
         return cache;
     }
 }
+
