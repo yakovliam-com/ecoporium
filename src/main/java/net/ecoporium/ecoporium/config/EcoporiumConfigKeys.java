@@ -24,6 +24,12 @@ public final class EcoporiumConfigKeys {
                 .collect(Collectors.toMap(Function.identity(), (p) -> "markets." + p));
     });
 
+    public static final ConfigKey<String> REDIS_URL = key(c -> c.getString("redis.url", null));
+
+    public static final ConfigKey<String> REDIS_TIMESTAMP_KEY = key(c -> {
+        return c.getString("redis.timestamp-key", null);
+    });
+
     private static final List<SimpleConfigKey<?>> KEYS = KeyedConfiguration.initialise(EcoporiumConfigKeys.class);
 
     public static List<? extends ConfigKey<?>> getKeys() {

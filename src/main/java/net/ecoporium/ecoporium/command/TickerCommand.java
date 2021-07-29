@@ -7,6 +7,8 @@ import net.ecoporium.ecoporium.api.message.Message;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+// TODO test / debug command
+// will be removed soon
 @CommandAlias("ticker")
 public class TickerCommand extends EcoporiumCommand {
 
@@ -21,18 +23,16 @@ public class TickerCommand extends EcoporiumCommand {
 
     @Subcommand("getprice")
     @Description("Show the current price for a given stock symbol")
-    public void getTickerPrice(Player player, @Single String symbol) {
+    public void getTickerPrice(Player player, @Single String market, @Single String symbol) {
         Message.builder("ticker.fetching")
                 .addLine("&7Fetching price for &f" + symbol)
                 .build()
                 .message(player);
 
-        getPlugin().getMarketCache().get("nasdaq", null).getTicker(symbol).thenAccept((stock) -> {
-            System.out.println("stock.getQuote().getPrice() = " + stock.getQuote().getPrice());
-
+        getPlugin().getMarketCache().get(market, null).getTicker(symbol).get().thenAccept((stock) -> {
             Message.builder("ticker.price")
-                    .addLine("&7Price for &f" + stock.getName() + "&7:")
-                    .addLine("&a$" + stock.getQuote().getPrice())
+                    .addLine("&7Price for &f" + stock.getCurrentStockData() + "&7:")
+                    .addLine("&a$" + stock.getCurrentStockData().getQuote().getPrice())
                     .build()
                     .message(player);
         });

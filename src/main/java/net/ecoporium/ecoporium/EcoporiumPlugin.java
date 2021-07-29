@@ -5,6 +5,7 @@ import net.ecoporium.ecoporium.api.message.Message;
 import net.ecoporium.ecoporium.command.CommandManager;
 import net.ecoporium.ecoporium.config.EcoporiumConfig;
 import net.ecoporium.ecoporium.market.MarketCache;
+import net.ecoporium.ecoporium.task.MarketUpdater;
 
 public class EcoporiumPlugin extends Plugin {
 
@@ -17,6 +18,11 @@ public class EcoporiumPlugin extends Plugin {
      * Market cache
      */
     private MarketCache marketCache;
+
+    /**
+     * Market updater
+     */
+    private MarketUpdater marketUpdater;
 
     @Override
     public void onLoad() {
@@ -33,6 +39,8 @@ public class EcoporiumPlugin extends Plugin {
         this.marketCache = new MarketCache(this);
 
         new CommandManager(this);
+
+        this.marketUpdater = new MarketUpdater(this);
     }
 
     /**
