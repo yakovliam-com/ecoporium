@@ -14,7 +14,7 @@ public class GenericMarket extends Market {
      * @param handle           handle
      * @param whitelistOptions whitelist options
      */
-    protected GenericMarket(String handle, MarketWhitelistOptions whitelistOptions) {
+    public GenericMarket(String handle, MarketWhitelistOptions whitelistOptions) {
         super(handle, whitelistOptions, new AsyncCache<>(Caffeine.newBuilder()
                 .expireAfterWrite(1, TimeUnit.MINUTES)
                 .buildAsync(YahooFinance::get)));

@@ -7,7 +7,16 @@ public class MarketWhitelistOptions {
     /**
      * A list of tickers that will be whitelisted to the associated market
      */
-    private List<String> tickers;
+    private final List<String> tickers;
+
+    /**
+     * Market whitelist options
+     *
+     * @param tickers tickers
+     */
+    public MarketWhitelistOptions(List<String> tickers) {
+        this.tickers = tickers;
+    }
 
     /**
      * Returns the tickers
@@ -16,16 +25,5 @@ public class MarketWhitelistOptions {
      */
     public List<String> getTickers() {
         return tickers;
-    }
-
-    /**
-     * Sets the tickers
-     *
-     * @param tickers tickers
-     * @return this
-     */
-    public MarketWhitelistOptions setTickers(List<String> tickers) {
-        this.tickers = tickers;
-        return this;
     }
 }

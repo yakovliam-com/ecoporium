@@ -1,5 +1,6 @@
 package net.ecoporium.ecoporium.market;
 
+import net.ecoporium.ecoporium.EcoporiumPlugin;
 import net.ecoporium.ecoporium.model.cache.ManualCache;
 import net.ecoporium.ecoporium.model.market.Market;
 
@@ -9,8 +10,13 @@ public class MarketCache extends ManualCache<String, Market> {
 
     /**
      * Cache
+     *
+     * @param plugin plugin
      */
-    protected MarketCache() {
+    public MarketCache(EcoporiumPlugin plugin) {
         super(new HashMap<>());
+
+        // load
+        new MarketCacheLoader(plugin, this).load();
     }
 }
