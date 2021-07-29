@@ -1,18 +1,17 @@
 package net.ecoporium.ecoporium.api.message;
 
 import com.google.common.base.Joiner;
-import me.mattstudios.mfmsg.adventure.AdventureMessage;
-import me.mattstudios.mfmsg.base.MessageOptions;
+import me.mattstudios.msg.adventure.AdventureMessage;
+import me.mattstudios.msg.base.MessageOptions;
 import net.ecoporium.ecoporium.EcoporiumPlugin;
 import net.ecoporium.ecoporium.api.config.generic.adapter.ConfigurationAdapter;
 import net.kyori.adventure.platform.AudienceProvider;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.checkerframework.checker.units.qual.A;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -63,18 +62,18 @@ public class Message {
     /**
      * The message identifier
      */
-    private String identifier;
+    private final String identifier;
 
     /**
      * The lines of the message
      * Will be combined into one component, split by the newline separator
      */
-    private List<String> lines;
+    private final List<String> lines;
 
     /**
      * Message options
      */
-    private MessageOptions messageOptions;
+    private final MessageOptions messageOptions;
 
     /**
      * Message
@@ -86,6 +85,33 @@ public class Message {
         this.identifier = identifier;
         this.lines = lines;
         this.messageOptions = messageOptions;
+    }
+
+    /**
+     * Returns the message identifier
+     *
+     * @return identifier
+     */
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    /**
+     * Returns the lines
+     *
+     * @return lines
+     */
+    public List<String> getLines() {
+        return lines;
+    }
+
+    /**
+     * Returns the message options
+     *
+     * @return message options
+     */
+    public MessageOptions getMessageOptions() {
+        return messageOptions;
     }
 
     /**
@@ -184,7 +210,7 @@ public class Message {
          * The lines of the message
          * Will be combined into one component, split by the newline separator
          */
-        private List<String> lines;
+        private final List<String> lines;
 
         /**
          * Message options
@@ -198,6 +224,7 @@ public class Message {
          */
         public Builder(String identifier) {
             this.identifier = identifier;
+            this.lines = new ArrayList<>();
         }
 
         /**

@@ -46,7 +46,7 @@ dependencies {
 
     implementation 'com.github.ben-manes.caffeine:caffeine:3.0.3'
 
-    implementation "me.mattstudios:mf-msg-adventure:2.0.1"
+    implementation "me.mattstudios:triumph-msg-adventure:2.2.4-SNAPSHOT"
 }
 
 test {
