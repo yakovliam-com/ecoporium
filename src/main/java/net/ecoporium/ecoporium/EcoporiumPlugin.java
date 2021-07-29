@@ -1,6 +1,8 @@
 package net.ecoporium.ecoporium;
 
 import net.ecoporium.ecoporium.api.Plugin;
+import net.ecoporium.ecoporium.api.message.Message;
+import net.ecoporium.ecoporium.command.CommandManager;
 import net.ecoporium.ecoporium.config.EcoporiumConfig;
 import net.ecoporium.ecoporium.market.MarketCache;
 
@@ -14,14 +16,23 @@ public class EcoporiumPlugin extends Plugin {
     /**
      * Market cache
      */
-    private MarketCache cache;
+    private MarketCache marketCache;
+
+    @Override
+    public void onLoad() {
+    }
 
     @Override
     public void onEnable() {
         super.onEnable();
 
+        // initialize audience provider
+        Message.initAudience(this);
+
         this.ecoporiumConfig = new EcoporiumConfig(this, provideConfigAdapter("config.yml"));
-        this.cache = new MarketCache(this);
+        this.marketCache = new MarketCache(this);
+
+        new CommandManager(this);
     }
 
     /**
@@ -38,7 +49,7 @@ public class EcoporiumPlugin extends Plugin {
      *
      * @return market cache
      */
-    public MarketCache getCache() {
-        return cache;
+    public MarketCache getMarketCache() {
+        return marketCache;
     }
 }

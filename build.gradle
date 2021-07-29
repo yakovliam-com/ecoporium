@@ -23,6 +23,8 @@ repositories {
     maven { url = 'https://oss.sonatype.org/content/repositories/snapshots' }
     maven { url = 'https://oss.sonatype.org/content/repositories/central' }
     maven { url = "https://repo.mattstudios.me/artifactory/public/" }
+    maven { url = "https://repo.aikar.co/content/groups/aikar/" }
+    maven { url 'https://libraries.minecraft.net/' }
 }
 
 dependencies {
@@ -35,12 +37,16 @@ dependencies {
     implementation "net.kyori:adventure-platform-bukkit:4.0.0-SNAPSHOT"
     implementation "net.kyori:adventure-text-minimessage:4.1.0-SNAPSHOT"
 
-    implementation "cloud.commandframework:cloud-bukkit:1.5.0"
+    implementation "me.lucko:commodore:1.10"
     implementation "dev.triumphteam:triumph-gui:3.0.3"
 
-    implementation "com.yahoofinance-api:YahooFinanceAPI:3.15.0"
+    implementation "co.aikar:acf-bukkit:0.5.0-SNAPSHOT"
+
+    implementation "de.sfuhrm:YahooFinanceAPI:3.16.2"
 
     implementation 'com.github.ben-manes.caffeine:caffeine:3.0.3'
+
+    implementation "me.mattstudios:mf-msg-adventure:2.0.1"
 }
 
 test {
@@ -53,19 +59,29 @@ shadowJar {
     archiveClassifier.set('')
     archiveVersion.set('')
 
+    dependencies {
+        exclude(dependency('com.mojang:brigadier'))
+    }
 
     relocate "dev.triumphteam.gui", "${project.ext.groupId}.lib.triumphgui"
-    relocate "cloud.commandframework", "${project.ext.groupId}.lib.cloud"
-    relocate "io.leangen.geantyref", "${project.ext.groupId}.lib.typetoken"
+    relocate 'me.mattstudios.mfmsg', "${project.ext.groupId}.lib.mfmsg"
     relocate "net.kyori", "${project.ext.groupId}.lib.kyori"
     relocate "yahoofinance", "${project.ext.groupId}.lib.yahoofinance"
     relocate "org.slf4j", "${project.ext.groupId}.lib.yahoofinance.slf4j"
     relocate "com.fasterxml.jackson", "${project.ext.groupId}.lib.yahoofinance.jackson"
     relocate "com.github.benmanes.caffeine", "${project.ext.groupId}.lib.caffeine"
+    relocate "me.lucko.commodore", "${project.ext.groupId}.lib.commodore"
+    relocate "co.aikar.commands", "${project.ext.groupId}.lib.acf"
 }
 
 // Replace version information in src/main/resources
 processResources {
     filter(ReplaceTokens, tokens: [version: version])
     filter(ReplaceTokens, tokens: [name: project.ext.name])
+}
+
+compileJava {
+    options.compilerArgs += ["-parameters"]
+    options.fork = true
+    options.forkOptions.executable = 'javac'
 }
