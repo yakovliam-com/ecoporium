@@ -4,3 +4,4 @@ description: A Minecraft Plugin designed to synchronize real-world stock and cry
 authors: [yakovliam, bobby29831]
 website: https://ecoporium.net
 main: net.ecoporium.ecoporium.EcoporiumPlugin
+api-version: 1.17

@@ -1,8 +1,7 @@
 package net.ecoporium.ecoporium.model.market;
 
-import net.ecoporium.ecoporium.model.cache.AsyncCache;
-import yahoofinance.Stock;
-
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public abstract class Market {
@@ -30,19 +29,18 @@ public abstract class Market {
      * <p>
      * A cache (async) that contains all of the market's currently used tickers
      */
-    private final AsyncCache<String, Stock> tickerCache;
+    private final Map<String, StockTicker> tickerCache;
 
     /**
      * Market
      *
      * @param handle           handle
      * @param whitelistOptions whitelist options
-     * @param tickerCache      ticker cache
      */
-    protected Market(String handle, MarketWhitelistOptions whitelistOptions, AsyncCache<String, Stock> tickerCache) {
+    protected Market(String handle, MarketWhitelistOptions whitelistOptions) {
         this.handle = handle;
         this.whitelistOptions = whitelistOptions;
-        this.tickerCache = tickerCache;
+        this.tickerCache = new HashMap<>();
     }
 
     /**
@@ -68,36 +66,24 @@ public abstract class Market {
      *
      * @return cache
      */
-    public AsyncCache<String, Stock> getTickerCache() {
+    public Map<String, StockTicker> getTickerCache() {
         return tickerCache;
     }
 
     /**
-     * Updates a ticker by invalidating the associated symbol and re-gets the value
+     * Returns a ticker for a symbol
      *
      * @param symbol symbol
+     * @return ticker
      */
-    public CompletableFuture<Stock> updateTicker(String symbol) {
-        invalidate(symbol);
-        return getTicker(symbol);
-    }
+    public StockTicker getTicker(String symbol) {
+        boolean contains = tickerCache.containsKey(symbol);
+        StockTicker ticker = tickerCache.getOrDefault(symbol, new StockTicker(symbol));
 
-    /**
-     * Returns a stock once it has gotten the values
-     *
-     * @param symbol symbol
-     * @return stock
-     */
-    public CompletableFuture<Stock> getTicker(String symbol) {
-        return tickerCache.getCache().get(symbol);
-    }
+        if (!contains) {
+            tickerCache.put(symbol, ticker);
+        }
 
-    /**
-     * Invalidates a ticker and prepares it for updating
-     *
-     * @param symbol symbol
-     */
-    protected void invalidate(String symbol) {
-        tickerCache.getCache().synchronous().invalidate(symbol);
+        return ticker;
     }
 }
