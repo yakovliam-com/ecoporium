@@ -47,6 +47,8 @@ dependencies {
     implementation 'com.github.ben-manes.caffeine:caffeine:3.0.3'
 
     implementation "me.mattstudios:triumph-msg-adventure:2.2.4-SNAPSHOT"
+
+    implementation "org.spongepowered:configurate-gson:4.0.0"
 }
 
 test {
