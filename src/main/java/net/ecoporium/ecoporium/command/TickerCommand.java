@@ -24,7 +24,7 @@ public class TickerCommand extends EcoporiumCommand {
     @Subcommand("getprice")
     @Description("Show the current price for a given stock symbol")
     public void getTickerPrice(Player player, @Single String market, @Single String symbol) {
-        Message.builder("ticker.fetching")
+        Message.builder()
                 .addLine("&7Fetching price for &f" + symbol)
                 .build()
                 .message(player);

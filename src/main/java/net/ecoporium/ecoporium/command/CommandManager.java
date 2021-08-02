@@ -5,6 +5,7 @@ import co.aikar.commands.MessageType;
 import net.ecoporium.ecoporium.EcoporiumPlugin;
 import org.bukkit.ChatColor;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 public class CommandManager extends BukkitCommandManager {
@@ -21,8 +22,9 @@ public class CommandManager extends BukkitCommandManager {
         setFormat(MessageType.SYNTAX, ChatColor.GRAY);
 
         // TODO add more commands here, registering them
-        Collections.singletonList(
-                new TickerCommand(plugin)
+        Arrays.asList(
+                new TickerCommand(plugin),
+                new ChartCommand(plugin)
         ).forEach(this::registerCommand);
     }
 }

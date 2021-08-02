@@ -1,14 +1,18 @@
 package net.ecoporium.ecoporium.model.market;
 
+import net.ecoporium.ecoporium.quotes.HistQuotes2Request;
 import yahoofinance.Stock;
 import yahoofinance.YahooFinance;
+import yahoofinance.histquotes.HistoricalQuote;
 import yahoofinance.quotes.stock.StockQuote;
 
 import java.io.IOException;
 import java.time.Instant;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 public class StockTicker {
@@ -31,6 +35,11 @@ public class StockTicker {
     private final Map<Date, StockQuote> history;
 
     /**
+     * Previous history, of past days
+     */
+    private final Map<Calendar, HistoricalQuote> previousHistory;
+
+    /**
      * Stock ticker
      *
      * @param symbol symbol
@@ -39,6 +48,10 @@ public class StockTicker {
         this.symbol = symbol;
         this.stock = null;
         this.history = new HashMap<>();
+        this.previousHistory = new HashMap<>();
+
+        // update previous history
+        updatePreviousHistory();
     }
 
     /**
@@ -66,6 +79,15 @@ public class StockTicker {
      */
     public Map<Date, StockQuote> getHistory() {
         return history;
+    }
+
+    /**
+     * Returns the previous history
+     *
+     * @return history
+     */
+    public Map<Calendar, HistoricalQuote> getPreviousHistory() {
+        return previousHistory;
     }
 
     /**
@@ -128,5 +150,20 @@ public class StockTicker {
      */
     private void updateHistory(Stock recent) {
         this.history.put(Date.from(Instant.now()), recent.getQuote());
+    }
+
+    /**
+     * Update previous history
+     */
+    private void updatePreviousHistory() {
+        update().join();
+        try {
+            new HistQuotes2Request(this.symbol).getResult()
+                    .stream()
+                    .filter(Objects::nonNull)
+                    .forEach(quote -> this.previousHistory.put(quote.getDate(), quote));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
