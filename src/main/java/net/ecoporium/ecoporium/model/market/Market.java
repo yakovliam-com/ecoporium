@@ -77,6 +77,13 @@ public abstract class Market {
      * @return ticker
      */
     public StockTicker getTicker(String symbol) {
+        // if that symbol is in the whitelist
+        if (whitelistOptions.getTickers().stream()
+                .noneMatch(s -> s.equalsIgnoreCase(symbol))) {
+            // not allowed, so return null
+            return null;
+        }
+
         boolean contains = tickerCache.containsKey(symbol);
         StockTicker ticker = tickerCache.getOrDefault(symbol, new StockTicker(symbol));
 
