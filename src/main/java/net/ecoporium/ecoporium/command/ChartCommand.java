@@ -40,12 +40,8 @@ public class ChartCommand extends EcoporiumCommand {
                 .message(player);
 
         getPlugin().getMarketCache().get(market, null).getTicker(symbol).get().thenAccept((stock) -> {
-            System.out.println("A");
             Map<Calendar, HistoricalQuote> history = stock.getPreviousHistory();
-            System.out.println("B");
             DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-            System.out.println("C");
-
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE, dd/MM/yyyy");
 
             // create data
@@ -53,12 +49,9 @@ public class ChartCommand extends EcoporiumCommand {
                 dataset.addValue(quote.getClose().doubleValue(), "Stock Price", simpleDateFormat.format(date.getTime()));
             });
 
-
             // create jchart
 
             JFreeChart chart = ChartFactory.createLineChart(stock.getSymbol(), "Time", "Price", dataset);
-
-            System.out.println("F");
 
             int width = 640;    /* Width of the image */
             int height = 480;   /* Height of the image */
