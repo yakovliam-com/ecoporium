@@ -1,10 +1,13 @@
 package net.ecoporium.ecoporium;
 
+import com.github.johnnyjayjay.spigotmaps.InitializationListener;
 import net.ecoporium.ecoporium.api.Plugin;
 import net.ecoporium.ecoporium.api.message.Message;
 import net.ecoporium.ecoporium.command.CommandManager;
 import net.ecoporium.ecoporium.config.EcoporiumConfig;
 import net.ecoporium.ecoporium.market.MarketCache;
+import net.ecoporium.ecoporium.storage.Storage;
+import net.ecoporium.ecoporium.storage.implementation.json.JsonStorageImplementation;
 import net.ecoporium.ecoporium.task.MarketUpdater;
 
 public class EcoporiumPlugin extends Plugin {
@@ -24,6 +27,11 @@ public class EcoporiumPlugin extends Plugin {
      */
     private MarketUpdater marketUpdater;
 
+    /**
+     * Storage
+     */
+    private Storage storage;
+
     @Override
     public void onLoad() {
     }
@@ -37,6 +45,8 @@ public class EcoporiumPlugin extends Plugin {
 
         this.ecoporiumConfig = new EcoporiumConfig(this, provideConfigAdapter("config.yml"));
         this.marketCache = new MarketCache(this);
+
+        this.storage = new Storage(new JsonStorageImplementation(this));
 
         new CommandManager(this);
 
@@ -59,5 +69,14 @@ public class EcoporiumPlugin extends Plugin {
      */
     public MarketCache getMarketCache() {
         return marketCache;
+    }
+
+    /**
+     * Returns storage
+     *
+     * @return storage
+     */
+    public Storage getStorage() {
+        return storage;
     }
 }

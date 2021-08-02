@@ -1,7 +1,5 @@
 package net.ecoporium.ecoporium.storage;
 
-import java.util.List;
-
 public class Storage {
 
     /**
@@ -18,13 +16,12 @@ public class Storage {
         this.storageImplementation = storageImplementation;
     }
 
-
     /**
-     * Saves map plots
+     * Returns the storage implementation
      *
-     * @param test test
+     * @return implementation
      */
-    public void saveMapPlots(List<Void> test) {
-        storageImplementation.saveMapPlots(test);
+    public StorageImplementation getStorageImplementation() {
+        return storageImplementation;
     }
 }

@@ -1,66 +1,46 @@
 package net.ecoporium.ecoporium.command;
 
-import co.aikar.commands.annotation.CatchUnknown;
+import co.aikar.commands.BukkitCommandCompletionContext;
+import co.aikar.commands.CommandCompletions;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Single;
 import net.ecoporium.ecoporium.EcoporiumPlugin;
 import net.ecoporium.ecoporium.api.message.Message;
+import net.ecoporium.ecoporium.model.market.Market;
 import org.bukkit.entity.Player;
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartUtils;
-import org.jfree.chart.JFreeChart;
-import org.jfree.data.category.DefaultCategoryDataset;
-import yahoofinance.histquotes.HistoricalQuote;
 
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Map;
-import java.util.Random;
+import java.util.stream.Collectors;
 
 @CommandAlias("chart")
 public class ChartCommand extends EcoporiumCommand {
 
+
     /**
      * Ecoporium command
      *
-     * @param plugin plugin
+     * @param manager manager
+     * @param plugin  plugin
      */
-    public ChartCommand(EcoporiumPlugin plugin) {
-        super(plugin);
+    public ChartCommand(CommandManager manager, EcoporiumPlugin plugin) {
+        super(manager, plugin);
+    }
+
+    @Override
+    protected void registerCompletions() {
+        CommandCompletions<BukkitCommandCompletionContext> commandCompletions = manager.getCommandCompletions();
+
+        commandCompletions.registerAsyncCompletion("market", c -> plugin.getMarketCache().getMap().values().stream()
+                .map(Market::getHandle)
+                .collect(Collectors.toList()));
     }
 
     @Default
-    public void onChart(Player player, @Single String market, @Single String symbol) {
+    public void onChart(Player player, @Single Market market, @Single String symbol) {
         Message.builder()
-                .addLine("&7Outputting chart for &f" + symbol)
+                .addLine("&7Rendering live chart for &f" + symbol + " &7in the &f" + market.getHandle() + " &7market.")
                 .build()
                 .message(player);
 
-        getPlugin().getMarketCache().get(market, null).getTicker(symbol).get().thenAccept((stock) -> {
-            Map<Calendar, HistoricalQuote> history = stock.getPreviousHistory();
-            DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE, dd/MM/yyyy");
-
-            // create data
-            history.forEach((date, quote) -> {
-                dataset.addValue(quote.getClose().doubleValue(), "Stock Price", simpleDateFormat.format(date.getTime()));
-            });
-
-            // create jchart
-
-            JFreeChart chart = ChartFactory.createLineChart(stock.getSymbol(), "Time", "Price", dataset);
-
-            int width = 640;    /* Width of the image */
-            int height = 480;   /* Height of the image */
-            File lineChart = new File(System.getProperty("user.dir"), stock.getSymbol() + "-History-Chart.jpeg");
-            try {
-                ChartUtils.saveChartAsJPEG(lineChart, chart, width, height);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
     }
 }

@@ -15,10 +15,11 @@ public class TickerCommand extends EcoporiumCommand {
     /**
      * Ecoporium command
      *
-     * @param plugin plugin
+     * @param manager manager
+     * @param plugin  plugin
      */
-    public TickerCommand(EcoporiumPlugin plugin) {
-        super(plugin);
+    public TickerCommand(CommandManager manager, EcoporiumPlugin plugin) {
+        super(manager, plugin);
     }
 
     @Subcommand("getprice")
@@ -29,7 +30,7 @@ public class TickerCommand extends EcoporiumCommand {
                 .build()
                 .message(player);
 
-        getPlugin().getMarketCache().get(market, null).getTicker(symbol).get().thenAccept((stock) -> {
+        plugin.getMarketCache().get(market, null).getTicker(symbol).get().thenAccept((stock) -> {
             Message.builder("ticker.price")
                     .addLine("&7Price for &f" + stock.getCurrentStockData() + "&7:")
                     .addLine("&a$" + stock.getCurrentStockData().getQuote().getPrice())
@@ -55,5 +56,9 @@ public class TickerCommand extends EcoporiumCommand {
                 .message(sender);
 
         help.showHelp();
+    }
+
+    @Override
+    protected void registerCompletions() {
     }
 }

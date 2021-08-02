@@ -2,14 +2,14 @@ package net.ecoporium.ecoporium.storage.implementation.json;
 
 import net.ecoporium.ecoporium.EcoporiumPlugin;
 import net.ecoporium.ecoporium.storage.StorageImplementation;
-import org.spongepowered.configurate.BasicConfigurationNode;
+import net.ecoporium.ecoporium.storage.implementation.json.serializer.MapRendererWrapper;
+import org.bukkit.map.MapRenderer;
 import org.spongepowered.configurate.ConfigurateException;
-import org.spongepowered.configurate.gson.GsonConfigurationLoader;
 import org.spongepowered.configurate.serialize.SerializationException;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class JsonStorageImplementation implements StorageImplementation {
 
@@ -47,29 +47,14 @@ public class JsonStorageImplementation implements StorageImplementation {
      */
     @Override
     public void shutdown() {
-        // TODO move to json configuration provider class
-        try {
-            jsonConfigurationProvider.getLoader().save(jsonConfigurationProvider.getRoot());
-        } catch (ConfigurateException e) {
-            e.printStackTrace();
-        }
+        // save
+        save();
     }
 
     /**
-     * Saves map plots
-     *
-     * @param test test
+     * Saves the file
      */
-    @Override
-    public void saveMapPlots(List<Void> test) {
-        try {
-            Objects.requireNonNull(jsonConfigurationProvider.getRoot().getList(Void.class)).addAll(test);
-        } catch (SerializationException e) {
-            e.printStackTrace();
-        }
-
-        // TODO move to json configuration provider class
-        // save
+    private void save() {
         try {
             jsonConfigurationProvider.getLoader().save(jsonConfigurationProvider.getRoot());
         } catch (ConfigurateException e) {
@@ -85,5 +70,59 @@ public class JsonStorageImplementation implements StorageImplementation {
     @Override
     public EcoporiumPlugin getPlugin() {
         return plugin;
+    }
+
+    @Override
+    public void remove(int i, MapRenderer mapRenderer) {
+        List<MapRendererWrapper> mapRendererWrappers = null;
+        try {
+            mapRendererWrappers = jsonConfigurationProvider.getRoot().getList(MapRendererWrapper.class);
+        } catch (SerializationException e) {
+            e.printStackTrace();
+        }
+        mapRendererWrappers.removeIf(r -> r.getId() == i);
+
+        // set node
+        try {
+            jsonConfigurationProvider.getRoot().setList(MapRendererWrapper.class, mapRendererWrappers);
+        } catch (SerializationException e) {
+            e.printStackTrace();
+        }
+
+        save();
+    }
+
+    @Override
+    public void store(int i, MapRenderer mapRenderer) {
+        List<MapRendererWrapper> mapRendererWrappers = null;
+        try {
+            mapRendererWrappers = jsonConfigurationProvider.getRoot().getList(MapRendererWrapper.class);
+        } catch (SerializationException e) {
+            e.printStackTrace();
+        }
+
+        mapRendererWrappers.add(new MapRendererWrapper(i, mapRenderer));
+
+        // set node
+        try {
+            jsonConfigurationProvider.getRoot().setList(MapRendererWrapper.class, mapRendererWrappers);
+        } catch (SerializationException e) {
+            e.printStackTrace();
+        }
+
+        save();
+    }
+
+    @Override
+    public List<MapRenderer> provide(int i) {
+        try {
+            return Objects.requireNonNull(jsonConfigurationProvider.getRoot().getList(MapRendererWrapper.class))
+                    .stream()
+                    .map(MapRendererWrapper::getMapRenderer)
+                    .collect(Collectors.toList());
+        } catch (SerializationException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

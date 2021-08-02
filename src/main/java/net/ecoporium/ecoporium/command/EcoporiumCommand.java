@@ -8,18 +8,23 @@ public abstract class EcoporiumCommand extends BaseCommand {
     /**
      * Plugin
      */
-    private final EcoporiumPlugin plugin;
+    protected final EcoporiumPlugin plugin;
+
+    /**
+     * Manager
+     */
+    protected final CommandManager manager;
 
     /**
      * Ecoporium command
      *
-     * @param plugin plugin
+     * @param manager manager
+     * @param plugin  plugin
      */
-    public EcoporiumCommand(EcoporiumPlugin plugin) {
+    public EcoporiumCommand(CommandManager manager, EcoporiumPlugin plugin) {
         this.plugin = plugin;
+        this.manager = manager;
     }
 
-    protected EcoporiumPlugin getPlugin() {
-        return plugin;
-    }
+    protected abstract void registerCompletions();
 }
