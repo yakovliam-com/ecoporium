@@ -6,8 +6,6 @@ import net.ecoporium.ecoporium.api.wrapper.Pair;
 import net.ecoporium.ecoporium.builder.market.MarketBuilder;
 import net.ecoporium.ecoporium.model.cache.loader.CacheLoader;
 
-import java.util.Collections;
-
 import static net.ecoporium.ecoporium.config.EcoporiumConfigKeys.MARKET_HANDLES_PATHS;
 
 public class MarketCacheLoader extends CacheLoader<MarketCache> {
@@ -38,8 +36,6 @@ public class MarketCacheLoader extends CacheLoader<MarketCache> {
         // get configuration
         ConfigurationAdapter adapter = plugin.getEcoporiumConfig().getAdapter();
 
-        MARKET_HANDLES_PATHS.get(adapter).forEach((handle, path) -> {
-            cache.getMap().put(handle, marketBuilder.build(new Pair<>(handle, path), adapter));
-        });
+        MARKET_HANDLES_PATHS.get(adapter).forEach((handle, path) -> cache.getMap().put(handle, marketBuilder.build(new Pair<>(handle, path), adapter)));
     }
 }

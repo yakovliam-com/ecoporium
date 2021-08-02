@@ -3,9 +3,7 @@ package net.ecoporium.ecoporium.storage.implementation.json;
 import net.ecoporium.ecoporium.EcoporiumPlugin;
 import net.ecoporium.ecoporium.storage.implementation.json.serializer.MapRendererSerializer;
 import net.ecoporium.ecoporium.storage.implementation.json.serializer.MapRendererWrapper;
-import org.bukkit.map.MapRenderer;
 import org.spongepowered.configurate.BasicConfigurationNode;
-import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.gson.GsonConfigurationLoader;
 
 import java.io.IOException;
@@ -25,7 +23,7 @@ public class JsonConfigurationProvider {
     /**
      * Loader
      */
-    private GsonConfigurationLoader loader;
+    private final GsonConfigurationLoader loader;
 
     /**
      * Root node

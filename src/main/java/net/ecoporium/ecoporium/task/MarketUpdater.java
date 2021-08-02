@@ -22,9 +22,7 @@ public class MarketUpdater {
         this.updateTaskMap = new HashMap<>();
 
         // get all markets that are loaded and make a new update task
-        plugin.getMarketCache().getMap().forEach((handle, market) -> {
-            updateTaskMap.put(market, new MarketUpdateTask(plugin, market));
-        });
+        plugin.getMarketCache().getMap().forEach((handle, market) -> updateTaskMap.put(market, new MarketUpdateTask(plugin, market)));
 
         // start all update tasks
         updateTaskMap.forEach((market, task) -> task.start());

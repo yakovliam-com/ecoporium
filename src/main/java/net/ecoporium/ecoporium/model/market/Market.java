@@ -2,7 +2,6 @@ package net.ecoporium.ecoporium.model.market;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 
 public abstract class Market {
 

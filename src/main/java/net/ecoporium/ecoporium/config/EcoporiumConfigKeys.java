@@ -26,9 +26,7 @@ public final class EcoporiumConfigKeys {
 
     public static final ConfigKey<String> REDIS_URL = key(c -> c.getString("redis.url", null));
 
-    public static final ConfigKey<String> REDIS_TIMESTAMP_KEY = key(c -> {
-        return c.getString("redis.timestamp-key", null);
-    });
+    public static final ConfigKey<String> REDIS_TIMESTAMP_KEY = key(c -> c.getString("redis.timestamp-key", null));
 
     private static final List<SimpleConfigKey<?>> KEYS = KeyedConfiguration.initialise(EcoporiumConfigKeys.class);
 

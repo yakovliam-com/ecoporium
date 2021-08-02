@@ -42,15 +42,13 @@ public class StockCommand extends EcoporiumCommand {
         }
 
         // get / update
-        ticker.get().thenAccept(stockTicker -> {
-            Message.builder()
-                    .addLine("&7About &f" + symbol + "&7:")
-                    .addLine("&8Previous Close: &7" + stockTicker.getCurrentStockData().getQuote().getPreviousClose())
-                    .addLine("&8Price: &7" + stockTicker.getCurrentStockData().getQuote().getPrice())
-                    .addLine("&8Open: &7" + stockTicker.getCurrentStockData().getQuote().getOpen())
-                    .addLine("&8Average Volume: &7" + stockTicker.getCurrentStockData().getQuote().getAvgVolume())
-                    .build();
-        });
+        ticker.get().thenAccept(stockTicker -> Message.builder()
+                .addLine("&7About &f" + symbol + "&7:")
+                .addLine("&8Previous Close: &7" + stockTicker.getCurrentStockData().getQuote().getPreviousClose())
+                .addLine("&8Price: &7" + stockTicker.getCurrentStockData().getQuote().getPrice())
+                .addLine("&8Open: &7" + stockTicker.getCurrentStockData().getQuote().getOpen())
+                .addLine("&8Average Volume: &7" + stockTicker.getCurrentStockData().getQuote().getAvgVolume())
+                .build());
     }
 
     @HelpCommand

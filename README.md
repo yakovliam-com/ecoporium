@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://i.imgur.com/M4oF4KO.png" />
+  <img alt="Ecoporium Logo" src="https://i.imgur.com/M4oF4KO.png" />
 </p>
 
 ## About Ecoporium

@@ -143,9 +143,7 @@ public class Message {
             String replacer = replacers[i];
             String replacement = replacers[i + 1];
 
-            component = component.replaceText((b) -> {
-                b.matchLiteral(replacer).replacement(replacement);
-            });
+            component = component.replaceText((b) -> b.matchLiteral(replacer).replacement(replacement));
         }
 
         return component;

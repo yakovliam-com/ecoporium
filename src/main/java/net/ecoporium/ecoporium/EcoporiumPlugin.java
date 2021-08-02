@@ -1,6 +1,5 @@
 package net.ecoporium.ecoporium;
 
-import com.github.johnnyjayjay.spigotmaps.InitializationListener;
 import net.ecoporium.ecoporium.api.Plugin;
 import net.ecoporium.ecoporium.api.message.Message;
 import net.ecoporium.ecoporium.command.CommandManager;
