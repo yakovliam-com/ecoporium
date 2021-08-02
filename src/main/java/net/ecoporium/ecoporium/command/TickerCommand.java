@@ -4,6 +4,7 @@ import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
 import net.ecoporium.ecoporium.EcoporiumPlugin;
 import net.ecoporium.ecoporium.api.message.Message;
+import net.ecoporium.ecoporium.model.market.Market;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -24,13 +25,13 @@ public class TickerCommand extends EcoporiumCommand {
 
     @Subcommand("getprice")
     @Description("Show the current price for a given stock symbol")
-    public void getTickerPrice(Player player, @Single String market, @Single String symbol) {
+    public void getTickerPrice(Player player, @Single Market market, @Single String symbol) {
         Message.builder()
                 .addLine("&7Fetching price for &f" + symbol)
                 .build()
                 .message(player);
 
-        plugin.getMarketCache().get(market, null).getTicker(symbol).get().thenAccept((stock) -> {
+        market.getTicker(symbol).get().thenAccept((stock) -> {
             Message.builder("ticker.price")
                     .addLine("&7Price for &f" + stock.getCurrentStockData() + "&7:")
                     .addLine("&a$" + stock.getCurrentStockData().getQuote().getPrice())
