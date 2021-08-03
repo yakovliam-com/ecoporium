@@ -6,11 +6,9 @@
 Ecoporium is a Minecraft Plugin designed to synchronize real-world stock and cryptocurrency markets with in-game currency through [Vault](https://github.com/MilkBowl/Vault). Every few minutes, the in-game values will update based on the [YahooFinance-API by sstrickx](https://github.com/sstrickx/yahoofinance-api), and players will have the opportunity to buy and sell with the new prices.
 
 ### Is Ecoporium a good choice for me?
-Ecoporium is a very unique plugin because the real world has full control over the nitty-gritty values that you'd normally have to tweak ever so carefully to create a good economy, and it's dynamic. This may sound incredibly attractive at first because you wouldn't have to worry about that, but Ecoporium isn't without drawbacks.
+Ecoporium is a very unique plugin because the real world has full control over the nitty-gritty values that you'd normally have to tweak ever so carefully to create a good economy, and it's dynamic. Please be aware that although a dynamic market is realistic, sometimes it can get out of hand in a controlled environment.
 
-Certain ploys can be utilized to inflate the economy in special situations, because the purchases and sales that are made in-game have no reactive effect upon values. However, our hope is that the effect of this will be minimal and that the real market will stay stable enough to keep in-game values  in check.
-
-Ecoporium is most likely not the greatest choice for you if you want a static market, as like in real life, someone could very well become a millionaire overnight.
+Using a real-world-market in a controlled environment can cause unforseen economic stress as like in real life, someone could very well become a millionaire overnight.
 
 ## Features
 
