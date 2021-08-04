@@ -6,12 +6,10 @@ import net.ecoporium.ecoporium.command.CommandManager;
 import net.ecoporium.ecoporium.config.EcoporiumConfig;
 import net.ecoporium.ecoporium.market.MarketCache;
 import net.ecoporium.ecoporium.message.Messages;
-import net.ecoporium.ecoporium.session.screen.TickerScreenCreatorSessionManager;
+import net.ecoporium.ecoporium.placement.PlacementHandler;
 import net.ecoporium.ecoporium.storage.Storage;
 import net.ecoporium.ecoporium.storage.implementation.json.JsonStorageImplementation;
 import net.ecoporium.ecoporium.task.MarketUpdater;
-
-import java.util.HashMap;
 
 public class EcoporiumPlugin extends Plugin {
 
@@ -36,9 +34,9 @@ public class EcoporiumPlugin extends Plugin {
     private Messages messages;
 
     /**
-     * Ticker screen session manager
+     * Placement handler
      */
-    private TickerScreenCreatorSessionManager tickerScreenCreatorSessionManager;
+    private PlacementHandler placementHandler;
 
     @Override
     public void onLoad() {
@@ -56,12 +54,12 @@ public class EcoporiumPlugin extends Plugin {
 
         this.storage = new Storage(new JsonStorageImplementation(this));
 
-        this.tickerScreenCreatorSessionManager = new TickerScreenCreatorSessionManager(this);
-
         new CommandManager(this);
         new MarketUpdater(this);
 
         this.messages = new Messages();
+
+        this.placementHandler = new PlacementHandler(this);
     }
 
     /**
@@ -101,11 +99,11 @@ public class EcoporiumPlugin extends Plugin {
     }
 
     /**
-     * Returns the ticker screen session manager
+     * Placement handler
      *
-     * @return session manager
+     * @return handler
      */
-    public TickerScreenCreatorSessionManager getTickerScreenCreatorSessionManager() {
-        return tickerScreenCreatorSessionManager;
+    public PlacementHandler getPlacementHandler() {
+        return placementHandler;
     }
 }

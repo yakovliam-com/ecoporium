@@ -22,7 +22,7 @@ public class CommandManager extends BukkitCommandManager {
 
         // TODO add more commands here, registering them
         Arrays.asList(
-                new ChartCommand(this, plugin),
+                new EcoporiumCommand(this, plugin),
                 new StockCommand(this, plugin)
         ).forEach(c -> {
             c.registerCompletions();

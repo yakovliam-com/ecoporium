@@ -3,7 +3,7 @@ package net.ecoporium.ecoporium.ticker;
 import net.ecoporium.ecoporium.EcoporiumPlugin;
 import net.ecoporium.ecoporium.model.market.StockTicker;
 import net.ecoporium.ecoporium.ticker.fetch.StockTickerFetcher;
-import net.ecoporium.ecoporium.ticker.info.ScreenPositionalInfo;
+import net.ecoporium.ecoporium.ticker.info.ScreenInfo;
 import net.ecoporium.ecoporium.ticker.task.TickerScreenUpdateTask;
 
 import java.util.UUID;
@@ -20,13 +20,13 @@ public class StaticTickerScreen extends TickerScreen {
      * <p>
      * Once initialized, this screen will display the applicable symbol's data, and that data only
      *
-     * @param plugin         plugin
-     * @param id             id
-     * @param symbol         symbol
-     * @param positionalInfo positional info
+     * @param plugin   plugin
+     * @param id       id
+     * @param symbol   symbol
+     * @param screenInfo screenInfo
      */
-    public StaticTickerScreen(EcoporiumPlugin plugin, UUID id, String symbol, ScreenPositionalInfo positionalInfo) {
-        super(id, new StockTickerFetcher(plugin, symbol), positionalInfo);
+    public StaticTickerScreen(EcoporiumPlugin plugin, UUID id, String symbol, ScreenInfo screenInfo) {
+        super(id, new StockTickerFetcher(plugin, symbol), screenInfo);
 
         this.symbol = symbol;
 

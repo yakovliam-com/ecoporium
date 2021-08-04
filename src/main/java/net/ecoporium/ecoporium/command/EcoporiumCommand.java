@@ -4,17 +4,20 @@ import co.aikar.commands.BukkitCommandCompletionContext;
 import co.aikar.commands.CommandCompletions;
 import co.aikar.commands.CommandHelp;
 import co.aikar.commands.InvalidCommandArgument;
-import co.aikar.commands.annotation.*;
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandPermission;
+import co.aikar.commands.annotation.Default;
+import co.aikar.commands.annotation.HelpCommand;
+import co.aikar.commands.annotation.Single;
+import co.aikar.commands.annotation.Subcommand;
 import net.ecoporium.ecoporium.EcoporiumPlugin;
 import net.ecoporium.ecoporium.api.message.Message;
 import net.ecoporium.ecoporium.model.market.Market;
-import net.ecoporium.ecoporium.session.screen.TickerScreenCreatorSession;
+import net.ecoporium.ecoporium.placement.PlacementData;
 import net.ecoporium.ecoporium.ticker.StaticTickerScreen;
-import net.ecoporium.ecoporium.util.ScreenPositionUtil;
-import net.ecoporium.ecoporium.util.WandItemUtil;
+import net.ecoporium.ecoporium.ticker.info.ScreenInfo;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.stream.Collectors;
 
@@ -32,50 +35,25 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
         super(manager, plugin);
     }
 
-    @Subcommand("wand")
-    @CommandPermission("ecoporium.command.wand")
-    public void onWand(Player player) {
-        // give wand item
-        ItemStack wandItem = WandItemUtil.createWandItem();
-        player.getInventory().addItem(wandItem);
-        player.updateInventory();
+    @Subcommand("create")
+    @CommandPermission("ecoporium.command.create")
+    public class CreateCommand {
+
+        @Subcommand("static")
+        @CommandPermission("ecoporium.command.create.screen.static")
+        public void onCreateStatic(Player player, @Single Market market, @Single String symbol) {
+            // if market doesn't have in whitelist
+            if (market.getWhitelistOptions().getTickers().size() >= 1 && !market.getWhitelistOptions().getTickers().contains(symbol)) {
+                plugin.getMessages().ecoporiumCreateStaticWhitelist.message(player);
+                return;
+            }
+
+            // add to waiting list
+            plugin.getPlacementHandler().add(player.getUniqueId(), new PlacementData(new ScreenInfo(400, 300), market, symbol));
+
+            plugin.getMessages().ecoporiumCreateStaticWaiting.message(player, "%symbol%", symbol);
+        }
     }
-
-    @Subcommand("create static")
-    public void onCreateStatic(Player player, @Single Market market, @Single String symbol) {
-        // if market doesn't have in whitelist
-        if (market.getWhitelistOptions().getTickers().size() >= 1 && !market.getWhitelistOptions().getTickers().contains(symbol)) {
-            plugin.getMessages().ecoporiumCreateStaticWhitelist.message(player);
-            return;
-        }
-
-        // if not in session
-        if (!plugin.getTickerScreenCreatorSessionManager().isInSession(player.getUniqueId())) {
-            plugin.getMessages().ecoporiumCreateNotInSession.message(player);
-            return;
-        }
-
-        // get session
-        TickerScreenCreatorSession screenCreatorSession = plugin.getTickerScreenCreatorSessionManager().getSession(player.getUniqueId());
-
-        // if incomplete
-        if (!screenCreatorSession.isComplete()) {
-            plugin.getMessages().ecoporiumCreateSessionIncomplete.message(player);
-            return;
-        }
-        // if the screen isn't a valid shape
-        if (ScreenPositionUtil.calculateNumberOfMaps(screenCreatorSession.getScreenPositionalInfo()) == null) {
-            plugin.getMessages().ecoporiumCreateSessionIncomplete.message(player);
-            return;
-        }
-
-        // create
-        StaticTickerScreen screen = plugin.getTickerScreenCreatorSessionManager().createStaticTickerScreen(player.getUniqueId(), symbol);
-        // TODO save to storage
-
-        plugin.getMessages().ecoporiumCreateStaticSuccess.message(player, "%symbol%", symbol);
-    }
-
 
     @HelpCommand
     @Default

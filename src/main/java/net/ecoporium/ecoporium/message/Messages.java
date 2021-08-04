@@ -4,23 +4,51 @@ import net.ecoporium.ecoporium.api.message.Message;
 
 public class Messages {
 
+    /**
+     * Ecoporium command
+     */
+
+    // create static whitelist
     public Message ecoporiumCreateStaticWhitelist = Message.builder()
             .addLine("&cOops! That symbol is not include in that market's whitelist.")
             .build();
 
-    public Message ecoporiumCreateNotInSession = Message.builder()
-            .addLine("&cYou're not currently in a creation session.")
+    // create static success
+    public Message ecoporiumCreateStaticWaiting = Message.builder()
+            .addLine("&7Right click on a block to create a ticker for &f%symbol%&7.")
             .build();
 
-    public Message ecoporiumCreateSessionIncomplete = Message.builder()
-            .addLine("&cYour session is incomplete!")
+    /**
+     * Placement listener
+     */
+
+    // canceled
+    public Message ecoporiumPlacementCanceled = Message.builder()
+            .addLine("&7Canceled.")
             .build();
 
-    public Message ecoporiumCreateSessionError = Message.builder()
-            .addLine("&cSomething went wrong...")
+    // invalid facing
+    public Message ecoporiumPlacementInvalidFacing = Message.builder()
+            .addLine("&cInvalid block facing!")
             .build();
 
-    public Message ecoporiumCreateStaticSuccess = Message.builder()
-            .addLine("&7You created a screen with the live data from &f%symbol%&7.")
+    // invalid direction
+    public Message ecoporiumPlacementInvalidDirection = Message.builder()
+            .addLine("&cInvalid direction - there was a problem trying to calculate and do math and stuff.")
+            .build();
+
+    // insufficient wall
+    public Message ecoporiumPlacementInsufficientWall = Message.builder()
+            .addLine("&cInsufficient wall/space to place the screen!")
+            .build();
+
+    // overlapping entity
+    public Message ecoporiumPlacementOverlappingEntity = Message.builder()
+            .addLine("&cThere's an overlapping entity!")
+            .build();
+
+    // success
+    public Message ecoporiumPlacementSuccess = Message.builder()
+            .addLine("&aSuccess!")
             .build();
 }
