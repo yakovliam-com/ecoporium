@@ -124,7 +124,6 @@ public class HistQuotes2Request {
         String url = YahooFinance.HISTQUOTES2_BASE_URL + URLEncoder.encode(this.symbol, StandardCharsets.UTF_8) + "?" + Utils.getURLParameters(params);
 
         // Get CSV from Yahoo
-        log.info("Sending request: " + url);
 
         URL request = new URL(url);
         RedirectableRequest redirectableRequest = new RedirectableRequest(request, 5);
@@ -139,8 +138,6 @@ public class HistQuotes2Request {
             br.readLine(); // skip the first line
             // Parse CSV
             for (String line = br.readLine(); line != null; line = br.readLine()) {
-
-                log.info("Parsing CSV line: " + Utils.unescape(line));
                 HistoricalQuote quote = this.parseCSVLine(line);
                 result.add(quote);
             }

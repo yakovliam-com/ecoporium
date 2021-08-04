@@ -5,9 +5,13 @@ import net.ecoporium.ecoporium.api.message.Message;
 import net.ecoporium.ecoporium.command.CommandManager;
 import net.ecoporium.ecoporium.config.EcoporiumConfig;
 import net.ecoporium.ecoporium.market.MarketCache;
+import net.ecoporium.ecoporium.message.Messages;
+import net.ecoporium.ecoporium.session.screen.TickerScreenCreatorSessionManager;
 import net.ecoporium.ecoporium.storage.Storage;
 import net.ecoporium.ecoporium.storage.implementation.json.JsonStorageImplementation;
 import net.ecoporium.ecoporium.task.MarketUpdater;
+
+import java.util.HashMap;
 
 public class EcoporiumPlugin extends Plugin {
 
@@ -22,14 +26,19 @@ public class EcoporiumPlugin extends Plugin {
     private MarketCache marketCache;
 
     /**
-     * Market updater
-     */
-    private MarketUpdater marketUpdater;
-
-    /**
      * Storage
      */
     private Storage storage;
+
+    /**
+     * Messages
+     */
+    private Messages messages;
+
+    /**
+     * Ticker screen session manager
+     */
+    private TickerScreenCreatorSessionManager tickerScreenCreatorSessionManager;
 
     @Override
     public void onLoad() {
@@ -47,9 +56,12 @@ public class EcoporiumPlugin extends Plugin {
 
         this.storage = new Storage(new JsonStorageImplementation(this));
 
-        new CommandManager(this);
+        this.tickerScreenCreatorSessionManager = new TickerScreenCreatorSessionManager(this);
 
-        this.marketUpdater = new MarketUpdater(this);
+        new CommandManager(this);
+        new MarketUpdater(this);
+
+        this.messages = new Messages();
     }
 
     /**
@@ -77,5 +89,23 @@ public class EcoporiumPlugin extends Plugin {
      */
     public Storage getStorage() {
         return storage;
+    }
+
+    /**
+     * Returns messages
+     *
+     * @return messages
+     */
+    public Messages getMessages() {
+        return messages;
+    }
+
+    /**
+     * Returns the ticker screen session manager
+     *
+     * @return session manager
+     */
+    public TickerScreenCreatorSessionManager getTickerScreenCreatorSessionManager() {
+        return tickerScreenCreatorSessionManager;
     }
 }

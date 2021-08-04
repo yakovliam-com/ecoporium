@@ -49,9 +49,6 @@ public class StockTicker {
         this.stock = null;
         this.history = new HashMap<>();
         this.previousHistory = new HashMap<>();
-
-        // update previous history
-        updatePreviousHistory();
     }
 
     /**
@@ -78,6 +75,10 @@ public class StockTicker {
      * @return history
      */
     public Map<Date, StockQuote> getHistory() {
+        if (this.history.size() <= 0) {
+            this.updateStockData(false).join();
+        }
+
         return history;
     }
 
@@ -91,22 +92,35 @@ public class StockTicker {
     }
 
     /**
-     * Returns a stock once it has gotten the values
+     * Fetches all stock data
+     * <p>
+     * This should only be called once, and the rest of the times
+     * one of the methods below that update specific types of data should be called instead
      *
-     * @return stock
+     * @return void completable future
      */
-    public CompletableFuture<StockTicker> get() {
-        if (stock != null) {
-            return CompletableFuture.completedFuture(this);
-        } else {
-            return update();
-        }
+    public CompletableFuture<Void> fetchStockData() {
+        return CompletableFuture.supplyAsync(() -> {
+            updateStockData(true).join();
+            return null;
+        });
+    }
+
+    /**
+     * Updates only the live trend data
+     *
+     * @return void completable future
+     */
+    public CompletableFuture<Void> updateLiveTrendData() {
+        return updateStockData(false);
     }
 
     /**
      * Updates a ticker
-     **/
-    public CompletableFuture<StockTicker> update() {
+     *
+     * @return void completable future
+     */
+    public CompletableFuture<Void> updateStockData(boolean previousHistory) {
         if (stock != null) {
             // do update
             return CompletableFuture.supplyAsync(() -> {
@@ -118,8 +132,12 @@ public class StockTicker {
 
                 // update history
                 this.updateHistory(stock);
+                if (previousHistory) {
+                    // update previous history
+                    this.updatePreviousHistory();
+                }
 
-                return this;
+                return null;
             });
         } else {
             // get from api
@@ -137,8 +155,12 @@ public class StockTicker {
 
                 // update history
                 this.updateHistory(stock);
+                if (previousHistory) {
+                    // update previous history
+                    this.updatePreviousHistory();
+                }
 
-                return this;
+                return null;
             });
         }
     }
@@ -156,7 +178,6 @@ public class StockTicker {
      * Update previous history
      */
     private void updatePreviousHistory() {
-        update().join();
         try {
             new HistQuotes2Request(this.symbol).getResult()
                     .stream()

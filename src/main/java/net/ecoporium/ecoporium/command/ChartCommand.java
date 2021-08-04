@@ -2,42 +2,27 @@ package net.ecoporium.ecoporium.command;
 
 import co.aikar.commands.BukkitCommandCompletionContext;
 import co.aikar.commands.CommandCompletions;
+import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Single;
 import com.github.johnnyjayjay.spigotmaps.RenderedMap;
-import com.github.johnnyjayjay.spigotmaps.rendering.AnimatedTextRenderer;
-import com.github.johnnyjayjay.spigotmaps.rendering.GifImage;
-import com.github.johnnyjayjay.spigotmaps.rendering.GifRenderer;
 import com.github.johnnyjayjay.spigotmaps.rendering.ImageRenderer;
 import com.github.johnnyjayjay.spigotmaps.util.ImageTools;
 import net.ecoporium.ecoporium.EcoporiumPlugin;
 import net.ecoporium.ecoporium.api.message.Message;
 import net.ecoporium.ecoporium.model.market.Market;
-import net.ecoporium.ecoporium.model.market.StockTicker;
-import org.bukkit.Bukkit;
+import net.ecoporium.ecoporium.ticker.StaticTickerScreen;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.map.MapView;
-import org.checkerframework.checker.units.qual.A;
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartUtils;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.imagemap.ImageMapUtils;
-import org.jfree.data.category.DefaultCategoryDataset;
-import yahoofinance.histquotes.HistoricalQuote;
-import yahoofinance.quotes.stock.StockQuote;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @CommandAlias("chart")
-public class ChartCommand extends EcoporiumCommand {
+public class ChartCommand extends AbstractEcoporiumCommand {
 
 
     /**
@@ -54,9 +39,32 @@ public class ChartCommand extends EcoporiumCommand {
     protected void registerCompletions() {
         CommandCompletions<BukkitCommandCompletionContext> commandCompletions = manager.getCommandCompletions();
 
-        commandCompletions.registerAsyncCompletion("market", c -> plugin.getMarketCache().getMap().values().stream()
+        commandCompletions.registerCompletion("market", c -> plugin.getMarketCache().getMap().values().stream()
                 .map(Market::getHandle)
                 .collect(Collectors.toList()));
+    }
+
+    @Override
+    protected void registerContexts() {
+        manager.getCommandContexts().registerIssuerAwareContext(Market.class, c -> {
+            String firstArg = c.popFirstArg();
+
+            if (firstArg == null) {
+                return null;
+            }
+
+            Market market = plugin.getMarketCache().get(firstArg, null);
+
+            if (market == null) {
+                Message.builder()
+                        .addLine("&cOops! We couldn't find any information on the market called &f" + firstArg + "&c.")
+                        .build()
+                        .message(c.getSender());
+                throw new InvalidCommandArgument("Invalid market name provided");
+            }
+
+            return market;
+        });
     }
 
     @Default
@@ -66,51 +74,35 @@ public class ChartCommand extends EcoporiumCommand {
                 .build()
                 .message(player);
 
-        // get stock
-        StockTicker ticker = market.getTicker(symbol).get().join();
+        // calculate number of maps
+        int numOfRenderers = 25; // hardcoded for now
 
-        // create image first
-        ticker.update().join();
+        List<ImageRenderer> renderers = new ArrayList<>();
 
-        // generate chart
-        File lineChart = saveChartWithNewData(ticker);
-
-        // get buffered image
-        BufferedImage image;
-        try {
-            image = ImageIO.read(lineChart);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return;
+        // create renderers
+        for (int i = 0; i < numOfRenderers; i++) {
+            renderers.add(ImageRenderer.builder()
+                    .image(ImageTools.createSingleColoredImage(Color.CYAN))
+                    .renderOnce(false)
+                    .build());
         }
 
-        // TODO do something with the image
-    }
+        List<RenderedMap> renderedMaps = renderers.stream()
+                .map(RenderedMap::create)
+                .collect(Collectors.toList());
 
-    private File saveChartWithNewData(StockTicker ticker) {
-        // generate chart
-        Map<Date, StockQuote> history = ticker.getHistory();
-        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
+        int counter = 1;
+        List<ItemStack> maps = new ArrayList<>();
 
-        // create data
-        history.forEach((date, quote) -> {
-            dataset.addValue(quote.getPrice(), "Stock Price", simpleDateFormat.format(date));
-        });
-
-        // create jchart
-        JFreeChart chart = ChartFactory.createLineChart(ticker.getSymbol(), "Time", "Price", dataset);
-
-        int width = 400;    /* Width of the image */
-        int height = 300;   /* Height of the image */
-        File lineChart = new File(System.getProperty("user.dir"), ticker.getSymbol() + "-History-Chart.jpeg");
-        try {
-            ChartUtils.saveChartAsJPEG(lineChart, chart, width, height);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
+        for (RenderedMap renderedMap : renderedMaps) {
+            maps.add(renderedMap.createItemStack("", Integer.toString(counter)));
+            counter++;
         }
 
-        return lineChart;
+        // give to player
+        player.getInventory().addItem(maps.toArray(ItemStack[]::new));
+        player.updateInventory();
+
+        // TODO ..?
     }
 }

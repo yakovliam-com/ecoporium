@@ -10,7 +10,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 @CommandAlias("stock|ecoporium")
-public class StockCommand extends EcoporiumCommand {
+public class StockCommand extends AbstractEcoporiumCommand {
 
     /**
      * Ecoporium command
@@ -42,16 +42,17 @@ public class StockCommand extends EcoporiumCommand {
         }
 
         // get / update
-        ticker.get().thenAccept(stockTicker -> Message.builder()
+        ticker.fetchStockData().thenAccept((v) -> Message.builder()
                 .addLine("&7About &f" + symbol + "&7:")
-                .addLine("&8Previous Close: &7" + stockTicker.getCurrentStockData().getQuote().getPreviousClose())
-                .addLine("&8Price: &7" + stockTicker.getCurrentStockData().getQuote().getPrice())
-                .addLine("&8Open: &7" + stockTicker.getCurrentStockData().getQuote().getOpen())
-                .addLine("&8Average Volume: &7" + stockTicker.getCurrentStockData().getQuote().getAvgVolume())
+                .addLine("&8Previous Close: &7" + ticker.getCurrentStockData().getQuote().getPreviousClose())
+                .addLine("&8Price: &7" + ticker.getCurrentStockData().getQuote().getPrice())
+                .addLine("&8Open: &7" + ticker.getCurrentStockData().getQuote().getOpen())
+                .addLine("&8Average Volume: &7" + ticker.getCurrentStockData().getQuote().getAvgVolume())
                 .build());
     }
 
     @HelpCommand
+    @Default
     public void doHelp(CommandSender sender, CommandHelp help) {
         Message.builder("help")
                 .addLine("&eEcoporium Help")
@@ -63,5 +64,9 @@ public class StockCommand extends EcoporiumCommand {
 
     @Override
     protected void registerCompletions() {
+    }
+
+    @Override
+    protected void registerContexts() {
     }
 }

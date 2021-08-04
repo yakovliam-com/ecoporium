@@ -31,6 +31,6 @@ public class MarketUpdateTask extends RepeatingTask {
     @Override
     public void run() {
         // update
-        market.getTickerCache().forEach((symbol, ticker) -> ticker.update());
+        market.getTickerCache().forEach((symbol, ticker) -> ticker.updateStockData(false));
     }
 }
