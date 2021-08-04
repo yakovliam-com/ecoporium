@@ -12,7 +12,7 @@ public class TickerScreenCreatorSessionManager extends SessionManager<TickerScre
     /**
      * Session manager
      *
-     * @param plugin     plugin
+     * @param plugin plugin
      */
     public TickerScreenCreatorSessionManager(EcoporiumPlugin plugin) {
         super(plugin, new HashMap<>());
@@ -69,5 +69,15 @@ public class TickerScreenCreatorSessionManager extends SessionManager<TickerScre
     public StaticTickerScreen createStaticTickerScreen(UUID uuid, String symbol) {
         TickerScreenCreatorSession screenCreatorSession = this.getSessionMap().getOrDefault(uuid, createSession(uuid));
         return new StaticTickerScreen(plugin, UUID.randomUUID(), symbol, screenCreatorSession.getScreenPositionalInfo());
+    }
+
+    /**
+     * If a player is in a session
+     *
+     * @param uuid uuid
+     * @return if the player is in a session
+     */
+    public boolean isInSession(UUID uuid) {
+        return this.getSessionMap().containsKey(uuid);
     }
 }

@@ -8,11 +8,13 @@ import co.aikar.commands.annotation.*;
 import net.ecoporium.ecoporium.EcoporiumPlugin;
 import net.ecoporium.ecoporium.api.message.Message;
 import net.ecoporium.ecoporium.model.market.Market;
+import net.ecoporium.ecoporium.session.screen.TickerScreenCreatorSession;
+import net.ecoporium.ecoporium.ticker.StaticTickerScreen;
+import net.ecoporium.ecoporium.util.ScreenPositionUtil;
 import net.ecoporium.ecoporium.util.WandItemUtil;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.yaml.snakeyaml.error.Mark;
 
 import java.util.stream.Collectors;
 
@@ -47,8 +49,31 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
             return;
         }
 
-        // not in session
-        if(plugin.getS)
+        // if not in session
+        if (!plugin.getTickerScreenCreatorSessionManager().isInSession(player.getUniqueId())) {
+            plugin.getMessages().ecoporiumCreateNotInSession.message(player);
+            return;
+        }
+
+        // get session
+        TickerScreenCreatorSession screenCreatorSession = plugin.getTickerScreenCreatorSessionManager().getSession(player.getUniqueId());
+
+        // if incomplete
+        if (!screenCreatorSession.isComplete()) {
+            plugin.getMessages().ecoporiumCreateSessionIncomplete.message(player);
+            return;
+        }
+        // if the screen isn't a valid shape
+        if (ScreenPositionUtil.calculateNumberOfMaps(screenCreatorSession.getScreenPositionalInfo()) == null) {
+            plugin.getMessages().ecoporiumCreateSessionIncomplete.message(player);
+            return;
+        }
+
+        // create
+        StaticTickerScreen screen = plugin.getTickerScreenCreatorSessionManager().createStaticTickerScreen(player.getUniqueId(), symbol);
+        // TODO save to storage
+
+        plugin.getMessages().ecoporiumCreateStaticSuccess.message(player, "%symbol%", symbol);
     }
 
 

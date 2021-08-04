@@ -2,12 +2,18 @@ package net.ecoporium.ecoporium.ticker;
 
 import com.github.johnnyjayjay.spigotmaps.rendering.AbstractMapRenderer;
 import com.github.johnnyjayjay.spigotmaps.rendering.ImageRenderer;
+import com.github.johnnyjayjay.spigotmaps.util.ImageTools;
 import net.ecoporium.ecoporium.model.market.StockTicker;
 import net.ecoporium.ecoporium.ticker.fetch.StockTickerFetcher;
 import net.ecoporium.ecoporium.ticker.info.ScreenPositionalInfo;
+import net.ecoporium.ecoporium.util.ScreenPositionUtil;
+import org.bukkit.Location;
 
+import java.awt.*;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public abstract class TickerScreen {
 
@@ -43,8 +49,20 @@ public abstract class TickerScreen {
         this.fetcher = fetcher;
         this.screenPositionalInfo = positionalInfo;
 
-        // TODO calculate size using positional info & make image renderer list based on that (default empty color)
-        this.imageRendererList = null;
+        // calculate size
+        Integer numberOfRenderersAndMaps = ScreenPositionUtil.calculateNumberOfMaps(positionalInfo);
+        if (numberOfRenderersAndMaps == null) {
+            this.imageRendererList = null;
+            return;
+        }
+
+        // loop through and create renderer list
+        this.imageRendererList = IntStream.range(0, numberOfRenderersAndMaps)
+                .mapToObj(i -> ImageRenderer.builder()
+                        .renderOnce(false)
+                        .image(ImageTools.createSingleColoredImage(Color.WHITE))
+                        .build())
+                .collect(Collectors.toList());
     }
 
     /**

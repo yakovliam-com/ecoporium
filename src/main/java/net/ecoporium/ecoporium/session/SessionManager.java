@@ -58,6 +58,16 @@ public abstract class SessionManager<T> {
     }
 
     /**
+     * Returns a session
+     *
+     * @param uuid uuid
+     * @return session
+     */
+    public T getSession(UUID uuid) {
+        return this.sessionMap.getOrDefault(uuid, null);
+    }
+
+    /**
      * Returns the session map
      *
      * @return session map

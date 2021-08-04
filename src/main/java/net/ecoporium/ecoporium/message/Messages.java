@@ -8,8 +8,19 @@ public class Messages {
             .addLine("&cOops! That symbol is not include in that market's whitelist.")
             .build();
 
-    public Message getEcoporiumCreateNotInSession = Message.builder()
+    public Message ecoporiumCreateNotInSession = Message.builder()
             .addLine("&cYou're not currently in a creation session.")
             .build();
 
+    public Message ecoporiumCreateSessionIncomplete = Message.builder()
+            .addLine("&cYour session is incomplete!")
+            .build();
+
+    public Message ecoporiumCreateSessionError = Message.builder()
+            .addLine("&cSomething went wrong...")
+            .build();
+
+    public Message ecoporiumCreateStaticSuccess = Message.builder()
+            .addLine("&7You created a screen with the live data from &f%symbol%&7.")
+            .build();
 }
