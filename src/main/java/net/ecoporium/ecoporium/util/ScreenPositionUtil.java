@@ -1,5 +1,6 @@
 package net.ecoporium.ecoporium.util;
 
+import net.ecoporium.ecoporium.api.wrapper.Pair;
 import net.ecoporium.ecoporium.ticker.info.ScreenInfo;
 import org.bukkit.Location;
 import org.bukkit.Rotation;
@@ -22,6 +23,22 @@ public class ScreenPositionUtil {
         int heightMaps = heightPixels / 128;
 
         return widthMaps * heightMaps;
+    }
+
+    /**
+     * Get width / height in maps from pixels
+     *
+     * @param widthHeightPixels width height pixels
+     * @return map number
+     */
+    public static Pair<Integer, Integer> getWidthHeightMapNumberFromPixelsS(Pair<Integer, Integer> widthHeightPixels) {
+        int widthPixels = widthHeightPixels.getLeft();
+        int heightPixels = widthHeightPixels.getRight();
+
+        int widthMaps = widthPixels / 128;
+        int heightMaps = heightPixels / 128;
+
+        return new Pair<>(widthMaps, heightMaps);
     }
 
     /**

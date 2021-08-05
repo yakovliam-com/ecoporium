@@ -27,7 +27,7 @@ public class PlacementListener implements Listener {
     }
 
     @EventHandler
-    public void onPLayerInteract(PlayerInteractEvent event) {
+    public void onPlayerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
 
         if (!plugin.getPlacementHandler().isWaitingToPlace(player.getUniqueId())) {
@@ -36,6 +36,7 @@ public class PlacementListener implements Listener {
 
         if (event.getAction() == Action.RIGHT_CLICK_AIR) {
             plugin.getMessages().ecoporiumPlacementCanceled.message(player);
+            plugin.getPlacementHandler().remove(player.getUniqueId());
             return;
         }
 

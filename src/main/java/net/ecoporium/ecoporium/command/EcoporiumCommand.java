@@ -1,5 +1,6 @@
 package net.ecoporium.ecoporium.command;
 
+import co.aikar.commands.BaseCommand;
 import co.aikar.commands.BukkitCommandCompletionContext;
 import co.aikar.commands.CommandCompletions;
 import co.aikar.commands.CommandHelp;
@@ -14,7 +15,6 @@ import net.ecoporium.ecoporium.EcoporiumPlugin;
 import net.ecoporium.ecoporium.api.message.Message;
 import net.ecoporium.ecoporium.model.market.Market;
 import net.ecoporium.ecoporium.placement.PlacementData;
-import net.ecoporium.ecoporium.ticker.StaticTickerScreen;
 import net.ecoporium.ecoporium.ticker.info.ScreenInfo;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -35,9 +35,10 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
         super(manager, plugin);
     }
 
+    @CommandAlias("ecoporium")
     @Subcommand("create")
     @CommandPermission("ecoporium.command.create")
-    public class CreateCommand {
+    public class CreateCommand extends BaseCommand {
 
         @Subcommand("static")
         @CommandPermission("ecoporium.command.create.screen.static")
@@ -49,7 +50,7 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
             }
 
             // add to waiting list
-            plugin.getPlacementHandler().add(player.getUniqueId(), new PlacementData(new ScreenInfo(400, 300), market, symbol));
+            plugin.getPlacementHandler().add(player.getUniqueId(), new PlacementData(new ScreenInfo(100, 100), market, symbol));
 
             plugin.getMessages().ecoporiumCreateStaticWaiting.message(player, "%symbol%", symbol);
         }

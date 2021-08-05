@@ -7,6 +7,7 @@ import net.ecoporium.ecoporium.config.EcoporiumConfig;
 import net.ecoporium.ecoporium.market.MarketCache;
 import net.ecoporium.ecoporium.message.Messages;
 import net.ecoporium.ecoporium.placement.PlacementHandler;
+import net.ecoporium.ecoporium.placement.PlacementListener;
 import net.ecoporium.ecoporium.storage.Storage;
 import net.ecoporium.ecoporium.storage.implementation.json.JsonStorageImplementation;
 import net.ecoporium.ecoporium.task.MarketUpdater;
@@ -60,6 +61,8 @@ public class EcoporiumPlugin extends Plugin {
         this.messages = new Messages();
 
         this.placementHandler = new PlacementHandler(this);
+
+        new PlacementListener(this);
     }
 
     /**

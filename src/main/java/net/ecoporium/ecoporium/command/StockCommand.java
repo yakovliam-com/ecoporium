@@ -1,6 +1,9 @@
 package net.ecoporium.ecoporium.command;
 
+import co.aikar.commands.BukkitCommandCompletionContext;
+import co.aikar.commands.CommandCompletions;
 import co.aikar.commands.CommandHelp;
+import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.annotation.*;
 import net.ecoporium.ecoporium.EcoporiumPlugin;
 import net.ecoporium.ecoporium.api.message.Message;
@@ -9,7 +12,9 @@ import net.ecoporium.ecoporium.model.market.StockTicker;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-@CommandAlias("stock|ecoporium")
+import java.util.stream.Collectors;
+
+@CommandAlias("stock")
 public class StockCommand extends AbstractEcoporiumCommand {
 
     /**
@@ -64,9 +69,33 @@ public class StockCommand extends AbstractEcoporiumCommand {
 
     @Override
     protected void registerCompletions() {
+        CommandCompletions<BukkitCommandCompletionContext> commandCompletions = manager.getCommandCompletions();
+
+        commandCompletions.registerCompletion("market", c -> plugin.getMarketCache().getMap().values().stream()
+                .map(Market::getHandle)
+                .collect(Collectors.toList()));
     }
 
     @Override
     protected void registerContexts() {
+        manager.getCommandContexts().registerIssuerAwareContext(Market.class, c -> {
+            String firstArg = c.popFirstArg();
+
+            if (firstArg == null) {
+                return null;
+            }
+
+            Market market = plugin.getMarketCache().get(firstArg, null);
+
+            if (market == null) {
+                Message.builder()
+                        .addLine("&cOops! We couldn't find any information on the market called &f" + firstArg + "&c.")
+                        .build()
+                        .message(c.getSender());
+                throw new InvalidCommandArgument("Invalid market name provided");
+            }
+
+            return market;
+        });
     }
 }

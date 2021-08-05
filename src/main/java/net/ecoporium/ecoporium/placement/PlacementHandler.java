@@ -100,7 +100,8 @@ public class PlacementHandler {
         PlacementData data = get(player.getUniqueId());
 
         // 400x300
-        Pair<Integer, Integer> size = new Pair<>(data.getScreenInfo().getWidth(), data.getScreenInfo().getWidth());
+        Pair<Integer, Integer> screenSizePixels = new Pair<>(data.getScreenInfo().getWidth(), data.getScreenInfo().getHeight());
+        Pair<Integer, Integer> size = ScreenPositionUtil.getWidthHeightMapNumberFromPixelsS(screenSizePixels);
 
         BlockFace widthDirection = ScreenPositionUtil.calculateWidthDirection(player, blockFace);
         BlockFace heightDirection = ScreenPositionUtil.calculateHeightDirection(player, blockFace);
@@ -123,7 +124,7 @@ public class PlacementHandler {
         }
 
         // generate actual ticker screen
-        StaticTickerScreen tickerScreen = new StaticTickerScreen(plugin, UUID.randomUUID(), data.getSymbol(), new ScreenInfo(size.getLeft(), size.getRight()));
+        StaticTickerScreen tickerScreen = new StaticTickerScreen(plugin, UUID.randomUUID(), data.getSymbol(), new ScreenInfo(screenSizePixels.getLeft(), screenSizePixels.getRight()));
         Iterator<ImageRenderer> rendererIterator = tickerScreen.getImageRendererList().listIterator();
 
         // spawn item frame
