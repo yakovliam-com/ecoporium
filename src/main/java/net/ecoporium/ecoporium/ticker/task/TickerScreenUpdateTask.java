@@ -64,7 +64,9 @@ public class TickerScreenUpdateTask extends RepeatingTask {
 
         // get renderers and update the images
         this.screen.getImageRendererList().forEach(renderer -> {
-            renderer.setImage(bufferedImageIterator.next());
+            if (bufferedImageIterator.hasNext()) {
+                renderer.setImage(bufferedImageIterator.next());
+            }
         });
     }
 }

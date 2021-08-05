@@ -49,7 +49,7 @@ public abstract class TickerScreen {
         this.imageRendererList = IntStream.range(0, numberOfRenderersAndMaps)
                 .mapToObj(i -> ImageRenderer.builder()
                         .renderOnce(false)
-                        .image(ImageTools.createSingleColoredImage(Color.WHITE))
+                        .image(ImageTools.createSingleColoredImage(Color.PINK))
                         .build())
                 .collect(Collectors.toList());
     }

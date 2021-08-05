@@ -19,8 +19,8 @@ public class ScreenPositionUtil {
         int widthPixels = info.getWidth();
         int heightPixels = info.getHeight();
 
-        int widthMaps = widthPixels / 128;
-        int heightMaps = heightPixels / 128;
+        int widthMaps = (int) Math.round((double) widthPixels / 128);
+        int heightMaps = (int) Math.round((double) heightPixels / 128);
 
         return widthMaps * heightMaps;
     }
@@ -31,12 +31,12 @@ public class ScreenPositionUtil {
      * @param widthHeightPixels width height pixels
      * @return map number
      */
-    public static Pair<Integer, Integer> getWidthHeightMapNumberFromPixelsS(Pair<Integer, Integer> widthHeightPixels) {
+    public static Pair<Integer, Integer> getWidthHeightMapNumberFromPixels(Pair<Integer, Integer> widthHeightPixels) {
         int widthPixels = widthHeightPixels.getLeft();
         int heightPixels = widthHeightPixels.getRight();
 
-        int widthMaps = widthPixels / 128;
-        int heightMaps = heightPixels / 128;
+        int widthMaps = (int) Math.round((double) widthPixels / 128);
+        int heightMaps = (int) Math.round((double) heightPixels / 128);
 
         return new Pair<>(widthMaps, heightMaps);
     }
