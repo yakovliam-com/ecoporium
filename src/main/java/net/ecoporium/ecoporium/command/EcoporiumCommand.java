@@ -88,8 +88,6 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
 
         @Default
         public void onDelete(Player player, @Single TickerScreen tickerScreen) {
-            // cancel screen
-            tickerScreen.stop(plugin);
             // remove from storage
             plugin.getStorage().deleteTickerScreen(tickerScreen);
             // remove from manager

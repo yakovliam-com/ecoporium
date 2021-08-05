@@ -71,14 +71,6 @@ public abstract class TickerScreen {
     }
 
     /**
-     * Sets renderers to their default color
-     */
-    private void setRenderersToDefaultColor() {
-        this.imageRendererList.forEach(r -> r.setImage(ImageTools.createSingleColoredImage(Color.BLACK)));
-    }
-
-
-    /**
      * Fetches stock data
      */
     public abstract StockTicker fetch();
@@ -106,20 +98,12 @@ public abstract class TickerScreen {
 
     /**
      * Stops the screen from rendering and doing tasks
-     *
-     * @param plugin plugin
      */
-    public void stop(EcoporiumPlugin plugin) {
-        // make renderers blank
-        setRenderersToDefaultColor();
-
-        // run task later, 5 ticks
-        Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, () -> {
-            // cancel
-            this.cancel();
-            // stops the screen from rendering
-            this.imageRendererList.forEach(AbstractMapRenderer::stopRendering);
-        }, 5L);
+    public void stop() {
+        // cancel
+        this.cancel();
+        // stops the screen from rendering
+        this.imageRendererList.forEach(AbstractMapRenderer::stopRendering);
     }
 
     /**

@@ -69,7 +69,7 @@ public class TickerScreenManager implements Manager {
         TickerScreen screen = this.screenMap.get(id);
 
         // stop screen
-        screen.stop(plugin);
+        screen.stop();
 
         // remove
         this.screenMap.remove(id);
