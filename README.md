@@ -24,3 +24,6 @@ Using a real-world-market in a controlled environment can cause unforseen econom
 
 ## Supported Plugins
 To view a non-exhaustive list of compatible economy plugins of which one is required to successfully run this plugin, view the list on Vault's page [here](https://github.com/MilkBowl/Vault#supported-plugins). Typically most common economy plugins that have been created within the past few years will have used Vault to manage it, but check with each plugin specifically to verify that it is Vault-compatible.
+
+## Licensing
+This software utilizes [spigot-maps](https://github.com/JohnnyJayJay/spigot-maps) and [YahooFinance-API](https://github.com/sstrickx/yahoofinance-api).
