@@ -14,7 +14,7 @@ import co.aikar.commands.annotation.Subcommand;
 import net.ecoporium.ecoporium.EcoporiumPlugin;
 import net.ecoporium.ecoporium.api.message.Message;
 import net.ecoporium.ecoporium.api.wrapper.Pair;
-import net.ecoporium.ecoporium.model.market.Market;
+import net.ecoporium.ecoporium.market.Market;
 import net.ecoporium.ecoporium.screen.TickerScreen;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;

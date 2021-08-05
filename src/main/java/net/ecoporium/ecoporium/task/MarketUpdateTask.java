@@ -1,8 +1,7 @@
 package net.ecoporium.ecoporium.task;
 
 import net.ecoporium.ecoporium.EcoporiumPlugin;
-import net.ecoporium.ecoporium.model.market.Market;
-import net.ecoporium.ecoporium.model.task.RepeatingTask;
+import net.ecoporium.ecoporium.market.Market;
 
 public class MarketUpdateTask extends RepeatingTask {
 

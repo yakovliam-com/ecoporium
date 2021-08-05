@@ -2,7 +2,6 @@ package net.ecoporium.ecoporium.market;
 
 import net.ecoporium.ecoporium.EcoporiumPlugin;
 import net.ecoporium.ecoporium.model.cache.ManualCache;
-import net.ecoporium.ecoporium.model.market.Market;
 
 import java.util.HashMap;
 

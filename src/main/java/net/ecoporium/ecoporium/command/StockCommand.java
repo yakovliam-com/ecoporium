@@ -7,8 +7,8 @@ import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.annotation.*;
 import net.ecoporium.ecoporium.EcoporiumPlugin;
 import net.ecoporium.ecoporium.api.message.Message;
-import net.ecoporium.ecoporium.model.market.Market;
-import net.ecoporium.ecoporium.model.market.StockTicker;
+import net.ecoporium.ecoporium.market.Market;
+import net.ecoporium.ecoporium.market.StockTicker;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 

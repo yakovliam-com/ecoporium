@@ -1,7 +1,7 @@
 package net.ecoporium.ecoporium.screen;
 
 import net.ecoporium.ecoporium.EcoporiumPlugin;
-import net.ecoporium.ecoporium.model.market.StockTicker;
+import net.ecoporium.ecoporium.market.StockTicker;
 import net.ecoporium.ecoporium.screen.fetch.StockTickerFetcher;
 import net.ecoporium.ecoporium.screen.data.TickerScreenInfo;
 

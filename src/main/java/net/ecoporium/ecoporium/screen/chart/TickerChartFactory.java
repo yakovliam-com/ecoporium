@@ -1,7 +1,7 @@
 package net.ecoporium.ecoporium.screen.chart;
 
 import net.ecoporium.ecoporium.api.wrapper.Pair;
-import net.ecoporium.ecoporium.model.market.StockTicker;
+import net.ecoporium.ecoporium.market.StockTicker;
 import org.jfree.chart.ChartUtils;
 import org.jfree.chart.JFreeChart;
 import org.jfree.data.category.DefaultCategoryDataset;

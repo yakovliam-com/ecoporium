@@ -1,4 +1,4 @@
-package net.ecoporium.ecoporium.model.market;
+package net.ecoporium.ecoporium.market;
 
 import java.util.HashMap;
 import java.util.Map;

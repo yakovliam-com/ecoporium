@@ -1,11 +1,10 @@
 package net.ecoporium.ecoporium.screen;
 
-import com.github.johnnyjayjay.spigotmaps.RenderedMap;
 import com.github.johnnyjayjay.spigotmaps.rendering.AbstractMapRenderer;
 import com.github.johnnyjayjay.spigotmaps.rendering.ImageRenderer;
 import com.github.johnnyjayjay.spigotmaps.util.ImageTools;
 import net.ecoporium.ecoporium.EcoporiumPlugin;
-import net.ecoporium.ecoporium.model.market.StockTicker;
+import net.ecoporium.ecoporium.market.StockTicker;
 import net.ecoporium.ecoporium.screen.data.TickerScreenMapData;
 import net.ecoporium.ecoporium.screen.fetch.StockTickerFetcher;
 import net.ecoporium.ecoporium.screen.data.TickerScreenInfo;

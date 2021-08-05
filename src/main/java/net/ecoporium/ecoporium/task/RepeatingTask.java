@@ -1,4 +1,4 @@
-package net.ecoporium.ecoporium.model.task;
+package net.ecoporium.ecoporium.task;
 
 import net.ecoporium.ecoporium.EcoporiumPlugin;
 import org.bukkit.scheduler.BukkitScheduler;

@@ -1,4 +1,4 @@
-package net.ecoporium.ecoporium.model.market;
+package net.ecoporium.ecoporium.market;
 
 public class GenericMarket extends Market {
 

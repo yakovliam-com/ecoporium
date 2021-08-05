@@ -1,4 +1,4 @@
-package net.ecoporium.ecoporium.model.task;
+package net.ecoporium.ecoporium.task;
 
 public enum TaskState {
     RUNNING,

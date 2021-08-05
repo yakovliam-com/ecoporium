@@ -1,7 +1,7 @@
 package net.ecoporium.ecoporium.task;
 
 import net.ecoporium.ecoporium.EcoporiumPlugin;
-import net.ecoporium.ecoporium.model.market.Market;
+import net.ecoporium.ecoporium.market.Market;
 
 import java.util.HashMap;
 import java.util.Map;

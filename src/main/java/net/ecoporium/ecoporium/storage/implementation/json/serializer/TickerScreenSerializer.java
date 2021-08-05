@@ -1,7 +1,7 @@
 package net.ecoporium.ecoporium.storage.implementation.json.serializer;
 
 import net.ecoporium.ecoporium.EcoporiumPlugin;
-import net.ecoporium.ecoporium.model.market.Market;
+import net.ecoporium.ecoporium.market.Market;
 import net.ecoporium.ecoporium.screen.StaticTickerScreen;
 import net.ecoporium.ecoporium.screen.TickerScreen;
 import net.ecoporium.ecoporium.screen.data.TickerScreenInfo;

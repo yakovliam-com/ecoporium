@@ -1,4 +1,4 @@
-package net.ecoporium.ecoporium.model.market;
+package net.ecoporium.ecoporium.market;
 
 import net.ecoporium.ecoporium.quotes.HistQuotes2Request;
 import yahoofinance.Stock;
@@ -13,9 +13,15 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.TreeMap;
 import java.util.concurrent.CompletableFuture;
 
 public class StockTicker {
+
+    /**
+     * Maximum size before pop
+     */
+    private static final int MAX_HISTORY_SIZE_BEFORE_POP = 30;
 
     /**
      * The symbol for the current stock ticker
@@ -32,7 +38,7 @@ public class StockTicker {
      * <p>
      * Data here only exists into the past since the stock was first queried
      */
-    private final Map<Date, StockQuote> history;
+    private final TreeMap<Date, StockQuote> history;
 
     /**
      * Previous history, of past days
@@ -47,7 +53,7 @@ public class StockTicker {
     public StockTicker(String symbol) {
         this.symbol = symbol;
         this.stock = null;
-        this.history = new HashMap<>();
+        this.history = new TreeMap<>();
         this.previousHistory = new HashMap<>();
     }
 
@@ -172,6 +178,11 @@ public class StockTicker {
      */
     private void updateHistory(Stock recent) {
         this.history.put(Date.from(Instant.now()), recent.getQuote());
+
+        // if the size is over the predetermined max, then pop the first
+        if (this.history.size() > MAX_HISTORY_SIZE_BEFORE_POP) {
+            this.history.pollFirstEntry();
+        }
     }
 
     /**

@@ -4,7 +4,7 @@ import com.github.johnnyjayjay.spigotmaps.RenderedMap;
 import com.github.johnnyjayjay.spigotmaps.rendering.ImageRenderer;
 import net.ecoporium.ecoporium.EcoporiumPlugin;
 import net.ecoporium.ecoporium.api.wrapper.Pair;
-import net.ecoporium.ecoporium.model.market.Market;
+import net.ecoporium.ecoporium.market.Market;
 import net.ecoporium.ecoporium.screen.StaticTickerScreen;
 import net.ecoporium.ecoporium.screen.TickerScreen;
 import net.ecoporium.ecoporium.screen.data.TickerScreenInfo;

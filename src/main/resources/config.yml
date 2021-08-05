@@ -16,4 +16,4 @@ markets:
       - "FB"
       - "TSLA"
       - "AAPL"
-  all-markets: {}
+      - "GOOG"

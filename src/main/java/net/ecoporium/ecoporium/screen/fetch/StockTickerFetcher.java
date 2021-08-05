@@ -1,7 +1,7 @@
 package net.ecoporium.ecoporium.screen.fetch;
 
-import net.ecoporium.ecoporium.model.market.Market;
-import net.ecoporium.ecoporium.model.market.StockTicker;
+import net.ecoporium.ecoporium.market.Market;
+import net.ecoporium.ecoporium.market.StockTicker;
 
 public class StockTickerFetcher {
 

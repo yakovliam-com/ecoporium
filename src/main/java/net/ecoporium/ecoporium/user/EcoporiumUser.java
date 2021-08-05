@@ -1,4 +1,4 @@
-package net.ecoporium.ecoporium.model.user;
+package net.ecoporium.ecoporium.user;
 
 import java.util.UUID;
 

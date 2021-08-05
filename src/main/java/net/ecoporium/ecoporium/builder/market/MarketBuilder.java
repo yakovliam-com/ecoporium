@@ -3,9 +3,9 @@ package net.ecoporium.ecoporium.builder.market;
 import net.ecoporium.ecoporium.api.config.generic.adapter.ConfigurationAdapter;
 import net.ecoporium.ecoporium.api.wrapper.Pair;
 import net.ecoporium.ecoporium.builder.ConfigurationContextBuilder;
-import net.ecoporium.ecoporium.model.market.GenericMarket;
-import net.ecoporium.ecoporium.model.market.Market;
-import net.ecoporium.ecoporium.model.market.MarketWhitelistOptions;
+import net.ecoporium.ecoporium.market.GenericMarket;
+import net.ecoporium.ecoporium.market.Market;
+import net.ecoporium.ecoporium.market.MarketWhitelistOptions;
 
 /**
  * Builds a market

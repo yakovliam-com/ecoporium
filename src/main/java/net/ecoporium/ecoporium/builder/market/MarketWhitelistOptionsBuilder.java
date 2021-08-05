@@ -2,7 +2,7 @@ package net.ecoporium.ecoporium.builder.market;
 
 import net.ecoporium.ecoporium.api.config.generic.adapter.ConfigurationAdapter;
 import net.ecoporium.ecoporium.builder.ConfigurationContextBuilder;
-import net.ecoporium.ecoporium.model.market.MarketWhitelistOptions;
+import net.ecoporium.ecoporium.market.MarketWhitelistOptions;
 
 import java.util.List;
 
