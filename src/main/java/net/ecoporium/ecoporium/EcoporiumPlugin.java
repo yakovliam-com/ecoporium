@@ -4,10 +4,9 @@ import net.ecoporium.ecoporium.api.Plugin;
 import net.ecoporium.ecoporium.api.message.Message;
 import net.ecoporium.ecoporium.command.CommandManager;
 import net.ecoporium.ecoporium.config.EcoporiumConfig;
+import net.ecoporium.ecoporium.map.MapPlacementHandler;
 import net.ecoporium.ecoporium.market.MarketCache;
 import net.ecoporium.ecoporium.message.Messages;
-import net.ecoporium.ecoporium.placement.PlacementHandler;
-import net.ecoporium.ecoporium.placement.PlacementListener;
 import net.ecoporium.ecoporium.storage.Storage;
 import net.ecoporium.ecoporium.storage.implementation.json.JsonStorageImplementation;
 import net.ecoporium.ecoporium.task.MarketUpdater;
@@ -35,9 +34,9 @@ public class EcoporiumPlugin extends Plugin {
     private Messages messages;
 
     /**
-     * Placement handler
+     * Map placement handler
      */
-    private PlacementHandler placementHandler;
+    private MapPlacementHandler mapPlacementHandler;
 
     @Override
     public void onLoad() {
@@ -60,9 +59,7 @@ public class EcoporiumPlugin extends Plugin {
 
         this.messages = new Messages();
 
-        this.placementHandler = new PlacementHandler(this);
-
-        new PlacementListener(this);
+        this.mapPlacementHandler = new MapPlacementHandler(this);
     }
 
     /**
@@ -97,16 +94,17 @@ public class EcoporiumPlugin extends Plugin {
      *
      * @return messages
      */
+
     public Messages getMessages() {
         return messages;
     }
 
     /**
-     * Placement handler
+     * Returns map placement handler
      *
-     * @return handler
+     * @return map placement handler
      */
-    public PlacementHandler getPlacementHandler() {
-        return placementHandler;
+    public MapPlacementHandler getMapPlacementHandler() {
+        return mapPlacementHandler;
     }
 }

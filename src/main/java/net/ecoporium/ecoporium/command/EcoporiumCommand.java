@@ -13,9 +13,8 @@ import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
 import net.ecoporium.ecoporium.EcoporiumPlugin;
 import net.ecoporium.ecoporium.api.message.Message;
+import net.ecoporium.ecoporium.map.MapPlacementHandler;
 import net.ecoporium.ecoporium.model.market.Market;
-import net.ecoporium.ecoporium.placement.PlacementData;
-import net.ecoporium.ecoporium.ticker.info.ScreenInfo;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -49,8 +48,7 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
                 return;
             }
 
-            // add to waiting list
-            plugin.getPlacementHandler().add(player.getUniqueId(), new PlacementData(new ScreenInfo(100, 100), market, symbol));
+            plugin.getMapPlacementHandler().createScreen(player, market, symbol);
 
             plugin.getMessages().ecoporiumCreateStaticWaiting.message(player, "%symbol%", symbol);
         }
