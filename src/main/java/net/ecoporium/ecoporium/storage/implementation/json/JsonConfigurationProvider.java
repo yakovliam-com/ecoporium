@@ -1,8 +1,8 @@
 package net.ecoporium.ecoporium.storage.implementation.json;
 
 import net.ecoporium.ecoporium.EcoporiumPlugin;
-import net.ecoporium.ecoporium.storage.implementation.json.serializer.MapRendererSerializer;
-import net.ecoporium.ecoporium.storage.implementation.json.serializer.MapRendererWrapper;
+import net.ecoporium.ecoporium.screen.TickerScreen;
+import net.ecoporium.ecoporium.storage.implementation.json.serializer.TickerScreenSerializer;
 import org.spongepowered.configurate.BasicConfigurationNode;
 import org.spongepowered.configurate.gson.GsonConfigurationLoader;
 
@@ -38,7 +38,7 @@ public class JsonConfigurationProvider {
     public JsonConfigurationProvider(EcoporiumPlugin plugin) {
         this.plugin = plugin;
         this.loader = GsonConfigurationLoader.builder()
-                .defaultOptions(opts -> opts.serializers(build -> build.register(MapRendererWrapper.class, new MapRendererSerializer())))
+                .defaultOptions(opts -> opts.serializers(build -> build.register(TickerScreen.class, new TickerScreenSerializer(plugin))))
                 .path(resolve())
                 .build();
     }

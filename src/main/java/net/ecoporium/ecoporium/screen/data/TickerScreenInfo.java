@@ -1,6 +1,6 @@
-package net.ecoporium.ecoporium.ticker.info;
+package net.ecoporium.ecoporium.screen.data;
 
-public class ScreenInfo {
+public class TickerScreenInfo {
 
     /**
      * Width
@@ -18,7 +18,7 @@ public class ScreenInfo {
      * @param width  width
      * @param height height
      */
-    public ScreenInfo(int width, int height) {
+    public TickerScreenInfo(int width, int height) {
         this.width = width;
         this.height = height;
     }

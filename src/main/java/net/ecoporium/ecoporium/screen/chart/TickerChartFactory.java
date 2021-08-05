@@ -1,4 +1,4 @@
-package net.ecoporium.ecoporium.ticker.chart;
+package net.ecoporium.ecoporium.screen.chart;
 
 import net.ecoporium.ecoporium.api.wrapper.Pair;
 import net.ecoporium.ecoporium.model.market.StockTicker;
@@ -32,13 +32,11 @@ public class TickerChartFactory implements ChartFactory<Pair<StockTicker, ChartO
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
 
         // create data
-        quoteMap.forEach((date, quote) -> {
-            dataset.addValue(quote.getPrice(), "Stock Price", simpleDateFormat.format(date));
-        });
+        quoteMap.forEach((date, quote) -> dataset.addValue(quote.getPrice(), "Stock Price", simpleDateFormat.format(date)));
 
         // create jchart
         JFreeChart chart = org.jfree.chart.ChartFactory.createLineChart(ticker.getSymbol(), "Time", "Price", dataset);
-        chart.getCategoryPlot().getRangeAxis().setRange(getLowestQuote(quoteMap) * 0.98, getHighestQuote(quoteMap) * 1.02);
+        chart.getCategoryPlot().getRangeAxis().setRange(getLowestQuote(quoteMap) * 0.99, getHighestQuote(quoteMap) * 1.01);
 
         // create output
         int width = options.getWidth();    /* Width of the image */

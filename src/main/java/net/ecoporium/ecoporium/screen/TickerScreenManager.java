@@ -1,7 +1,10 @@
-package net.ecoporium.ecoporium.ticker;
+package net.ecoporium.ecoporium.screen;
 
+import net.ecoporium.ecoporium.EcoporiumPlugin;
 import net.ecoporium.ecoporium.model.manager.Manager;
+import net.ecoporium.ecoporium.screen.loader.TickerScreenLoader;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -14,14 +17,21 @@ public class TickerScreenManager implements Manager {
     private final Map<UUID, TickerScreen> screenMap;
 
     /**
+     * Ecoporium plugin
+     */
+    private final EcoporiumPlugin plugin;
+
+    /**
      * Ticker screen manager
      *
-     * @param screenMap screenMap
+     * @param plugin plugin
      */
-    public TickerScreenManager(Map<UUID, TickerScreen> screenMap) {
-        this.screenMap = screenMap;
+    public TickerScreenManager(EcoporiumPlugin plugin) {
+        this.plugin = plugin;
+        this.screenMap = new HashMap<>();
 
         // load from storage
+        new TickerScreenLoader(plugin, this).load();
     }
 
     /**
@@ -37,11 +47,32 @@ public class TickerScreenManager implements Manager {
     }
 
     /**
+     * Loads a screen into memory and starts rendering
+     *
+     * @param screen screen
+     */
+    public void loadScreen(TickerScreen screen) {
+        addScreen(screen.getId(), screen);
+        // initialize maps
+        screen.initializePreCalculatedMaps();
+        // start screen
+        screen.start(plugin);
+    }
+
+    /**
      * Removes a ticker screen
      *
      * @param id id
      */
     public void removeScreen(UUID id) {
+        // get screen
+        TickerScreen screen = this.screenMap.get(id);
+
+        // stop screen
+
+        screen.stopScreen();
+
+        // remove
         this.screenMap.remove(id);
     }
 

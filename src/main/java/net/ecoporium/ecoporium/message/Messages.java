@@ -18,6 +18,25 @@ public class Messages {
             .addLine("&7Right click on a block to create a ticker for &f%symbol%&7.")
             .build();
 
+    // cancel not in placement session
+    public Message ecoporiumCreateCancelNotInPlacementSession = Message.builder()
+            .addLine("&cYou're not in a placement session!")
+            .build();
+
+    // canceled
+    public Message ecoporiumCreateCanceled = Message.builder()
+            .addLine("&7Canceled.")
+            .build();
+
+    /**
+     * Delete
+     */
+
+    // deleted
+    public Message ecoporiumDeleteDeleted = Message.builder()
+            .addLine("&7Deleted.")
+            .build();
+
 
     /**
      * Placement

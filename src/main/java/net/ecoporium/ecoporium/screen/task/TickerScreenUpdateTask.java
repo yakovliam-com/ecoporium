@@ -1,13 +1,13 @@
-package net.ecoporium.ecoporium.ticker.task;
+package net.ecoporium.ecoporium.screen.task;
 
 import com.github.johnnyjayjay.spigotmaps.util.ImageTools;
 import net.ecoporium.ecoporium.EcoporiumPlugin;
 import net.ecoporium.ecoporium.api.wrapper.Pair;
 import net.ecoporium.ecoporium.model.market.StockTicker;
 import net.ecoporium.ecoporium.model.task.RepeatingTask;
-import net.ecoporium.ecoporium.ticker.TickerScreen;
-import net.ecoporium.ecoporium.ticker.chart.ChartOptions;
-import net.ecoporium.ecoporium.ticker.chart.TickerChartFactory;
+import net.ecoporium.ecoporium.screen.TickerScreen;
+import net.ecoporium.ecoporium.screen.chart.ChartOptions;
+import net.ecoporium.ecoporium.screen.chart.TickerChartFactory;
 
 import java.awt.image.BufferedImage;
 import java.util.Iterator;
@@ -32,8 +32,9 @@ public class TickerScreenUpdateTask extends RepeatingTask {
      * @param screen screen
      */
     public TickerScreenUpdateTask(EcoporiumPlugin plugin, TickerScreen screen) {
-        // every 10 seconds
-        super(plugin, 200L, true);
+        // every 5 seconds
+        // this only updates with the data received- it does NOT fetch new data
+        super(plugin, 100L, true);
         this.screen = screen;
         this.tickerChartFactory = new TickerChartFactory();
     }

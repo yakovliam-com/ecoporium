@@ -2,14 +2,12 @@ package net.ecoporium.ecoporium.storage.implementation.json;
 
 import net.ecoporium.ecoporium.EcoporiumPlugin;
 import net.ecoporium.ecoporium.storage.StorageImplementation;
-import net.ecoporium.ecoporium.storage.implementation.json.serializer.MapRendererWrapper;
-import org.bukkit.map.MapRenderer;
+import net.ecoporium.ecoporium.screen.TickerScreen;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class JsonStorageImplementation implements StorageImplementation {
 
@@ -31,6 +29,9 @@ public class JsonStorageImplementation implements StorageImplementation {
     public JsonStorageImplementation(EcoporiumPlugin plugin) {
         this.plugin = plugin;
         this.jsonConfigurationProvider = new JsonConfigurationProvider(plugin);
+
+        // init
+        init();
     }
 
     /**
@@ -49,6 +50,50 @@ public class JsonStorageImplementation implements StorageImplementation {
     public void shutdown() {
         // save
         save();
+    }
+
+    @Override
+    public void saveTickerScreen(TickerScreen tickerScreen) {
+        try {
+            // add to list
+            List<TickerScreen> screenList = jsonConfigurationProvider.getRoot().getList(TickerScreen.class);
+            screenList.add(tickerScreen);
+
+            // save
+            jsonConfigurationProvider.getRoot().setList(TickerScreen.class, screenList);
+            save();
+        } catch (SerializationException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public List<TickerScreen> loadTickerScreens() {
+        try {
+            // return deserialized list
+            return jsonConfigurationProvider.getRoot().getList(TickerScreen.class);
+        } catch (SerializationException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    @Override
+    public void deleteTickerScreen(TickerScreen tickerScreen) {
+        try {
+            // add to list
+            List<TickerScreen> screenList = jsonConfigurationProvider.getRoot().getList(TickerScreen.class);
+
+            // get by id and remove
+            Objects.requireNonNull(screenList).removeIf(s -> s.getId().equals(tickerScreen.getId()));
+
+            // save
+            jsonConfigurationProvider.getRoot().setList(TickerScreen.class, screenList);
+            save();
+        } catch (SerializationException e) {
+            e.printStackTrace();
+        }
     }
 
     /**

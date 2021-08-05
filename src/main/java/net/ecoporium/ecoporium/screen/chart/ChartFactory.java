@@ -1,4 +1,4 @@
-package net.ecoporium.ecoporium.ticker.chart;
+package net.ecoporium.ecoporium.screen.chart;
 
 import java.awt.image.BufferedImage;
 

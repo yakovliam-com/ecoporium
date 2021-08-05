@@ -13,11 +13,15 @@ import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
 import net.ecoporium.ecoporium.EcoporiumPlugin;
 import net.ecoporium.ecoporium.api.message.Message;
-import net.ecoporium.ecoporium.map.MapPlacementHandler;
+import net.ecoporium.ecoporium.api.wrapper.Pair;
 import net.ecoporium.ecoporium.model.market.Market;
+import net.ecoporium.ecoporium.screen.TickerScreen;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
+import java.util.LinkedList;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @CommandAlias("ecoporium")
@@ -48,9 +52,46 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
                 return;
             }
 
+            // start screen creation
             plugin.getMapPlacementHandler().createScreen(player, market, symbol);
 
             plugin.getMessages().ecoporiumCreateStaticWaiting.message(player, "%symbol%", symbol);
+        }
+
+        @Subcommand("cancel")
+        @CommandPermission("ecoporium.command.create.screen.cancel")
+        public void onCancel(Player player) {
+            Pair<UUID, LinkedList<ItemStack>> queue = plugin.getMapPlacementHandler().getPlayerItemPlaceQueue().get(player.getUniqueId());
+
+            if (queue == null) {
+                plugin.getMessages().ecoporiumCreateCancelNotInPlacementSession.message(player);
+                return;
+            }
+
+            // remove from handler
+            plugin.getMapPlacementHandler().getPlayerItemPlaceQueue().remove(player.getUniqueId());
+            // remove from manager
+            plugin.getTickerScreenManager().removeScreen(queue.getLeft());
+
+            plugin.getMessages().ecoporiumCreateCanceled.message(player);
+        }
+    }
+
+    @CommandAlias("ecoporium")
+    @Subcommand("delete")
+    @CommandPermission("ecoporium.command.delete")
+    public class DeleteCommand extends BaseCommand {
+
+        @Default
+        public void onDelete(Player player, @Single TickerScreen tickerScreen) {
+            // cancel screen
+            tickerScreen.stopScreen();
+            // remove from storage
+            plugin.getStorage().deleteTickerScreen(tickerScreen);
+            // remove from manager
+            plugin.getTickerScreenManager().removeScreen(tickerScreen.getId());
+
+            plugin.getMessages().ecoporiumDeleteDeleted.message(player);
         }
     }
 
@@ -80,7 +121,7 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
             String firstArg = c.popFirstArg();
 
             if (firstArg == null) {
-                return null;
+                throw new InvalidCommandArgument("Invalid market name provided");
             }
 
             Market market = plugin.getMarketCache().get(firstArg, null);
@@ -94,6 +135,31 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
             }
 
             return market;
+        });
+
+        manager.getCommandContexts().registerIssuerAwareContext(TickerScreen.class, c -> {
+            String firstArg = c.popFirstArg();
+
+            if (firstArg == null) {
+                throw new InvalidCommandArgument("Invalid Screen UUID/ID provided");
+            }
+
+            // convert to uuid
+            UUID uuid;
+            try {
+                uuid = UUID.fromString(firstArg);
+            } catch (IllegalArgumentException exception) {
+                throw new InvalidCommandArgument("Invalid Screen UUID/ID provided");
+            }
+
+            // get ticker screen
+            TickerScreen screen = plugin.getTickerScreenManager().get(uuid);
+
+            if (screen == null) {
+                throw new InvalidCommandArgument("Unknown screen provided by the ID of " + uuid);
+            }
+
+            return screen;
         });
     }
 }

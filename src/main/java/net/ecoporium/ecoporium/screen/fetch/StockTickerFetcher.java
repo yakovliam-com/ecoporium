@@ -1,6 +1,5 @@
-package net.ecoporium.ecoporium.ticker.fetch;
+package net.ecoporium.ecoporium.screen.fetch;
 
-import net.ecoporium.ecoporium.EcoporiumPlugin;
 import net.ecoporium.ecoporium.model.market.Market;
 import net.ecoporium.ecoporium.model.market.StockTicker;
 
@@ -19,17 +18,11 @@ public class StockTickerFetcher {
     /**
      * Stock ticker fetcher
      *
-     * @param plugin plugin
      * @param symbol symbol
      */
-    public StockTickerFetcher(EcoporiumPlugin plugin, String symbol) {
+    public StockTickerFetcher(Market market, String symbol) {
         this.symbol = symbol;
-
-        // find market by symbol
-        market = plugin.getMarketCache().getMap().values().stream()
-                .filter(m -> m.getWhitelistOptions().getTickers().contains(symbol) || m.getWhitelistOptions().getTickers().size() <= 0)
-                .findFirst()
-                .orElse(null);
+        this.market = market;
     }
 
     /**
