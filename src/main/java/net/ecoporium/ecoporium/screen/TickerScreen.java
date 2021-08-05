@@ -50,7 +50,7 @@ public abstract class TickerScreen {
      *
      * @param id               id
      * @param fetcher          fetcher
-     * @param tickerScreenInfo tickerscreen info
+     * @param tickerScreenInfo ticker screen info
      */
     protected TickerScreen(UUID id, StockTickerFetcher fetcher, TickerScreenInfo tickerScreenInfo) {
         this.id = id;

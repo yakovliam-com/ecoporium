@@ -37,6 +37,10 @@ public class Messages {
             .addLine("&7Deleted.")
             .build();
 
+    // delete can't find
+    public Message ecoporiumDeleteCantFind = Message.builder()
+            .addLine("&cWe can't find the screen. Are you looking at one?")
+            .build();
 
     /**
      * Placement

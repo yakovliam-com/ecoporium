@@ -71,6 +71,13 @@ public class TickerScreenManager implements Manager {
         // stop screen
         screen.stop();
 
+        // check if static
+        if (screen instanceof StaticTickerScreen) {
+            // get market, remove cache for that specific stock
+            StaticTickerScreen staticTickerScreen = ((StaticTickerScreen) screen);
+            staticTickerScreen.getMarket().getTickerCache().remove(staticTickerScreen.getSymbol());
+        }
+
         // remove
         this.screenMap.remove(id);
     }
@@ -98,5 +105,18 @@ public class TickerScreenManager implements Manager {
      */
     public TickerScreen get(UUID id) {
         return this.screenMap.getOrDefault(id, null);
+    }
+
+    /**
+     * Find ticker screen by map id
+     *
+     * @param mapId map id
+     * @return ticker screen
+     */
+    public TickerScreen findByMapId(int mapId) {
+        return this.screenMap.values().stream()
+                .filter(m -> m.getTickerScreenMapData().getMapIds().contains(mapId))
+                .findFirst()
+                .orElse(null);
     }
 }
