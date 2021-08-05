@@ -129,11 +129,12 @@ public class MapPlacementHandler implements Listener {
 
         // if player item queue null or empty return
         Pair<UUID, LinkedList<ItemStack>> fullQueue = playerItemPlaceQueue.get(player.getUniqueId());
-        LinkedList<ItemStack> itemsQueue = fullQueue.getRight();
 
-        if (itemsQueue == null) {
+        if (fullQueue == null) {
             return;
         }
+
+        LinkedList<ItemStack> itemsQueue = fullQueue.getRight();
 
         if (itemsQueue.size() <= 0) {
             playerItemPlaceQueue.remove(player.getUniqueId());

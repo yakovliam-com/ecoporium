@@ -70,8 +70,12 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
 
             // remove from handler
             plugin.getMapPlacementHandler().getPlayerItemPlaceQueue().remove(player.getUniqueId());
+
+            TickerScreen tickerScreen = plugin.getTickerScreenManager().get(queue.getLeft());
             // remove from manager
-            plugin.getTickerScreenManager().removeScreen(queue.getLeft());
+            plugin.getTickerScreenManager().removeScreen(tickerScreen.getId());
+            // remove from storage
+            plugin.getStorage().deleteTickerScreen(tickerScreen);
 
             plugin.getMessages().ecoporiumCreateCanceled.message(player);
         }
@@ -85,7 +89,7 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
         @Default
         public void onDelete(Player player, @Single TickerScreen tickerScreen) {
             // cancel screen
-            tickerScreen.stopScreen();
+            tickerScreen.stop(plugin);
             // remove from storage
             plugin.getStorage().deleteTickerScreen(tickerScreen);
             // remove from manager

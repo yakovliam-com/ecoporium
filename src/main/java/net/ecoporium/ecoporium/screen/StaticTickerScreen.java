@@ -53,7 +53,9 @@ public class StaticTickerScreen extends TickerScreen {
 
     @Override
     public void cancel() {
-        this.tickerScreenUpdateTask.stop();
+        if (this.tickerScreenUpdateTask != null) {
+            this.tickerScreenUpdateTask.stop();
+        }
     }
 
     @Override
@@ -74,6 +76,7 @@ public class StaticTickerScreen extends TickerScreen {
 
     /**
      * Returns market
+     *
      * @return market
      */
     public Market getMarket() {

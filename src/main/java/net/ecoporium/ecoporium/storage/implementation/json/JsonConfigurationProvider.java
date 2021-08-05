@@ -13,7 +13,7 @@ import java.nio.file.Path;
 
 public class JsonConfigurationProvider {
 
-    private static final String PATH = "plots.json";
+    private static final String PATH = "screens.json";
 
     /**
      * Ecoporium plugin

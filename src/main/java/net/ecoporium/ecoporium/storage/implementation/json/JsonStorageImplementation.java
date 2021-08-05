@@ -4,10 +4,11 @@ import net.ecoporium.ecoporium.EcoporiumPlugin;
 import net.ecoporium.ecoporium.storage.StorageImplementation;
 import net.ecoporium.ecoporium.screen.TickerScreen;
 import org.spongepowered.configurate.ConfigurateException;
+import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 
+import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 public class JsonStorageImplementation implements StorageImplementation {
 
@@ -54,13 +55,15 @@ public class JsonStorageImplementation implements StorageImplementation {
 
     @Override
     public void saveTickerScreen(TickerScreen tickerScreen) {
+        ConfigurationNode screens = jsonConfigurationProvider.getRoot().node("screens");
+
         try {
             // add to list
-            List<TickerScreen> screenList = jsonConfigurationProvider.getRoot().getList(TickerScreen.class);
+            List<TickerScreen> screenList = screens.getList(TickerScreen.class);
             screenList.add(tickerScreen);
 
             // save
-            jsonConfigurationProvider.getRoot().setList(TickerScreen.class, screenList);
+            screens.setList(TickerScreen.class, screenList);
             save();
         } catch (SerializationException e) {
             e.printStackTrace();
@@ -69,9 +72,11 @@ public class JsonStorageImplementation implements StorageImplementation {
 
     @Override
     public List<TickerScreen> loadTickerScreens() {
+        ConfigurationNode screens = jsonConfigurationProvider.getRoot().node("screens");
+
         try {
             // return deserialized list
-            return jsonConfigurationProvider.getRoot().getList(TickerScreen.class);
+            return screens.getList(TickerScreen.class);
         } catch (SerializationException e) {
             e.printStackTrace();
         }
@@ -81,15 +86,18 @@ public class JsonStorageImplementation implements StorageImplementation {
 
     @Override
     public void deleteTickerScreen(TickerScreen tickerScreen) {
+        ConfigurationNode screens = jsonConfigurationProvider.getRoot().node("screens");
+
         try {
             // add to list
-            List<TickerScreen> screenList = jsonConfigurationProvider.getRoot().getList(TickerScreen.class);
+            List<TickerScreen> screenList = screens.getList(TickerScreen.class);
 
             // get by id and remove
-            Objects.requireNonNull(screenList).removeIf(s -> s.getId().equals(tickerScreen.getId()));
+            screenList.removeIf(s -> s.getId().equals(tickerScreen.getId()));
 
             // save
-            jsonConfigurationProvider.getRoot().setList(TickerScreen.class, screenList);
+            screens.setList(TickerScreen.class, screenList.size() <= 0 ?
+                    Collections.emptyList() : screenList);
             save();
         } catch (SerializationException e) {
             e.printStackTrace();
