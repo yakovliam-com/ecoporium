@@ -4,13 +4,11 @@ import net.ecoporium.ecoporium.api.Plugin;
 import net.ecoporium.ecoporium.api.message.Message;
 import net.ecoporium.ecoporium.command.CommandManager;
 import net.ecoporium.ecoporium.config.EcoporiumConfig;
-import net.ecoporium.ecoporium.map.MapPlacementHandler;
 import net.ecoporium.ecoporium.market.MarketCache;
 import net.ecoporium.ecoporium.message.Messages;
 import net.ecoporium.ecoporium.storage.Storage;
 import net.ecoporium.ecoporium.storage.implementation.json.JsonStorageImplementation;
 import net.ecoporium.ecoporium.task.MarketUpdater;
-import net.ecoporium.ecoporium.screen.TickerScreenManager;
 
 public class EcoporiumPlugin extends Plugin {
 
@@ -34,16 +32,6 @@ public class EcoporiumPlugin extends Plugin {
      */
     private Messages messages;
 
-    /**
-     * Map placement handler
-     */
-    private MapPlacementHandler mapPlacementHandler;
-
-    /**
-     * Ticker screen manager
-     */
-    private TickerScreenManager tickerScreenManager;
-
     @Override
     public void onLoad() {
     }
@@ -64,10 +52,6 @@ public class EcoporiumPlugin extends Plugin {
         new MarketUpdater(this);
 
         this.messages = new Messages();
-
-        this.mapPlacementHandler = new MapPlacementHandler(this);
-
-        this.tickerScreenManager = new TickerScreenManager(this);
     }
 
     /**
@@ -105,23 +89,5 @@ public class EcoporiumPlugin extends Plugin {
 
     public Messages getMessages() {
         return messages;
-    }
-
-    /**
-     * Returns map placement handler
-     *
-     * @return map placement handler
-     */
-    public MapPlacementHandler getMapPlacementHandler() {
-        return mapPlacementHandler;
-    }
-
-    /**
-     * Returns ticker screen manager
-     *
-     * @return ticker screen manager
-     */
-    public TickerScreenManager getTickerScreenManager() {
-        return tickerScreenManager;
     }
 }

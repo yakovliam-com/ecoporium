@@ -1,8 +1,6 @@
 package net.ecoporium.ecoporium.storage.implementation.json;
 
 import net.ecoporium.ecoporium.EcoporiumPlugin;
-import net.ecoporium.ecoporium.screen.TickerScreen;
-import net.ecoporium.ecoporium.storage.implementation.json.serializer.TickerScreenSerializer;
 import org.spongepowered.configurate.BasicConfigurationNode;
 import org.spongepowered.configurate.gson.GsonConfigurationLoader;
 
@@ -12,8 +10,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class JsonConfigurationProvider {
-
-    private static final String PATH = "screens.json";
 
     /**
      * Ecoporium plugin
@@ -35,21 +31,21 @@ public class JsonConfigurationProvider {
      *
      * @param plugin plugin
      */
-    public JsonConfigurationProvider(EcoporiumPlugin plugin) {
+    public JsonConfigurationProvider(EcoporiumPlugin plugin, String path) {
         this.plugin = plugin;
         this.loader = GsonConfigurationLoader.builder()
-                .defaultOptions(opts -> opts.serializers(build -> build.register(TickerScreen.class, new TickerScreenSerializer(plugin))))
-                .path(resolve())
+                .path(resolve(path))
                 .build();
     }
 
     /**
      * Resolves the path of the json storage file
      *
-     * @return path
+     * @param path path
+     * @return path path
      */
-    private Path resolve() {
-        Path configFile = plugin.getDataFolder().toPath().resolve(PATH);
+    private Path resolve(String path) {
+        Path configFile = plugin.getDataFolder().toPath().resolve(path);
 
         // if the config doesn't exist, create it based on the template in the resources dir
         if (!Files.exists(configFile)) {
@@ -58,7 +54,7 @@ public class JsonConfigurationProvider {
             } catch (IOException ignored) {
             }
 
-            try (InputStream is = getClass().getClassLoader().getResourceAsStream(PATH)) {
+            try (InputStream is = getClass().getClassLoader().getResourceAsStream(path)) {
                 Files.copy(is, configFile);
             } catch (IOException e) {
                 throw new RuntimeException(e);
