@@ -1,6 +1,10 @@
 package net.ecoporium.ecoporium.market;
 
-public class GenericMarket extends Market {
+import net.ecoporium.ecoporium.market.stock.RealStockTicker;
+
+import java.util.Map;
+
+public class GenericMarket extends Market<RealStockTicker> {
 
     /**
      * Market
@@ -8,7 +12,7 @@ public class GenericMarket extends Market {
      * @param handle           handle
      * @param whitelistOptions whitelist options
      */
-    public GenericMarket(String handle, MarketWhitelistOptions whitelistOptions) {
-        super(handle, whitelistOptions);
+    public GenericMarket(String handle, MarketWhitelistOptions whitelistOptions, Map<String, RealStockTicker> tickerCache) {
+        super(handle, whitelistOptions, MarketType.REAL, tickerCache);
     }
 }

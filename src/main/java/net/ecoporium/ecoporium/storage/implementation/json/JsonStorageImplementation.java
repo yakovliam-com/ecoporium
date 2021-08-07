@@ -1,8 +1,12 @@
 package net.ecoporium.ecoporium.storage.implementation.json;
 
 import net.ecoporium.ecoporium.EcoporiumPlugin;
+import net.ecoporium.ecoporium.market.Market;
 import net.ecoporium.ecoporium.storage.StorageImplementation;
+import net.ecoporium.ecoporium.user.EcoporiumUser;
 import org.spongepowered.configurate.ConfigurateException;
+
+import java.util.UUID;
 
 public class JsonStorageImplementation implements StorageImplementation {
 
@@ -12,9 +16,14 @@ public class JsonStorageImplementation implements StorageImplementation {
     private final EcoporiumPlugin plugin;
 
     /**
-     * Json file provider
+     * Markets provider
      */
-    private final JsonConfigurationProvider jsonConfigurationProvider;
+    private final JsonConfigurationProvider marketsProvider;
+
+    /**
+     * Users provider
+     */
+    private final JsonConfigurationProvider usersProvider;
 
     /**
      * Json storage implementation
@@ -23,7 +32,8 @@ public class JsonStorageImplementation implements StorageImplementation {
      */
     public JsonStorageImplementation(EcoporiumPlugin plugin) {
         this.plugin = plugin;
-        this.jsonConfigurationProvider = new JsonConfigurationProvider(plugin, "stocks.json");
+        this.marketsProvider = new JsonConfigurationProvider(plugin, "markets.json");
+        this.usersProvider = new JsonConfigurationProvider(plugin, "users.json");
 
         // init
         init();
@@ -34,8 +44,9 @@ public class JsonStorageImplementation implements StorageImplementation {
      */
     @Override
     public void init() {
-        // resolves the path which creates the file if it doesn't already exist
-        jsonConfigurationProvider.load();
+        // resolves the path which creates the files if they don't already exist
+        marketsProvider.load();
+        usersProvider.load();
     }
 
     /**
@@ -47,12 +58,31 @@ public class JsonStorageImplementation implements StorageImplementation {
         save();
     }
 
+    @Override
+    public void saveUser(EcoporiumUser user) {
+    }
+
+    @Override
+    public EcoporiumUser loadUser(UUID uuid) {
+        return null;
+    }
+
+    @Override
+    public void saveMarket(Market market) {
+    }
+
+    @Override
+    public Market loadMarket(String handle) {
+        return null;
+    }
+
     /**
      * Saves the file
      */
     private void save() {
         try {
-            jsonConfigurationProvider.getLoader().save(jsonConfigurationProvider.getRoot());
+            marketsProvider.getLoader().save(marketsProvider.getRoot());
+            usersProvider.getLoader().save(usersProvider.getRoot());
         } catch (ConfigurateException e) {
             e.printStackTrace();
         }

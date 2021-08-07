@@ -1,11 +1,13 @@
 package net.ecoporium.ecoporium.market;
 
+import com.github.benmanes.caffeine.cache.Caffeine;
 import net.ecoporium.ecoporium.EcoporiumPlugin;
+import net.ecoporium.ecoporium.model.cache.AsyncCache;
 import net.ecoporium.ecoporium.model.cache.ManualCache;
 
 import java.util.HashMap;
 
-public class MarketCache extends ManualCache<String, Market> {
+public class MarketCache extends AsyncCache<String, Market> {
 
     /**
      * Cache
@@ -13,9 +15,7 @@ public class MarketCache extends ManualCache<String, Market> {
      * @param plugin plugin
      */
     public MarketCache(EcoporiumPlugin plugin) {
-        super(new HashMap<>());
-
-        // load
-        new MarketCacheLoader(plugin, this).load();
+        super(Caffeine.newBuilder()
+                .buildAsync(handle -> plugin.getStorage().loadMarket(handle)));
     }
 }

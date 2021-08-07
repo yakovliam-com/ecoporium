@@ -9,6 +9,7 @@ import net.ecoporium.ecoporium.message.Messages;
 import net.ecoporium.ecoporium.storage.Storage;
 import net.ecoporium.ecoporium.storage.implementation.json.JsonStorageImplementation;
 import net.ecoporium.ecoporium.task.MarketUpdater;
+import net.ecoporium.ecoporium.user.UserCache;
 
 public class EcoporiumPlugin extends Plugin {
 
@@ -32,6 +33,11 @@ public class EcoporiumPlugin extends Plugin {
      */
     private Messages messages;
 
+    /**
+     * User cache
+     */
+    private UserCache userCache;
+
     @Override
     public void onLoad() {
     }
@@ -47,6 +53,8 @@ public class EcoporiumPlugin extends Plugin {
         this.marketCache = new MarketCache(this);
 
         this.storage = new Storage(new JsonStorageImplementation(this));
+
+        this.userCache = new UserCache(this);
 
         new CommandManager(this);
         new MarketUpdater(this);

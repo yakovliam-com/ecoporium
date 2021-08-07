@@ -1,6 +1,8 @@
 package net.ecoporium.ecoporium.storage.implementation.json;
 
 import net.ecoporium.ecoporium.EcoporiumPlugin;
+import net.ecoporium.ecoporium.storage.implementation.json.serializer.user.EcoporiumUserSerializer;
+import net.ecoporium.ecoporium.user.EcoporiumUser;
 import org.spongepowered.configurate.BasicConfigurationNode;
 import org.spongepowered.configurate.gson.GsonConfigurationLoader;
 
@@ -34,6 +36,7 @@ public class JsonConfigurationProvider {
     public JsonConfigurationProvider(EcoporiumPlugin plugin, String path) {
         this.plugin = plugin;
         this.loader = GsonConfigurationLoader.builder()
+                .defaultOptions(opts -> opts.serializers(build -> build.register(EcoporiumUser.class, EcoporiumUserSerializer.getInstance())))
                 .path(resolve(path))
                 .build();
     }

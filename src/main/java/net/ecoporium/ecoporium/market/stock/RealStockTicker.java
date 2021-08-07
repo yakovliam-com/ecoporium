@@ -1,4 +1,4 @@
-package net.ecoporium.ecoporium.market;
+package net.ecoporium.ecoporium.market.stock;
 
 import net.ecoporium.ecoporium.quotes.HistQuotes2Request;
 import yahoofinance.Stock;
@@ -9,6 +9,7 @@ import yahoofinance.quotes.stock.StockQuote;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,7 +17,7 @@ import java.util.Objects;
 import java.util.TreeMap;
 import java.util.concurrent.CompletableFuture;
 
-public class StockTicker {
+public class RealStockTicker extends StockTicker<Stock> {
 
     /**
      * Maximum size before pop
@@ -50,7 +51,8 @@ public class StockTicker {
      *
      * @param symbol symbol
      */
-    public StockTicker(String symbol) {
+    public RealStockTicker(String symbol) {
+        super(symbol, Collections.emptyList(), null, StockType.REAL);
         this.symbol = symbol;
         this.stock = null;
         this.history = new TreeMap<>();
@@ -58,12 +60,11 @@ public class StockTicker {
     }
 
     /**
-     * Returns the ticker symbol
-     *
-     * @return symbol
+     * Updates the stock's realtime data
      */
-    public String getSymbol() {
-        return symbol;
+    @Override
+    public void update() {
+        updateStockData(false);
     }
 
     /**
@@ -95,30 +96,6 @@ public class StockTicker {
      */
     public Map<Calendar, HistoricalQuote> getPreviousHistory() {
         return previousHistory;
-    }
-
-    /**
-     * Fetches all stock data
-     * <p>
-     * This should only be called once, and the rest of the times
-     * one of the methods below that update specific types of data should be called instead
-     *
-     * @return void completable future
-     */
-    public CompletableFuture<Void> fetchStockData() {
-        return CompletableFuture.supplyAsync(() -> {
-            updateStockData(true).join();
-            return null;
-        });
-    }
-
-    /**
-     * Updates only the live trend data
-     *
-     * @return void completable future
-     */
-    public CompletableFuture<Void> updateLiveTrendData() {
-        return updateStockData(false);
     }
 
     /**

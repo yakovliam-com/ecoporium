@@ -6,14 +6,3 @@
 # ███████  ██████  ██████  ██       ██████  ██   ██ ██  ██████  ██      ██
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # Visit https://ecoporium.net
-
-# A list of all markets
-markets:
-  nasdaq:
-    whitelist:
-      - "MSFT"
-      - "AMZN"
-      - "FB"
-      - "TSLA"
-      - "AAPL"
-      - "GOOG"

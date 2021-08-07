@@ -1,9 +1,10 @@
 package net.ecoporium.ecoporium.market;
 
-import java.util.HashMap;
+import net.ecoporium.ecoporium.market.stock.StockTicker;
+
 import java.util.Map;
 
-public abstract class Market {
+public abstract class Market<T extends StockTicker> {
 
     /**
      * The given name of the market
@@ -24,22 +25,37 @@ public abstract class Market {
     private final MarketWhitelistOptions whitelistOptions;
 
     /**
-     * The market's ticker cache
-     * <p>
-     * A cache (async) that contains all of the market's currently used tickers
+     * Market type
      */
-    private final Map<String, StockTicker> tickerCache;
+    private final MarketType marketType;
+
+    /**
+     *
+     */
+    private final Map<String, T> tickerCache;
 
     /**
      * Market
      *
      * @param handle           handle
      * @param whitelistOptions whitelist options
+     * @param marketType       type
+     * @param tickerCache      ticker cache
      */
-    protected Market(String handle, MarketWhitelistOptions whitelistOptions) {
+    protected Market(String handle, MarketWhitelistOptions whitelistOptions, MarketType marketType, Map<String, T> tickerCache) {
         this.handle = handle;
         this.whitelistOptions = whitelistOptions;
-        this.tickerCache = new HashMap<>();
+        this.marketType = marketType;
+        this.tickerCache = tickerCache;
+    }
+
+    /**
+     * Returns a ticker cache
+     *
+     * @return ticker cache
+     */
+    public Map<String, T> getTickerCache() {
+        return tickerCache;
     }
 
     /**
@@ -61,35 +77,11 @@ public abstract class Market {
     }
 
     /**
-     * Returns the ticker cache
+     * Returns the market type
      *
-     * @return cache
+     * @return type
      */
-    public Map<String, StockTicker> getTickerCache() {
-        return tickerCache;
-    }
-
-    /**
-     * Returns a ticker for a symbol
-     *
-     * @param symbol symbol
-     * @return ticker
-     */
-    public StockTicker getTicker(String symbol) {
-        // if that symbol is in the whitelist
-        if (whitelistOptions.getTickers().stream()
-                .noneMatch(s -> s.equalsIgnoreCase(symbol))) {
-            // not allowed, so return null
-            return null;
-        }
-
-        boolean contains = tickerCache.containsKey(symbol);
-        StockTicker ticker = tickerCache.getOrDefault(symbol, new StockTicker(symbol));
-
-        if (!contains) {
-            tickerCache.put(symbol, ticker);
-        }
-
-        return ticker;
+    public MarketType getMarketType() {
+        return marketType;
     }
 }
