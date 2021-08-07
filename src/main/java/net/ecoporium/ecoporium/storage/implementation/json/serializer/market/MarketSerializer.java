@@ -1,17 +1,13 @@
 package net.ecoporium.ecoporium.storage.implementation.json.serializer.market;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import net.ecoporium.ecoporium.market.FakeMarket;
-import net.ecoporium.ecoporium.market.GenericMarket;
+import net.ecoporium.ecoporium.market.RealMarket;
 import net.ecoporium.ecoporium.market.Market;
 import net.ecoporium.ecoporium.market.MarketType;
 import net.ecoporium.ecoporium.market.MarketWhitelistOptions;
-import net.ecoporium.ecoporium.market.stock.FakeStockProvider;
 import net.ecoporium.ecoporium.market.stock.FakeStockTicker;
 import net.ecoporium.ecoporium.market.stock.RealStockTicker;
 import net.ecoporium.ecoporium.market.stock.StockTicker;
-import net.ecoporium.ecoporium.storage.implementation.json.serializer.stock.StockTickerSerializer;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
@@ -85,7 +81,7 @@ public class MarketSerializer implements TypeSerializer<Market<?>> {
             Map<String, RealStockTicker> tickerCache = realStockTickers.stream()
                     .collect(Collectors.toMap(StockTicker::getSymbol, Function.identity()));
 
-            return new GenericMarket(handle, options, tickerCache);
+            return new RealMarket(handle, options, tickerCache);
         }
 
         return null;
