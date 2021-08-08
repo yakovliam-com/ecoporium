@@ -12,14 +12,15 @@ import co.aikar.commands.annotation.Subcommand;
 import net.ecoporium.ecoporium.EcoporiumPlugin;
 import net.ecoporium.ecoporium.api.message.Message;
 import net.ecoporium.ecoporium.market.FakeMarket;
-import net.ecoporium.ecoporium.market.MarketType;
 import net.ecoporium.ecoporium.market.RealMarket;
+import net.ecoporium.ecoporium.market.stock.StockTicker;
+import net.ecoporium.ecoporium.market.stock.StockType;
 import net.ecoporium.ecoporium.user.EcoporiumUser;
 import net.ecoporium.ecoporium.util.NumberUtil;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-@CommandAlias("stock")
+@CommandAlias("stock|s")
 @CommandPermission("ecoporium.command.stock")
 public class StockCommand extends AbstractEcoporiumCommand {
 
@@ -33,7 +34,7 @@ public class StockCommand extends AbstractEcoporiumCommand {
         super(manager, plugin);
     }
 
-    @Subcommand("buy")
+    @Subcommand("buy|b")
     @Description("Buys a stock from a particular market")
     public void onBuy(Player player, @Single String market, @Single String symbol, @Single Integer amountToBuy) {
         plugin.getMessages().retrievingMarket.message(player);
@@ -48,28 +49,20 @@ public class StockCommand extends AbstractEcoporiumCommand {
 
             float pricePerShare;
 
-            if (marketObj.getMarketType() == MarketType.FAKE) {
+            // does the stock exist?
+            if (!marketObj.containsStock(symbol)) {
+                plugin.getMessages().marketSymbolDoesntExist.message(player);
+                return;
+            }
+
+            StockTicker<?> stockTicker = marketObj.getStock(symbol);
+
+            if (stockTicker.getStockType() == StockType.FAKE) {
                 FakeMarket fakeMarket = (FakeMarket) marketObj;
-
-                // does the stock exist?
-                if (!fakeMarket.getTickerCache().containsKey(symbol)) {
-                    plugin.getMessages().marketSymbolDoesntExist.message(player);
-                    return;
-                }
-
                 pricePerShare = fakeMarket.getTickerCache().get(symbol).getPrice();
-
-            } else if (marketObj.getMarketType() == MarketType.REAL) {
+            } else if (stockTicker.getStockType() == StockType.REAL) {
                 RealMarket realMarket = (RealMarket) marketObj;
-
-                // does the stock exist?
-                if (!realMarket.getTickerCache().containsKey(symbol)) {
-                    plugin.getMessages().marketSymbolDoesntExist.message(player);
-                    return;
-                }
-
                 pricePerShare = realMarket.getTickerCache().get(symbol).getCurrentStockData().getQuote().getPrice().floatValue();
-
             } else {
                 plugin.getMessages().somethingWentWrong.message(player);
                 return;
@@ -103,7 +96,7 @@ public class StockCommand extends AbstractEcoporiumCommand {
         });
     }
 
-    @Subcommand("sell")
+    @Subcommand("sell|s")
     @Description("Sells a stock from a particular market")
     public void onSell(Player player, @Single String market, @Single String symbol, @Single Integer amountToSell) {
         plugin.getMessages().retrievingMarket.message(player);
@@ -118,28 +111,20 @@ public class StockCommand extends AbstractEcoporiumCommand {
 
             float pricePerShare;
 
-            if (marketObj.getMarketType() == MarketType.FAKE) {
+            // does the stock exist?
+            if (!marketObj.containsStock(symbol)) {
+                plugin.getMessages().marketSymbolDoesntExist.message(player);
+                return;
+            }
+
+            StockTicker<?> stockTicker = marketObj.getStock(symbol);
+
+            if (stockTicker.getStockType() == StockType.FAKE) {
                 FakeMarket fakeMarket = (FakeMarket) marketObj;
-
-                // does the stock exist?
-                if (!fakeMarket.getTickerCache().containsKey(symbol)) {
-                    plugin.getMessages().marketSymbolDoesntExist.message(player);
-                    return;
-                }
-
                 pricePerShare = fakeMarket.getTickerCache().get(symbol).getPrice();
-
-            } else if (marketObj.getMarketType() == MarketType.REAL) {
+            } else if (stockTicker.getStockType() == StockType.REAL) {
                 RealMarket realMarket = (RealMarket) marketObj;
-
-                // does the stock exist?
-                if (!realMarket.getTickerCache().containsKey(symbol)) {
-                    plugin.getMessages().marketSymbolDoesntExist.message(player);
-                    return;
-                }
-
                 pricePerShare = realMarket.getTickerCache().get(symbol).getCurrentStockData().getQuote().getPrice().floatValue();
-
             } else {
                 plugin.getMessages().somethingWentWrong.message(player);
                 return;
@@ -174,7 +159,7 @@ public class StockCommand extends AbstractEcoporiumCommand {
         });
     }
 
-    @Subcommand("portfolio")
+    @Subcommand("portfolio|p")
     @Description("Views your portfolio")
     public void onPorfolio(Player player) {
         // get user

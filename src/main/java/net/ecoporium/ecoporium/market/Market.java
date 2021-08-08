@@ -3,6 +3,7 @@ package net.ecoporium.ecoporium.market;
 import net.ecoporium.ecoporium.market.stock.StockTicker;
 
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public abstract class Market<T extends StockTicker<?>> {
 
@@ -29,9 +30,9 @@ public abstract class Market<T extends StockTicker<?>> {
     /**
      * Market
      *
-     * @param handle           handle
-     * @param marketType       type
-     * @param tickerCache      ticker cache
+     * @param handle      handle
+     * @param marketType  type
+     * @param tickerCache ticker cache
      */
     protected Market(String handle, MarketType marketType, Map<String, T> tickerCache) {
         this.handle = handle;
@@ -46,6 +47,32 @@ public abstract class Market<T extends StockTicker<?>> {
      */
     public Map<String, T> getTickerCache() {
         return tickerCache;
+    }
+
+    /**
+     * If the market contains a stock
+     *
+     * @param symbolOrAlias stock
+     * @return contains
+     */
+    public boolean containsStock(String symbolOrAlias) {
+        return tickerCache.values().stream()
+                .anyMatch(t -> t.getSymbol().equalsIgnoreCase(symbolOrAlias) || t.getAliases().stream()
+                        .anyMatch(a -> a.equalsIgnoreCase(symbolOrAlias)));
+    }
+
+    /**
+     * Returns a stock by symbol or alias
+     *
+     * @param symbolOrAlias symbol or alias
+     * @return symbol or alias
+     */
+    public T getStock(String symbolOrAlias) {
+        return tickerCache.values().stream()
+                .filter(t -> t.getSymbol().equalsIgnoreCase(symbolOrAlias) || t.getAliases().stream()
+                        .anyMatch(a -> a.equalsIgnoreCase(symbolOrAlias)))
+                .findFirst()
+                .orElse(null);
     }
 
     /**
