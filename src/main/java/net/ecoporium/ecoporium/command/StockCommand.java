@@ -182,7 +182,8 @@ public class StockCommand extends AbstractEcoporiumCommand {
 
         // portfolio header
         plugin.getMessages().stockPortfolioHeader.message(player);
-        Message.Builder builder = Message.builder();
+        Message.Builder builder = Message.builder()
+                .addLine("&7&m--------");
 
         user.getSharesOwnedTable().cellSet().forEach((cell) -> builder.addLine("&7- &f" + cell.getRowKey() + "&8|&f" + cell.getColumnKey() + "&7: &f" + cell.getValue()));
 
