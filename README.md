@@ -18,9 +18,8 @@ Using a real-world-market in a controlled environment can cause unforseen econom
     - Change Timezone
     - Enable/Disable Entirely
 - Configurable Buy/Sell Limits
-    - Total Amounts or Total Values
 - Command and Interface Trading
-- View Trend Graphs and Values In-Game
+- View Values In-Game, and Treng Graphs with an addon
 
 ## Supported Plugins
 To view a non-exhaustive list of compatible economy plugins of which one is required to successfully run this plugin, view the list on Vault's page [here](https://github.com/MilkBowl/Vault#supported-plugins). Typically most common economy plugins that have been created within the past few years will have used Vault to manage it, but check with each plugin specifically to verify that it is Vault-compatible.
