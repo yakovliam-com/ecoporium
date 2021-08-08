@@ -1,6 +1,14 @@
 package net.ecoporium.ecoporium.storage.implementation.json;
 
+import com.google.common.collect.Table;
+import io.leangen.geantyref.TypeToken;
 import net.ecoporium.ecoporium.EcoporiumPlugin;
+import net.ecoporium.ecoporium.api.wrapper.Pair;
+import net.ecoporium.ecoporium.market.Market;
+import net.ecoporium.ecoporium.market.stock.StockTicker;
+import net.ecoporium.ecoporium.storage.implementation.json.serializer.market.MarketSerializer;
+import net.ecoporium.ecoporium.storage.implementation.json.serializer.stock.StockTickerSerializer;
+import net.ecoporium.ecoporium.storage.implementation.json.serializer.table.TableSerializer;
 import net.ecoporium.ecoporium.storage.implementation.json.serializer.user.EcoporiumUserSerializer;
 import net.ecoporium.ecoporium.user.EcoporiumUser;
 import org.spongepowered.configurate.BasicConfigurationNode;
@@ -35,8 +43,21 @@ public class JsonConfigurationProvider {
      */
     public JsonConfigurationProvider(EcoporiumPlugin plugin, String path) {
         this.plugin = plugin;
+        // type
+        TypeToken<Market<?>> marketType = new io.leangen.geantyref.TypeToken<>() {
+        };
+        TypeToken<StockTicker<?>> stockTickerType = new io.leangen.geantyref.TypeToken<>() {
+        };
+        TypeToken<Table<String, String, Integer>> tableType= new TypeToken<>() {
+        };
+
         this.loader = GsonConfigurationLoader.builder()
-                .defaultOptions(opts -> opts.serializers(build -> build.register(EcoporiumUser.class, EcoporiumUserSerializer.getInstance())))
+                .defaultOptions(opts -> opts.serializers(build -> {
+                    build.register(EcoporiumUser.class, EcoporiumUserSerializer.getInstance());
+                    build.register(stockTickerType, StockTickerSerializer.getInstance());
+                    build.register(marketType, MarketSerializer.getInstance());
+                    build.register(tableType, TableSerializer.getInstance());
+                }))
                 .path(resolve(path))
                 .build();
     }

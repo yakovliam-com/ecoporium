@@ -16,6 +16,24 @@ import java.util.List;
 public class StockTickerSerializer implements TypeSerializer<StockTicker> {
 
     /**
+     * Instance
+     */
+    private static StockTickerSerializer instance;
+
+    /**
+     * Returns instance
+     *
+     * @return instance
+     */
+    public static StockTickerSerializer getInstance() {
+        if (instance == null) {
+            instance = new StockTickerSerializer();
+        }
+
+        return instance;
+    }
+
+    /**
      * Deserialize an object (of the correct type) from the given configuration
      * node.
      *

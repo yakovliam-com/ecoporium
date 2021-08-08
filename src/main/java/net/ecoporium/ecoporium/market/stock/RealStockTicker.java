@@ -73,6 +73,10 @@ public class RealStockTicker extends StockTicker<Stock> {
      * @return stock
      */
     public Stock getCurrentStockData() {
+        if (stock == null) {
+            // fetch first, since it's null (meaning it was JUST initialized)
+            updateStockData(true).join();
+        }
         return stock;
     }
 

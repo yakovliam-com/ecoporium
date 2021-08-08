@@ -23,6 +23,7 @@ public class FakeStockTicker extends StockTicker<FakeStockProvider> {
     public FakeStockTicker(String symbol, List<String> aliases, FakeStockProvider fakeStockProvider) {
         super(symbol, aliases, fakeStockProvider, StockType.FAKE);
         this.fakeStockProvider = fakeStockProvider;
+        this.price = fakeStockProvider.calculateOpeningPrice();
     }
 
     /**
@@ -39,7 +40,7 @@ public class FakeStockTicker extends StockTicker<FakeStockProvider> {
      */
     @Override
     public void update() {
-        this.fakeStockProvider.calculatePrice(getPrice());
+        this.price = this.fakeStockProvider.calculatePrice(getPrice());
     }
 
     /**

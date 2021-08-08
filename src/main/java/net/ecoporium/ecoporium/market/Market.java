@@ -4,7 +4,7 @@ import net.ecoporium.ecoporium.market.stock.StockTicker;
 
 import java.util.Map;
 
-public abstract class Market<T extends StockTicker> {
+public abstract class Market<T extends StockTicker<?>> {
 
     /**
      * The given name of the market
@@ -15,14 +15,6 @@ public abstract class Market<T extends StockTicker> {
      * The associated value is up to the server owner
      */
     private final String handle;
-
-    /**
-     * The market's whitelisted ticker options
-     * <p>
-     * If this is {@code null}, then all stock ticker symbols are allowed
-     * If it is NOT {@code null}, then only the given ticker symbols will be allowed to be traded
-     */
-    private final MarketWhitelistOptions whitelistOptions;
 
     /**
      * Market type
@@ -38,13 +30,11 @@ public abstract class Market<T extends StockTicker> {
      * Market
      *
      * @param handle           handle
-     * @param whitelistOptions whitelist options
      * @param marketType       type
      * @param tickerCache      ticker cache
      */
-    protected Market(String handle, MarketWhitelistOptions whitelistOptions, MarketType marketType, Map<String, T> tickerCache) {
+    protected Market(String handle, MarketType marketType, Map<String, T> tickerCache) {
         this.handle = handle;
-        this.whitelistOptions = whitelistOptions;
         this.marketType = marketType;
         this.tickerCache = tickerCache;
     }
@@ -65,15 +55,6 @@ public abstract class Market<T extends StockTicker> {
      */
     public String getHandle() {
         return handle;
-    }
-
-    /**
-     * Returns the whitelist options
-     *
-     * @return whitelist options
-     */
-    public MarketWhitelistOptions getWhitelistOptions() {
-        return whitelistOptions;
     }
 
     /**

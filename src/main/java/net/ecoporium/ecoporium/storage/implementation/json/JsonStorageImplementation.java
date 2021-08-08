@@ -1,11 +1,18 @@
 package net.ecoporium.ecoporium.storage.implementation.json;
 
+import com.google.common.collect.HashBasedTable;
+import io.leangen.geantyref.TypeToken;
 import net.ecoporium.ecoporium.EcoporiumPlugin;
 import net.ecoporium.ecoporium.market.Market;
+import net.ecoporium.ecoporium.market.stock.StockTicker;
 import net.ecoporium.ecoporium.storage.StorageImplementation;
 import net.ecoporium.ecoporium.user.EcoporiumUser;
 import org.spongepowered.configurate.ConfigurateException;
+import org.spongepowered.configurate.ConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 public class JsonStorageImplementation implements StorageImplementation {
@@ -24,6 +31,12 @@ public class JsonStorageImplementation implements StorageImplementation {
      * Users provider
      */
     private final JsonConfigurationProvider usersProvider;
+
+    /**
+     * Market type
+     */
+    private final TypeToken<Market<?>> marketType = new io.leangen.geantyref.TypeToken<>() {
+    };
 
     /**
      * Json storage implementation
@@ -60,19 +73,106 @@ public class JsonStorageImplementation implements StorageImplementation {
 
     @Override
     public void saveUser(EcoporiumUser user) {
+        ConfigurationNode node = usersProvider.getRoot().node("users");
+        // get users list
+        try {
+            List<EcoporiumUser> userList = node.getList(EcoporiumUser.class);
+
+            // remove if exists
+            userList.removeIf(u -> u.getUuid().equals(user.getUuid()));
+            // add to list
+            userList.add(user);
+            // save to node
+            node.setList(EcoporiumUser.class, userList);
+
+            // save
+            save();
+        } catch (SerializationException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public EcoporiumUser loadUser(UUID uuid) {
+        ConfigurationNode node = usersProvider.getRoot().node("users");
+        // get users list
+        try {
+            List<EcoporiumUser> userList = node.getList(EcoporiumUser.class);
+            EcoporiumUser ecoporiumUser = userList.stream()
+                    .filter(u -> u.getUuid().equals(uuid))
+                    .findFirst()
+                    .orElse(null);
+
+            // if null, create
+            if (ecoporiumUser == null) {
+                ecoporiumUser = new EcoporiumUser(uuid, HashBasedTable.create());
+
+                // save
+                saveUser(ecoporiumUser);
+            }
+
+            // return
+            return ecoporiumUser;
+        } catch (SerializationException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
     @Override
-    public void saveMarket(Market market) {
+    public void saveMarket(Market<?> market) {
+        ConfigurationNode node = marketsProvider.getRoot().node("markets");
+        // get markets list
+        try {
+            List<Market<?>> marketList = node.getList(marketType);
+
+            // remove if exists
+            marketList.removeIf(m -> m.getHandle().equals(market.getHandle()));
+            // add to list
+            marketList.add(market);
+            // save to node
+            node.setList(marketType, marketList);
+
+            // save
+            save();
+        } catch (SerializationException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
-    public Market loadMarket(String handle) {
+    public void deleteMarket(Market<?> market) {
+        ConfigurationNode node = marketsProvider.getRoot().node("markets");
+        // get markets list
+        try {
+            List<Market<?>> marketList = node.getList(marketType);
+
+            // remove if exists
+            marketList.removeIf(m -> m.getHandle().equals(market.getHandle()));
+            // save to node
+            node.setList(marketType, marketList);
+
+            // save
+            save();
+        } catch (SerializationException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public Market<?> loadMarket(String handle) {
+        ConfigurationNode node = marketsProvider.getRoot().node("markets");
+        // get markets list
+        try {
+            List<Market<?>> marketList = node.getList(marketType);
+            return marketList.stream()
+                    .filter(m -> m.getHandle().equals(handle))
+                    .findFirst()
+                    .orElse(null);
+        } catch (SerializationException e) {
+            e.printStackTrace();
+        }
+
         return null;
     }
 

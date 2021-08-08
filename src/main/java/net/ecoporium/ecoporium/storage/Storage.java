@@ -1,10 +1,12 @@
 package net.ecoporium.ecoporium.storage;
 
 
+import net.ecoporium.ecoporium.EcoporiumPlugin;
 import net.ecoporium.ecoporium.market.Market;
 import net.ecoporium.ecoporium.user.EcoporiumUser;
 
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public class Storage {
 
@@ -14,12 +16,19 @@ public class Storage {
     private final StorageImplementation storageImplementation;
 
     /**
+     * Ecoporium plugin
+     */
+    private final EcoporiumPlugin plugin;
+
+    /**
      * Storage
      *
      * @param storageImplementation storage implementation
+     * @param plugin                plugin
      */
-    public Storage(StorageImplementation storageImplementation) {
+    public Storage(StorageImplementation storageImplementation, EcoporiumPlugin plugin) {
         this.storageImplementation = storageImplementation;
+        this.plugin = plugin;
     }
 
     /**
@@ -37,7 +46,7 @@ public class Storage {
      * @param user user
      */
     public void saveUser(EcoporiumUser user) {
-        throw new RuntimeException("Not implemented");
+        CompletableFuture.runAsync(() -> this.storageImplementation.saveUser(user));
     }
 
     /**
@@ -46,7 +55,7 @@ public class Storage {
      * @param uuid user
      */
     public EcoporiumUser loadUser(UUID uuid) {
-        throw new RuntimeException("Not implemented");
+        return this.storageImplementation.loadUser(uuid);
     }
 
     /**
@@ -54,8 +63,17 @@ public class Storage {
      *
      * @param market market
      */
-    public void saveMarket(Market market) {
-        throw new RuntimeException("Not implemented");
+    public void saveMarket(Market<?> market) {
+        CompletableFuture.runAsync(() -> this.storageImplementation.saveMarket(market));
+    }
+
+    /**
+     * Deletes a market
+     *
+     * @param market market
+     */
+    public void deleteMarket(Market<?> market) {
+        CompletableFuture.runAsync(() -> this.storageImplementation.deleteMarket(market));
     }
 
     /**
@@ -64,7 +82,7 @@ public class Storage {
      * @param handle handle
      * @return market
      */
-    public Market loadMarket(String handle) {
-        throw new RuntimeException("Not implemented");
+    public Market<?> loadMarket(String handle) {
+        return this.storageImplementation.loadMarket(handle);
     }
 }

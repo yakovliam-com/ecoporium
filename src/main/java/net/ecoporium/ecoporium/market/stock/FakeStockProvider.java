@@ -7,7 +7,7 @@ public class FakeStockProvider {
     /**
      * Previous closing price
      */
-    private final float previousClosingPrice;
+    private final Float previousClosingPrice;
 
     /**
      * Fake stock provider
@@ -16,6 +16,30 @@ public class FakeStockProvider {
      */
     public FakeStockProvider(float previousClosingPrice) {
         this.previousClosingPrice = previousClosingPrice;
+    }
+
+    /**
+     * Fake stock provider
+     */
+    public FakeStockProvider() {
+        // generate ipo
+        this.previousClosingPrice = generateRandomFloat(20f, 1000f);
+    }
+
+    /**
+     * Generates a random float
+     *
+     * @param min min
+     * @param max max
+     * @return float
+     */
+    private float generateRandomFloat(float min, float max) {
+        if (min >= max)
+            throw new IllegalArgumentException("max must be greater than min");
+        float result = ThreadLocalRandom.current().nextFloat() * (max - min) + min;
+        if (result >= max) // correct for rounding
+            result = Float.intBitsToFloat(Float.floatToIntBits(max) - 1);
+        return result;
     }
 
     /**

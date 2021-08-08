@@ -8,24 +8,29 @@ import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.HelpCommand;
+import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Single;
-import co.aikar.commands.annotation.Split;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import net.ecoporium.ecoporium.EcoporiumPlugin;
 import net.ecoporium.ecoporium.api.message.Message;
+import net.ecoporium.ecoporium.api.wrapper.Pair;
 import net.ecoporium.ecoporium.market.FakeMarket;
 import net.ecoporium.ecoporium.market.Market;
 import net.ecoporium.ecoporium.market.MarketCache;
 import net.ecoporium.ecoporium.market.MarketType;
-import net.ecoporium.ecoporium.market.MarketWhitelistOptions;
 import net.ecoporium.ecoporium.market.RealMarket;
+import net.ecoporium.ecoporium.market.factory.FakeMarketFactory;
+import net.ecoporium.ecoporium.market.factory.RealMarketFactory;
+import net.ecoporium.ecoporium.market.stock.FakeStockTicker;
+import net.ecoporium.ecoporium.market.stock.RealStockTicker;
+import net.ecoporium.ecoporium.market.stock.factory.FakeStockTickerFactory;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.concurrent.CompletableFuture;
+import java.util.ArrayList;
+import java.util.List;
 
 @CommandAlias("ecoporium")
 @CommandPermission("ecoporium.command.ecoporium")
@@ -46,11 +51,12 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
     public class MarketCommand extends BaseCommand {
 
         @Subcommand("create")
-        public void onMarketCreate(Player player, @Single String handle, @Syntax("<market type> - FAKE|REAL") @Single MarketType marketType) {
+        @CommandPermission("ecoporium.command.ecoporium.market.create")
+        public void onMarketCreate(Player player, @Single String handle, @Syntax("<market type>") @Single MarketType marketType) {
             MarketCache marketCache = plugin.getMarketCache();
 
             // does market already exist?
-            Market marketPresent = marketCache.getCache().synchronous().getIfPresent(handle);
+            Market<?> marketPresent = marketCache.getCache().synchronous().getIfPresent(handle);
 
             if (marketPresent != null) {
                 // exists already
@@ -58,34 +64,178 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
                 return;
             }
 
-            Market market = null;
+            Market<?> market;
 
             // create new market
             if (marketType == MarketType.FAKE) {
-                market = new FakeMarket(handle, new MarketWhitelistOptions(Collections.emptyList()), new HashMap<>());
+                market = new FakeMarketFactory().build(handle);
             } else if (marketType == MarketType.REAL) {
-                market = new RealMarket(handle, new MarketWhitelistOptions(Collections.emptyList()), new HashMap<>());
+                market = new RealMarketFactory().build(handle);
             } else {
                 // something went wrong
                 plugin.getMessages().somethingWentWrong.message(player);
                 return;
             }
 
-            // save market in storage, load into cache
-            plugin.getStorage().saveMarket(market);
-            plugin.getMarketCache().getCache().get(market.getHandle());
+            // created message
+            plugin.getMessages().marketCreated.message(player);
+
+            // save market in storage, load into cache (async)
+            Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+                plugin.getStorage().saveMarket(market);
+                plugin.getMarketCache().getCache().get(market.getHandle());
+            });
         }
 
         @Subcommand("delete")
-        public void onMarketDelete(Player player, @Single String handle) {
+        @CommandPermission("ecoporium.command.ecoporium.market.delete")
+        public void onMarketDelete(Player player, @Single String market) {
+            plugin.getMessages().retrievingMarket.message(player);
+
+            // does market already exist?
+            plugin.getMarketCache().getCache().get(market).thenAccept(marketObj -> {
+                // if doesn't exist
+                if (marketObj == null) {
+                    plugin.getMessages().marketNonexistent.message(player);
+                    return;
+                }
+
+                // delete
+                plugin.getStorage().deleteMarket(marketObj);
+                // invalidate from cache
+                plugin.getMarketCache().getCache().synchronous().invalidate(marketObj.getHandle());
+
+                plugin.getMessages().marketDeleted.message(player);
+            });
         }
 
-        @Subcommand("addstocks")
-        public void onMarketAddStocks(Player player, @Single String handle, @Split(" ") String... symbols) {
+        @Subcommand("addstock")
+        @CommandPermission("ecoporium.command.ecoporium.market.addstock")
+        public void onMarketAddStock(Player player, @Single String market, @Single String symbol, @Optional String alias) {
+            plugin.getMessages().retrievingMarket.message(player);
+
+            // does market already exist?
+            plugin.getMarketCache().getCache().get(market).thenAccept(marketObj -> {
+                // if doesn't exist
+                if (marketObj == null) {
+                    plugin.getMessages().marketNonexistent.message(player);
+                    return;
+                }
+
+                // if fake
+                if (marketObj.getMarketType() == MarketType.FAKE) {
+                    FakeMarket fakeMarket = (FakeMarket) marketObj;
+                    // if ticker already exists
+                    if (fakeMarket.getTickerCache().containsKey(symbol)) {
+                        plugin.getMessages().marketSymbolAlreadyExists.message(player);
+                        return;
+                    }
+
+                    // create new ticker
+                    FakeStockTicker fakeStockTicker = new FakeStockTickerFactory().build(new Pair<>(symbol, alias));
+
+                    // add to ticker cache
+                    fakeMarket.getTickerCache().put(fakeStockTicker.getSymbol(), fakeStockTicker);
+                } else if (marketObj.getMarketType() == MarketType.REAL) {
+                    RealMarket realMarket = (RealMarket) marketObj;
+                    // if ticker already exists
+                    if (realMarket.getTickerCache().containsKey(symbol)) {
+                        plugin.getMessages().marketSymbolAlreadyExists.message(player);
+                        return;
+                    }
+
+                    // create new ticker
+                    RealStockTicker realStockTicker = new RealStockTicker(symbol);
+
+                    // add to ticker cache
+                    realMarket.getTickerCache().put(realStockTicker.getSymbol(), realStockTicker);
+                } else {
+                    plugin.getMessages().somethingWentWrong.message(player);
+                    return;
+                }
+
+                // save market
+                plugin.getStorage().saveMarket(marketObj);
+                plugin.getMessages().stockAdded.message(player);
+            });
         }
 
-        @Subcommand("removestocks")
-        public void onMarketRemoveStocks(Player player, @Single String handle, @Split(" ") String... symbols) {
+        @Subcommand("removestock")
+        @CommandPermission("ecoporium.command.ecoporium.market.removestock")
+        public void onMarketRemoveStock(Player player, @Single String market, @Single String symbol) {
+            plugin.getMessages().retrievingMarket.message(player);
+
+            // does market already exist?
+            plugin.getMarketCache().getCache().get(market).thenAccept(marketObj -> {
+                // if doesn't exist
+                if (marketObj == null) {
+                    plugin.getMessages().marketNonexistent.message(player);
+                    return;
+                }
+
+                // if fake
+                if (marketObj.getMarketType() == MarketType.FAKE) {
+                    FakeMarket fakeMarket = (FakeMarket) marketObj;
+                    // if ticker doesn't exist
+                    if (!fakeMarket.getTickerCache().containsKey(symbol)) {
+                        plugin.getMessages().marketSymbolDoesntExist.message(player);
+                        return;
+                    }
+
+                    // remove from cache
+                    fakeMarket.getTickerCache().remove(symbol);
+                } else if (marketObj.getMarketType() == MarketType.REAL) {
+                    RealMarket realMarket = (RealMarket) marketObj;
+                    // if ticker doesn't exist
+                    if (!realMarket.getTickerCache().containsKey(symbol)) {
+                        plugin.getMessages().marketSymbolDoesntExist.message(player);
+                        return;
+                    }
+
+                    // remove from cache
+                    realMarket.getTickerCache().remove(symbol);
+                } else {
+                    plugin.getMessages().somethingWentWrong.message(player);
+                    return;
+                }
+
+                // save market
+                plugin.getStorage().saveMarket(marketObj);
+                plugin.getMessages().stockRemoved.message(player);
+            });
+        }
+
+        @Subcommand("info")
+        @CommandPermission("ecoporium.command.ecoporium.market.info")
+        public void onMarketInfo(Player player, @Single String market) {
+            plugin.getMessages().retrievingMarket.message(player);
+
+            // does market already exist?
+            plugin.getMarketCache().getCache().get(market).thenAccept(marketObj -> {
+                // if doesn't exist
+                if (marketObj == null) {
+                    plugin.getMessages().marketNonexistent.message(player);
+                    return;
+                }
+
+                // get all tickers
+                List<String> symbols = new ArrayList<>();
+
+                if (marketObj.getMarketType() == MarketType.FAKE) {
+                    ((FakeMarket) marketObj).getTickerCache().values().forEach(t -> symbols.add(t.getSymbol()));
+                } else if (marketObj.getMarketType() == MarketType.REAL) {
+                    ((RealMarket) marketObj).getTickerCache().values().forEach(t -> symbols.add(t.getSymbol()));
+                } else {
+                    plugin.getMessages().somethingWentWrong.message(player);
+                    return;
+                }
+
+                Message.Builder builder = Message.builder()
+                        .addLine("&7Market info (&f" + marketObj.getHandle() + "&7):")
+                        .addLine("&7Symbols: &f" + symbols.size());
+                symbols.forEach(s -> builder.addLine("&7- &f" + s));
+                builder.build().message(player);
+            });
         }
     }
 
@@ -96,7 +246,6 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
         plugin.getMessages().help.message(sender);
         help.showHelp();
     }
-
 
     @Override
     protected void registerCompletions() {

@@ -5,3 +5,6 @@ authors: [yakovliam, bobby29831]
 website: https://ecoporium.net
 main: net.ecoporium.ecoporium.EcoporiumPlugin
 api-version: 1.17
+depend:
+  - PlaceholderAPI
+  - Vault

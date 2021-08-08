@@ -1,7 +1,7 @@
 package net.ecoporium.ecoporium.api.wrapper;
 
 public class Pair<L, R> {
-    
+
     L left;
     R right;
 
@@ -27,5 +27,16 @@ public class Pair<L, R> {
 
     public void setRight(R right) {
         this.right = right;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Pair)) {
+            return false;
+        }
+
+        Pair<?, ?> pair = (Pair<?, ?>) obj;
+
+        return pair.getLeft().equals(this.left) && pair.getRight().equals(this.right);
     }
 }

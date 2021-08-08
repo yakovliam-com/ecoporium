@@ -16,9 +16,11 @@ public interface StorageImplementation {
 
     EcoporiumUser loadUser(UUID uuid);
 
-    void saveMarket(Market market);
+    void saveMarket(Market<?> market);
 
-    Market loadMarket(String handle);
+    void deleteMarket(Market<?> market);
+
+    Market<?> loadMarket(String handle);
 
     EcoporiumPlugin getPlugin();
 

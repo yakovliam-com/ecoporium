@@ -1,7 +1,6 @@
 package net.ecoporium.ecoporium.task;
 
 import net.ecoporium.ecoporium.EcoporiumPlugin;
-import net.ecoporium.ecoporium.market.Market;
 
 public class MarketUpdateTask extends RepeatingTask {
 
@@ -13,23 +12,18 @@ public class MarketUpdateTask extends RepeatingTask {
     private static final long DEFAULT_PERIOD = 600L;
 
     /**
-     * Applicable market to update
-     */
-    private final Market market;
-
-    /**
      * Repeating task
      *
      * @param plugin plugin
      */
-    public MarketUpdateTask(EcoporiumPlugin plugin, Market market) {
+    public MarketUpdateTask(EcoporiumPlugin plugin) {
         super(plugin, DEFAULT_PERIOD, true);
-        this.market = market;
     }
 
     @Override
     public void run() {
-        // update
-        market.getTickerCache().forEach((symbol, ticker) -> ticker.updateStockData(false));
+        plugin.getMarketCache().getCache().synchronous().asMap().values().forEach(market -> {
+            market.getTickerCache().forEach((symbol, ticker) -> ticker.update());
+        });
     }
 }

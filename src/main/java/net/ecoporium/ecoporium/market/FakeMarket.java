@@ -10,10 +10,9 @@ public class FakeMarket extends Market<FakeStockTicker> {
      * Market
      *
      * @param handle           handle
-     * @param whitelistOptions whitelist options
      * @param tickers          tickers
      */
-    public FakeMarket(String handle, MarketWhitelistOptions whitelistOptions, Map<String, FakeStockTicker> tickers) {
-        super(handle, whitelistOptions, MarketType.FAKE, tickers);
+    public FakeMarket(String handle, Map<String, FakeStockTicker> tickers) {
+        super(handle, MarketType.FAKE, tickers);
     }
 }

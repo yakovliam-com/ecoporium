@@ -10,9 +10,8 @@ public class RealMarket extends Market<RealStockTicker> {
      * Market
      *
      * @param handle           handle
-     * @param whitelistOptions whitelist options
      */
-    public RealMarket(String handle, MarketWhitelistOptions whitelistOptions, Map<String, RealStockTicker> tickerCache) {
-        super(handle, whitelistOptions, MarketType.REAL, tickerCache);
+    public RealMarket(String handle, Map<String, RealStockTicker> tickerCache) {
+        super(handle, MarketType.REAL, tickerCache);
     }
 }
