@@ -7,9 +7,9 @@ public class MarketUpdateTask extends RepeatingTask {
     /**
      * Default period
      * <p>
-     * 600 ticks = (30 seconds * 20 ticks/second)
+     * 200 ticks = (10 seconds * 20 ticks/second)
      */
-    private static final long DEFAULT_PERIOD = 600L;
+    private static final long DEFAULT_PERIOD = 200L;
 
     /**
      * Repeating task

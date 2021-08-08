@@ -13,6 +13,8 @@ import net.ecoporium.ecoporium.EcoporiumPlugin;
 import net.ecoporium.ecoporium.api.message.Message;
 import net.ecoporium.ecoporium.market.FakeMarket;
 import net.ecoporium.ecoporium.market.RealMarket;
+import net.ecoporium.ecoporium.market.stock.FakeStockTicker;
+import net.ecoporium.ecoporium.market.stock.RealStockTicker;
 import net.ecoporium.ecoporium.market.stock.StockTicker;
 import net.ecoporium.ecoporium.market.stock.StockType;
 import net.ecoporium.ecoporium.user.EcoporiumUser;
@@ -20,7 +22,7 @@ import net.ecoporium.ecoporium.util.NumberUtil;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-@CommandAlias("stock|s")
+@CommandAlias("stock")
 @CommandPermission("ecoporium.command.stock")
 public class StockCommand extends AbstractEcoporiumCommand {
 
@@ -58,11 +60,11 @@ public class StockCommand extends AbstractEcoporiumCommand {
             StockTicker<?> stockTicker = marketObj.getStock(symbol);
 
             if (stockTicker.getStockType() == StockType.FAKE) {
-                FakeMarket fakeMarket = (FakeMarket) marketObj;
-                pricePerShare = fakeMarket.getTickerCache().get(symbol).getPrice();
+                FakeStockTicker fakeStockTicker = (FakeStockTicker) stockTicker;
+                pricePerShare = fakeStockTicker.getPrice();
             } else if (stockTicker.getStockType() == StockType.REAL) {
-                RealMarket realMarket = (RealMarket) marketObj;
-                pricePerShare = realMarket.getTickerCache().get(symbol).getCurrentStockData().getQuote().getPrice().floatValue();
+                RealStockTicker realStockTicker = (RealStockTicker) stockTicker;
+                pricePerShare = realStockTicker.getCurrentStockData().getQuote().getPrice().floatValue();
             } else {
                 plugin.getMessages().somethingWentWrong.message(player);
                 return;
@@ -81,7 +83,7 @@ public class StockCommand extends AbstractEcoporiumCommand {
             EcoporiumUser user = plugin.getUserCache().getCache().get(player.getUniqueId()).join();
 
             // give user shares
-            user.addShares(marketObj.getHandle(), symbol, amountToBuy);
+            user.addShares(marketObj.getHandle(), stockTicker.getSymbol(), amountToBuy);
             // save user
             plugin.getStorage().saveUser(user);
 
@@ -120,11 +122,11 @@ public class StockCommand extends AbstractEcoporiumCommand {
             StockTicker<?> stockTicker = marketObj.getStock(symbol);
 
             if (stockTicker.getStockType() == StockType.FAKE) {
-                FakeMarket fakeMarket = (FakeMarket) marketObj;
-                pricePerShare = fakeMarket.getTickerCache().get(symbol).getPrice();
+                FakeStockTicker fakeStockTicker = (FakeStockTicker) stockTicker;
+                pricePerShare = fakeStockTicker.getPrice();
             } else if (stockTicker.getStockType() == StockType.REAL) {
-                RealMarket realMarket = (RealMarket) marketObj;
-                pricePerShare = realMarket.getTickerCache().get(symbol).getCurrentStockData().getQuote().getPrice().floatValue();
+                RealStockTicker realStockTicker = (RealStockTicker) stockTicker;
+                pricePerShare = realStockTicker.getCurrentStockData().getQuote().getPrice().floatValue();
             } else {
                 plugin.getMessages().somethingWentWrong.message(player);
                 return;
@@ -134,7 +136,7 @@ public class StockCommand extends AbstractEcoporiumCommand {
             EcoporiumUser user = plugin.getUserCache().getCache().get(player.getUniqueId()).join();
 
             // if user doesn't have enough shares
-            int sharesOwned = user.getShares(marketObj.getHandle(), symbol);
+            int sharesOwned = user.getShares(marketObj.getHandle(), stockTicker.getSymbol());
 
             if (sharesOwned < amountToSell) {
                 plugin.getMessages().stockSellNotEnoughShares.message(player);
@@ -147,13 +149,13 @@ public class StockCommand extends AbstractEcoporiumCommand {
             plugin.getEconomy().depositPlayer(player, amountToGive);
 
             // remove user shares
-            user.removeShares(marketObj.getHandle(), symbol, amountToSell);
+            user.removeShares(marketObj.getHandle(), stockTicker.getSymbol(), amountToSell);
             // save user
             plugin.getStorage().saveUser(user);
 
             plugin.getMessages().stockSellSold.message(player,
                     "%shares%", Integer.toString(amountToSell),
-                    "%symbol%", symbol,
+                    "%symbol%", stockTicker.getSymbol(),
                     "%price-per-share%", NumberUtil.formatToPlaces(pricePerShare, 2),
                     "%amount-given%", NumberUtil.formatToPlaces(amountToGive, 2));
         });
