@@ -1,5 +1,8 @@
-package net.ecoporium.ecoporium.market.stock;
+package net.ecoporium.ecoporium.market.stock.real;
 
+import net.ecoporium.ecoporium.market.stock.StockTicker;
+import net.ecoporium.ecoporium.market.stock.StockType;
+import net.ecoporium.ecoporium.market.stock.quote.SimpleStockQuote;
 import net.ecoporium.ecoporium.quotes.HistQuotes2Request;
 import yahoofinance.Stock;
 import yahoofinance.YahooFinance;
@@ -20,11 +23,6 @@ import java.util.concurrent.CompletableFuture;
 public class RealStockTicker extends StockTicker<Stock> {
 
     /**
-     * Maximum size before pop
-     */
-    private static final int MAX_HISTORY_SIZE_BEFORE_POP = 30;
-
-    /**
      * The symbol for the current stock ticker
      */
     private final String symbol;
@@ -39,12 +37,12 @@ public class RealStockTicker extends StockTicker<Stock> {
      * <p>
      * Data here only exists into the past since the stock was first queried
      */
-    private final TreeMap<Date, StockQuote> history;
+    private final TreeMap<Date, StockQuote> yfHistory;
 
     /**
      * Previous history, of past days
      */
-    private final Map<Calendar, HistoricalQuote> previousHistory;
+    private final Map<Calendar, HistoricalQuote> yfPreviousHistory;
 
     /**
      * Stock ticker
@@ -55,8 +53,8 @@ public class RealStockTicker extends StockTicker<Stock> {
         super(symbol, Collections.emptyList(), null, StockType.REAL);
         this.symbol = symbol;
         this.stock = null;
-        this.history = new TreeMap<>();
-        this.previousHistory = new HashMap<>();
+        this.yfHistory = new TreeMap<>();
+        this.yfPreviousHistory = new HashMap<>();
     }
 
     /**
@@ -85,12 +83,12 @@ public class RealStockTicker extends StockTicker<Stock> {
      *
      * @return history
      */
-    public Map<Date, StockQuote> getHistory() {
-        if (this.history.size() <= 0) {
+    public Map<Date, StockQuote> getYfHistory() {
+        if (this.yfHistory.size() <= 0) {
             this.updateStockData(false).join();
         }
 
-        return history;
+        return yfHistory;
     }
 
     /**
@@ -98,8 +96,8 @@ public class RealStockTicker extends StockTicker<Stock> {
      *
      * @return history
      */
-    public Map<Calendar, HistoricalQuote> getPreviousHistory() {
-        return previousHistory;
+    public Map<Calendar, HistoricalQuote> getYfPreviousHistory() {
+        return yfPreviousHistory;
     }
 
     /**
@@ -158,11 +156,18 @@ public class RealStockTicker extends StockTicker<Stock> {
      * @param recent recent stock data
      */
     private void updateHistory(Stock recent) {
-        this.history.put(Date.from(Instant.now()), recent.getQuote());
+        Date date = Date.from(Instant.now());
+        this.yfHistory.put(date, recent.getQuote());
+        this.history.add(new SimpleStockQuote(recent.getQuote().getPrice().floatValue(), date));
+
+        // if the size is over the predetermined max, then pop the first
+        if (this.yfHistory.size() > MAX_HISTORY_SIZE_BEFORE_POP) {
+            this.yfHistory.pollFirstEntry();
+        }
 
         // if the size is over the predetermined max, then pop the first
         if (this.history.size() > MAX_HISTORY_SIZE_BEFORE_POP) {
-            this.history.pollFirstEntry();
+            this.history.pop();
         }
     }
 
@@ -174,7 +179,7 @@ public class RealStockTicker extends StockTicker<Stock> {
             new HistQuotes2Request(this.symbol).getResult()
                     .stream()
                     .filter(Objects::nonNull)
-                    .forEach(quote -> this.previousHistory.put(quote.getDate(), quote));
+                    .forEach(quote -> this.yfPreviousHistory.put(quote.getDate(), quote));
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -11,10 +11,8 @@ import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
 import net.ecoporium.ecoporium.EcoporiumPlugin;
 import net.ecoporium.ecoporium.api.message.Message;
-import net.ecoporium.ecoporium.market.FakeMarket;
-import net.ecoporium.ecoporium.market.RealMarket;
-import net.ecoporium.ecoporium.market.stock.FakeStockTicker;
-import net.ecoporium.ecoporium.market.stock.RealStockTicker;
+import net.ecoporium.ecoporium.market.stock.fake.FakeStockTicker;
+import net.ecoporium.ecoporium.market.stock.real.RealStockTicker;
 import net.ecoporium.ecoporium.market.stock.StockTicker;
 import net.ecoporium.ecoporium.market.stock.StockType;
 import net.ecoporium.ecoporium.user.EcoporiumUser;
@@ -61,7 +59,7 @@ public class StockCommand extends AbstractEcoporiumCommand {
 
             if (stockTicker.getStockType() == StockType.FAKE) {
                 FakeStockTicker fakeStockTicker = (FakeStockTicker) stockTicker;
-                pricePerShare = fakeStockTicker.getPrice();
+                pricePerShare = fakeStockTicker.getQuote();
             } else if (stockTicker.getStockType() == StockType.REAL) {
                 RealStockTicker realStockTicker = (RealStockTicker) stockTicker;
                 pricePerShare = realStockTicker.getCurrentStockData().getQuote().getPrice().floatValue();
@@ -123,7 +121,7 @@ public class StockCommand extends AbstractEcoporiumCommand {
 
             if (stockTicker.getStockType() == StockType.FAKE) {
                 FakeStockTicker fakeStockTicker = (FakeStockTicker) stockTicker;
-                pricePerShare = fakeStockTicker.getPrice();
+                pricePerShare = fakeStockTicker.getQuote();
             } else if (stockTicker.getStockType() == StockType.REAL) {
                 RealStockTicker realStockTicker = (RealStockTicker) stockTicker;
                 pricePerShare = realStockTicker.getCurrentStockData().getQuote().getPrice().floatValue();

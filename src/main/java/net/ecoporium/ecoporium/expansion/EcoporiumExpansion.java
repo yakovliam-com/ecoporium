@@ -6,8 +6,8 @@ import net.ecoporium.ecoporium.market.FakeMarket;
 import net.ecoporium.ecoporium.market.Market;
 import net.ecoporium.ecoporium.market.MarketType;
 import net.ecoporium.ecoporium.market.RealMarket;
-import net.ecoporium.ecoporium.market.stock.FakeStockTicker;
-import net.ecoporium.ecoporium.market.stock.RealStockTicker;
+import net.ecoporium.ecoporium.market.stock.fake.FakeStockTicker;
+import net.ecoporium.ecoporium.market.stock.real.RealStockTicker;
 import net.ecoporium.ecoporium.user.EcoporiumUser;
 import net.ecoporium.ecoporium.util.NumberUtil;
 import org.bukkit.OfflinePlayer;
@@ -75,7 +75,7 @@ public class EcoporiumExpansion extends PlaceholderExpansion {
                 if (fakeStockTicker == null) {
                     return null;
                 }
-                return NumberUtil.formatToPlaces(fakeStockTicker.getPrice(), 2);
+                return NumberUtil.formatToPlaces(fakeStockTicker.getQuote(), 2);
             } else if (market.getMarketType() == MarketType.REAL) {
                 RealMarket realMarket = (RealMarket) market;
                 RealStockTicker realStockTicker = realMarket.getTickerCache().get(symbol);

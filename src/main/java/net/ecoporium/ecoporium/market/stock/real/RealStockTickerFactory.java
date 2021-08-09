@@ -1,6 +1,5 @@
-package net.ecoporium.ecoporium.market.stock.factory;
+package net.ecoporium.ecoporium.market.stock.real;
 
-import net.ecoporium.ecoporium.market.stock.RealStockTicker;
 import net.ecoporium.ecoporium.model.factory.Factory;
 
 public class RealStockTickerFactory implements Factory<String, RealStockTicker> {

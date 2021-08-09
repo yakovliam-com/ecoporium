@@ -1,8 +1,16 @@
 package net.ecoporium.ecoporium.market.stock;
 
+import net.ecoporium.ecoporium.market.stock.quote.SimpleStockQuote;
+
+import java.util.LinkedList;
 import java.util.List;
 
 public abstract class StockTicker<T> {
+
+    /**
+     * Maximum size before pop
+     */
+    protected static final int MAX_HISTORY_SIZE_BEFORE_POP = 30;
 
     /**
      * Symbol
@@ -23,6 +31,16 @@ public abstract class StockTicker<T> {
      * Stock type
      */
     private final StockType stockType;
+
+    /**
+     * The current stock quote
+     */
+    protected SimpleStockQuote currentQuote;
+
+    /**
+     * The local quote history (since instantiation)
+     */
+    protected LinkedList<SimpleStockQuote> history;
 
     /**
      * Stock
@@ -78,5 +96,23 @@ public abstract class StockTicker<T> {
      */
     public StockType getStockType() {
         return stockType;
+    }
+
+    /**
+     * Returns the current quote
+     *
+     * @return quote
+     */
+    public SimpleStockQuote getCurrentQuote() {
+        return currentQuote;
+    }
+
+    /**
+     * Returns the stock's history
+     *
+     * @return history
+     */
+    public LinkedList<SimpleStockQuote> getHistory() {
+        return this.history;
     }
 }

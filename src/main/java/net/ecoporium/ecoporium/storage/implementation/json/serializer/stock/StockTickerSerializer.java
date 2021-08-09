@@ -1,8 +1,8 @@
 package net.ecoporium.ecoporium.storage.implementation.json.serializer.stock;
 
-import net.ecoporium.ecoporium.market.stock.FakeStockProvider;
-import net.ecoporium.ecoporium.market.stock.FakeStockTicker;
-import net.ecoporium.ecoporium.market.stock.RealStockTicker;
+import net.ecoporium.ecoporium.market.stock.fake.FakeStockProvider;
+import net.ecoporium.ecoporium.market.stock.fake.FakeStockTicker;
+import net.ecoporium.ecoporium.market.stock.real.RealStockTicker;
 import net.ecoporium.ecoporium.market.stock.StockTicker;
 import net.ecoporium.ecoporium.market.stock.StockType;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -82,7 +82,7 @@ public class StockTickerSerializer implements TypeSerializer<StockTicker> {
             FakeStockTicker fakeStockTicker = (FakeStockTicker) obj;
 
             node.node("aliases").set(fakeStockTicker.getAliases());
-            node.node("previousClosingPrice").set(fakeStockTicker.getPrice());
+            node.node("previousClosingPrice").set(fakeStockTicker.getQuote());
         }
     }
 }
