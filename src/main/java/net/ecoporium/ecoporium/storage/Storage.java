@@ -1,10 +1,10 @@
 package net.ecoporium.ecoporium.storage;
 
-
-import net.ecoporium.ecoporium.EcoporiumPlugin;
 import net.ecoporium.ecoporium.market.Market;
+import net.ecoporium.ecoporium.screen.TrendScreen;
 import net.ecoporium.ecoporium.user.EcoporiumUser;
 
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -19,13 +19,9 @@ public class Storage {
      * Storage
      *
      * @param storageImplementation storage implementation
-     * @param plugin                plugin
      */
-    public Storage(StorageImplementation storageImplementation, EcoporiumPlugin plugin) {
+    public Storage(StorageImplementation storageImplementation) {
         this.storageImplementation = storageImplementation;
-        /**
-         * Ecoporium plugin
-         */
     }
 
     /**
@@ -81,5 +77,30 @@ public class Storage {
      */
     public Market<?> loadMarket(String handle) {
         return this.storageImplementation.loadMarket(handle);
+    }
+
+    /**
+     * Loads trend screens
+     */
+    public List<TrendScreen> loadTrendScreens() {
+        return this.storageImplementation.loadTrendScreens();
+    }
+
+    /**
+     * Saves a trend screen
+     *
+     * @param trendScreen trend screen
+     */
+    public void saveTrendScreen(TrendScreen trendScreen) {
+        CompletableFuture.runAsync(() -> this.storageImplementation.saveTrendScreen(trendScreen));
+    }
+
+    /**
+     * Deletes a trend screen
+     *
+     * @param trendScreen trend screen
+     */
+    public void deleteTrendScreen(TrendScreen trendScreen) {
+        CompletableFuture.runAsync(() -> this.storageImplementation.deleteTrendScreen(trendScreen));
     }
 }

@@ -62,6 +62,21 @@ public class Messages {
             .addLine("&7Stock removed.")
             .build();
 
+    // screen create cancel not in placement session
+    public Message screenCreateCancelNotInPlacementSession = Message.builder()
+            .addLine("&cYou're not in a placement session!")
+            .build();
+
+    // screen create already in session
+    public Message screenCreateAlreadyInSession = Message.builder()
+            .addLine("&cYou're already in a placement session!")
+            .build();
+
+    // screen create canceled
+    public Message screenCreateCanceled = Message.builder()
+            .addLine("&7Canceled.")
+            .build();
+
     /**
      * Stock command
      */
@@ -90,4 +105,13 @@ public class Messages {
     public final Message stockSellSold = Message.builder()
             .addLine("&7You sold &f%shares% &7of &f%symbol% &7at &f%price-per-share% &7per share for a total of &f%amount-given%&7.")
             .build();
+
+    /**
+     * Placement
+     */
+
+    public final Message placementStartPlacing = Message.builder()
+            .addLine("&7Start placing a &f%widthmaps%&7x&f%heightmaps% &7sized screen, going from &ftop to bottom &7& &fleft to right&7.")
+            .build();
+
 }

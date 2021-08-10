@@ -4,6 +4,7 @@ import com.google.common.collect.HashBasedTable;
 import io.leangen.geantyref.TypeToken;
 import net.ecoporium.ecoporium.EcoporiumPlugin;
 import net.ecoporium.ecoporium.market.Market;
+import net.ecoporium.ecoporium.screen.TrendScreen;
 import net.ecoporium.ecoporium.storage.StorageImplementation;
 import net.ecoporium.ecoporium.user.EcoporiumUser;
 import org.spongepowered.configurate.ConfigurateException;
@@ -32,6 +33,11 @@ public class JsonStorageImplementation implements StorageImplementation {
     private final JsonConfigurationProvider usersProvider;
 
     /**
+     * Screens provider
+     */
+    private final JsonConfigurationProvider trendScreensProvider;
+
+    /**
      * Market type
      */
     private final TypeToken<Market<?>> marketType = new io.leangen.geantyref.TypeToken<>() {
@@ -46,6 +52,7 @@ public class JsonStorageImplementation implements StorageImplementation {
         this.plugin = plugin;
         this.marketsProvider = new JsonConfigurationProvider(plugin, "markets.json");
         this.usersProvider = new JsonConfigurationProvider(plugin, "users.json");
+        this.trendScreensProvider = new JsonConfigurationProvider(plugin, "trend-screens.json");
 
         // init
         init();
@@ -59,6 +66,7 @@ public class JsonStorageImplementation implements StorageImplementation {
         // resolves the path which creates the files if they don't already exist
         marketsProvider.load();
         usersProvider.load();
+        trendScreensProvider.load();
     }
 
     /**
@@ -175,13 +183,73 @@ public class JsonStorageImplementation implements StorageImplementation {
         return null;
     }
 
+    @Override
+    public List<TrendScreen> loadTrendScreens() {
+        ConfigurationNode node = trendScreensProvider.getRoot().node("screens");
+        // get screens list
+        try {
+            return node.getList(TrendScreen.class);
+        } catch (SerializationException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    @Override
+    public void saveTrendScreen(TrendScreen trendScreen) {
+        ConfigurationNode node = trendScreensProvider.getRoot().node("screens");
+        // get screens list
+        try {
+            List<TrendScreen> trendScreens = node.getList(TrendScreen.class);
+            // remove trend screen that we're saving back (if it exists)
+            Objects.requireNonNull(trendScreens).removeIf(t -> t.getUuid().equals(trendScreen.getUuid()));
+            // add back to list
+            trendScreens.add(trendScreen);
+            // set list
+            node.setList(TrendScreen.class, trendScreens);
+            // save
+            save();
+        } catch (SerializationException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void deleteTrendScreen(TrendScreen trendScreen) {
+        ConfigurationNode node = trendScreensProvider.getRoot().node("screens");
+        // get screens list
+        try {
+            List<TrendScreen> trendScreens = node.getList(TrendScreen.class);
+            // remove trend screen
+            Objects.requireNonNull(trendScreens).removeIf(t -> t.getUuid().equals(trendScreen.getUuid()));
+            // set list
+            node.setList(TrendScreen.class, trendScreens);
+            // save
+            save();
+        } catch (SerializationException e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * Saves the file
      */
     private void save() {
         try {
             marketsProvider.getLoader().save(marketsProvider.getRoot());
+        } catch (ConfigurateException e) {
+            e.printStackTrace();
+        }
+
+        try {
             usersProvider.getLoader().save(usersProvider.getRoot());
+        } catch (ConfigurateException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            trendScreensProvider.getLoader().save(trendScreensProvider.getRoot());
         } catch (ConfigurateException e) {
             e.printStackTrace();
         }

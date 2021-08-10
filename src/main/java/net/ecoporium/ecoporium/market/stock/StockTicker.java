@@ -113,7 +113,7 @@ public abstract class StockTicker<T> {
      *
      * @return history
      */
-    public LinkedList<SimpleStockQuote> getHistory() {
+    public synchronized LinkedList<SimpleStockQuote> getHistory() {
         return this.history;
     }
 }

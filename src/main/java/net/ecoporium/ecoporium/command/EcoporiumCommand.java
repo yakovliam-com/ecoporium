@@ -3,15 +3,8 @@ package net.ecoporium.ecoporium.command;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.CommandHelp;
 import co.aikar.commands.InvalidCommandArgument;
-import co.aikar.commands.annotation.CatchUnknown;
-import co.aikar.commands.annotation.CommandAlias;
-import co.aikar.commands.annotation.CommandPermission;
-import co.aikar.commands.annotation.Default;
-import co.aikar.commands.annotation.HelpCommand;
+import co.aikar.commands.annotation.*;
 import co.aikar.commands.annotation.Optional;
-import co.aikar.commands.annotation.Single;
-import co.aikar.commands.annotation.Subcommand;
-import co.aikar.commands.annotation.Syntax;
 import com.github.johnnyjayjay.spigotmaps.util.Compatibility;
 import net.ecoporium.ecoporium.EcoporiumPlugin;
 import net.ecoporium.ecoporium.api.message.Message;
@@ -30,6 +23,7 @@ import net.ecoporium.ecoporium.market.stock.fake.FakeStockTickerFactory;
 import net.ecoporium.ecoporium.screen.TrendScreen;
 import net.ecoporium.ecoporium.screen.info.MapInfo;
 import net.ecoporium.ecoporium.screen.info.ScreenInfo;
+import net.ecoporium.ecoporium.util.ScreenCalculationUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -247,47 +241,75 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
         }
     }
 
-    @Subcommand("test")
-    public void onTest(Player player, @Single String market, @Single String symbol) {
-        plugin.getMessages().retrievingMarket.message(player);
+    @CommandAlias("ecoporium")
+    @Subcommand("createscreen")
+    public class CreateCommand extends BaseCommand {
 
-        // does market already exist?
-        plugin.getMarketCache().getCache().get(market).thenAccept(marketObj -> {
-            // if doesn't exist
-            if (marketObj == null) {
-                plugin.getMessages().marketNonexistent.message(player);
+        @Subcommand("start")
+        @Description("Starts creating a trend screen")
+        @Default
+        public void onStart(Player player, @Single String market, @Single String symbol, @Syntax("EXAMPLES: 5x5 or 7x7") @Single String dimensions) {
+            plugin.getMessages().retrievingMarket.message(player);
+
+            // if already in a session
+            if (plugin.getMapPlacementHandler().getPlayerItemPlaceQueue().containsKey(player.getUniqueId())) {
+                plugin.getMessages().screenCreateAlreadyInSession.message(player);
+            }
+
+            // does market already exist?
+            plugin.getMarketCache().getCache().get(market).thenAccept(marketObj -> {
+                // if doesn't exist
+                if (marketObj == null) {
+                    plugin.getMessages().marketNonexistent.message(player);
+                    return;
+                }
+
+                // does the stock exist?
+                if (!marketObj.containsStock(symbol)) {
+                    plugin.getMessages().marketSymbolDoesntExist.message(player);
+                    return;
+                }
+
+                StockTicker<?> stockTicker = marketObj.getStock(symbol);
+
+                // calculate dimensions
+                Pair<Integer, Integer> dimensionsPair = ScreenCalculationUtil.parseDimensions(dimensions);
+
+                if (dimensionsPair == null) {
+                    // oops!
+                    plugin.getMessages().somethingWentWrong.message(player);
+                    return;
+                }
+
+                // parse into screen info
+                ScreenInfo screenInfo = ScreenCalculationUtil.constructFromMapSizeDimensions(dimensionsPair);
+
+                // call map placement handler to create screen
+                plugin.getMapPlacementHandler().createScreen(player, marketObj, stockTicker, screenInfo);
+            });
+        }
+
+        @Subcommand("cancel")
+        public void onCancel(Player player) {
+            Pair<UUID, LinkedList<ItemStack>> queue = plugin.getMapPlacementHandler().getPlayerItemPlaceQueue().get(player.getUniqueId());
+
+            if (queue == null) {
+                plugin.getMessages().screenCreateCancelNotInPlacementSession.message(player);
                 return;
             }
 
-            // does the stock exist?
-            if (!marketObj.containsStock(symbol)) {
-                plugin.getMessages().marketSymbolDoesntExist.message(player);
-                return;
-            }
+            // remove from handler
+            plugin.getMapPlacementHandler().getPlayerItemPlaceQueue().remove(player.getUniqueId());
 
-            StockTicker<?> stockTicker = marketObj.getStock(symbol);
+            TrendScreen trendScreen = plugin.getTrendScreenManager().getByUUID(queue.getLeft());
+            // remove from manager
+            plugin.getTrendScreenManager().removeTrendScreen(trendScreen);
+            // remove from storage
+            plugin.getStorage().deleteTrendScreen(trendScreen);
 
-            // create maps
-            MapView singleMapView = Bukkit.createMap(player.getWorld());
-
-            // give to player
-            player.getInventory().addItem(createItemStack(singleMapView, "Ticker screen for " + stockTicker.getSymbol()));
-            player.updateInventory();
-
-            // create trend screen
-            TrendScreen screen = new TrendScreen(marketObj, stockTicker, new ScreenInfo(128, 128), new MapInfo(Collections.singletonList(singleMapView.getId())));
-            screen.startScreen(plugin);
-        });
-    }
-
-    private ItemStack createItemStack(MapView mapView, String displayName, String... lore) {
-        ItemStack itemStack = new ItemStack(Compatibility.isLegacy() ? Material.MAP : Material.FILLED_MAP);
-        MapMeta mapMeta = (MapMeta) itemStack.getItemMeta();
-        Objects.requireNonNull(mapMeta).setMapView(mapView);
-        mapMeta.setDisplayName(displayName);
-        mapMeta.setLore(lore.length == 0 ? null : Arrays.asList(lore));
-        itemStack.setItemMeta(mapMeta);
-        return itemStack;
+            // message
+            plugin.getMessages().screenCreateCanceled.message(player);
+        }
     }
 
     @HelpCommand

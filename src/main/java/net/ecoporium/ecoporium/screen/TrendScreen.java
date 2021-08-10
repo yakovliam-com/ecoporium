@@ -17,10 +17,16 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class TrendScreen {
+
+    /**
+     * The uuid/id of the trend screen
+     */
+    private final UUID uuid;
 
     /**
      * The associated market
@@ -46,12 +52,6 @@ public class TrendScreen {
      * Renderer list
      */
     private final List<ImageRenderer> rendererList;
-
-    /**
-     * Trend image cache
-     */
-    private final TrendImageCache trendImageCache;
-
     /**
      * Screen render task
      */
@@ -60,17 +60,18 @@ public class TrendScreen {
     /**
      * Trends screen
      *
+     * @param uuid       id
      * @param market     market
      * @param ticker     ticker
      * @param screenInfo screen info
      * @param mapInfo    map info
      */
-    public TrendScreen(Market<?> market, StockTicker<?> ticker, ScreenInfo screenInfo, MapInfo mapInfo) {
+    public TrendScreen(UUID uuid, Market<?> market, StockTicker<?> ticker, ScreenInfo screenInfo, MapInfo mapInfo) {
+        this.uuid = uuid;
         this.market = market;
         this.ticker = ticker;
         this.screenInfo = screenInfo;
         this.mapInfo = mapInfo;
-        this.trendImageCache = new TrendImageCache();
 
         // create renderers
         this.rendererList = IntStream.range(0, ScreenCalculationUtil.calculateNumberOfMapsRequired(this.screenInfo))
@@ -91,6 +92,15 @@ public class TrendScreen {
                         map.addRenderer(iterator.next());
                     }
                 });
+    }
+
+    /**
+     * Returns the uuid/id of the screen
+     *
+     * @return id
+     */
+    public UUID getUuid() {
+        return uuid;
     }
 
     /**
@@ -130,24 +140,13 @@ public class TrendScreen {
     }
 
     /**
-     * Returns trend image cache
-     *
-     * @return trend image cache
-     */
-    public TrendImageCache getTrendImageCache() {
-        return trendImageCache;
-    }
-
-    /**
      * Updates the trend image cache
      *
      * @param bufferedImage buffered image
      */
     public void updateScreen(BufferedImage bufferedImage) {
-        this.trendImageCache.cache(bufferedImage);
-
         // update all renderers
-        List<BufferedImage> bufferedImages = ImageTools.divideIntoMapSizedParts(this.trendImageCache.getCachedImage(), false);
+        List<BufferedImage> bufferedImages = ImageTools.divideIntoMapSizedParts(bufferedImage, false);
         Iterator<BufferedImage> iterator = bufferedImages.iterator();
         this.rendererList.forEach(r -> r.setImage(iterator.next()));
     }
