@@ -8,8 +8,14 @@ public class Messages {
      * Ecoporium command
      */
 
+    // help
     public final Message help = Message.builder()
             .addLine("&7Help")
+            .build();
+
+    // reloaded
+    public final Message reloaded = Message.builder()
+            .addLine("&7Reloaded.")
             .build();
 
     // market nonexistent
@@ -121,7 +127,7 @@ public class Messages {
      */
 
     public final Message placementStartPlacing = Message.builder()
-            .addLine("&7Start placing a &f%widthmaps%&7x&f%heightmaps% &7sized screen, going from &ftop to bottom &7& &fleft to right&7.")
+            .addLine("&7Start placing a &f%widthmaps%&7x&f%heightmaps% &7sized screen, going from &ftop to bottom &7& &fleft to right&7. &dFirst go down &f%heightmaps%&d, then repeat that going left &f%widthmaps% &dtimes.")
             .build();
 
 }

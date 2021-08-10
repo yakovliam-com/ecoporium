@@ -44,6 +44,16 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
         super(manager, plugin);
     }
 
+    @Subcommand("reload")
+    @CommandPermission("ecoporium.command.ecoporium.reload")
+    @Description("Reloads configuration values")
+    public void onReload(Player player) {
+        // reload config
+        plugin.getEcoporiumConfig().reload();
+
+        plugin.getMessages().reloaded.message(player);
+    }
+
     @CommandAlias("ecoporium")
     @Subcommand("market")
     public class MarketCommand extends BaseCommand {
@@ -243,6 +253,7 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
 
         @Subcommand("create")
         @Description("Creates a trend screen through a placement session")
+        @CommandPermission("ecoporium.command.ecoporium.screen.create")
         public void onCreate(Player player, @Single String market, @Single String symbol, @Syntax("EXAMPLES: 5x5 or 7x7") @Single String dimensions) {
             plugin.getMessages().retrievingMarket.message(player);
 
@@ -278,6 +289,8 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
 
                 // parse into screen info
                 ScreenInfo screenInfo = ScreenCalculationUtil.constructFromMapSizeDimensions(dimensionsPair);
+                System.out.println("Width: " + screenInfo.getWidth());
+                System.out.println("Height: " + screenInfo.getHeight());
 
                 // call map placement handler to create screen
                 plugin.getMapPlacementHandler().createScreen(player, marketObj, stockTicker, screenInfo);
@@ -286,6 +299,7 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
 
         @Subcommand("cancelsession")
         @Description("Cancels an ongoing creation session")
+        @CommandPermission("ecoporium.command.ecoporium.screen.cancel")
         public void onCancelSession(Player player) {
             Pair<UUID, LinkedList<ItemStack>> queue = plugin.getMapPlacementHandler().getPlayerItemPlaceQueue().get(player.getUniqueId());
 
@@ -309,6 +323,7 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
 
         @Subcommand("delete")
         @Description("Deletes a trend screen that the player is looking at")
+        @CommandPermission("ecoporium.command.ecoporium.screen.delete")
         public void onDelete(Player player) {
             // get point the player is looking at
             Block targetBlock = player.getTargetBlockExact(15);

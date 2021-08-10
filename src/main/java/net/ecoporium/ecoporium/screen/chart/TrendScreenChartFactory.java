@@ -1,13 +1,17 @@
 package net.ecoporium.ecoporium.screen.chart;
 
+import net.ecoporium.ecoporium.EcoporiumPlugin;
+import net.ecoporium.ecoporium.api.config.generic.adapter.ConfigurationAdapter;
+import net.ecoporium.ecoporium.api.wrapper.Pair;
+import net.ecoporium.ecoporium.config.EcoporiumConfigKeys;
 import net.ecoporium.ecoporium.market.stock.HistoricalAnalysis;
 import net.ecoporium.ecoporium.market.stock.quote.SimpleStockQuote;
 import net.ecoporium.ecoporium.model.factory.Factory;
 import net.ecoporium.ecoporium.screen.TrendScreen;
-import net.ecoporium.ecoporium.screen.info.ScreenInfo;
 import net.ecoporium.ecoporium.util.ChartUtil;
 import net.ecoporium.ecoporium.util.NumberUtil;
 import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartRenderingInfo;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
@@ -20,7 +24,29 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import static net.ecoporium.ecoporium.config.EcoporiumConfigKeys.*;
+
 public class TrendScreenChartFactory implements Factory<TrendScreen, BufferedImage> {
+
+    /**
+     * Ecoporium plugin
+     */
+    private final EcoporiumPlugin plugin;
+
+    /**
+     * Configuration adapter
+     */
+    private final ConfigurationAdapter configurationAdapter;
+
+    /**
+     * Trend screen chart factory
+     *
+     * @param plugin plugin
+     */
+    public TrendScreenChartFactory(EcoporiumPlugin plugin) {
+        this.plugin = plugin;
+        this.configurationAdapter = plugin.getEcoporiumConfig().getAdapter();
+    }
 
     @Override
     public BufferedImage build(TrendScreen context) {
@@ -40,24 +66,33 @@ public class TrendScreenChartFactory implements Factory<TrendScreen, BufferedIma
         IntStream.range(0, history.size()).forEach(i -> defaultCategoryDataset.addValue(history.get(i).getPrice(), "Price", Integer.toString(i)));
 
         JFreeChart chart = ChartFactory.createLineChart(
-                context.getTicker().getSymbol() + " ($" + NumberUtil.formatToPlaces(history.getLast().getPrice(), 2) + ")", "Time",
-                "Price",
+                CHART_TITLE.get(configurationAdapter)
+                        .replace("%symbol%", context.getTicker().getSymbol())
+                        .replace("%price%", NumberUtil.formatToPlaces(history.getLast().getPrice(), 2)),
+                CHART_CATEGORY_AXIS_LABEL.get(configurationAdapter),
+                CHART_VALUE_AXIS_LABEL.get(configurationAdapter),
                 defaultCategoryDataset, PlotOrientation.VERTICAL,
                 true, true, false);
 
         CategoryPlot plot = (CategoryPlot) chart.getPlot();
-        plot.getDomainAxis().setVisible(false);
-        plot.getRangeAxis().setRange(getLowestQuote(history) * 0.99, getHighestQuote(history) * 1.01);
+
+        // set axis visible
+        plot.getDomainAxis().setVisible(CHART_DOMAIN_AXIS_VISIBLE.get(configurationAdapter));
+
+        // set multiplier (scale)
+        Pair<Double, Double> multiplier = CHART_RANGE_LOWER_HIGHER.get(configurationAdapter);
+        plot.getRangeAxis().setRange(getLowestQuote(history) * multiplier.getLeft(),
+                getHighestQuote(history) * multiplier.getRight());
 
         // set background color & legend background to black & title to white & disable grid lines
-        chart.setBackgroundPaint(Color.BLACK);
-        chart.getTitle().setPaint(Color.WHITE);
-        chart.getLegend().setBackgroundPaint(Color.BLACK);
-        plot.setBackgroundPaint(Color.BLACK);
+        chart.setBackgroundPaint(CHART_CHART_BACKGROUND_PAINT.get(configurationAdapter));
+        chart.getTitle().setPaint(CHART_CHART_TITLE_PAINT.get(configurationAdapter));
+        chart.getLegend().setBackgroundPaint(CHART_CHART_LEGEND_BACKGROUND_PAINT.get(configurationAdapter));
+        plot.setBackgroundPaint(CHART_PLOT_BACKGROUND_PAINT.get(configurationAdapter));
 
         // set grid lines to be 50% transparent white
-        plot.setDomainGridlinePaint(new Color(255, 255, 255, 127));
-        plot.setRangeGridlinePaint(new Color(255, 255, 255, 127));
+        plot.setDomainGridlinePaint(CHART_PLOT_DOMAIN_GRIDLINE_PAINT.get(configurationAdapter));
+        plot.setRangeGridlinePaint(CHART_PLOT_RANGE_GRIDLINE_PAINT.get(configurationAdapter));
 
         // create renderer
         DefaultCategoryItemRenderer defaultCategoryItemRenderer = new DefaultCategoryItemRenderer();
@@ -65,20 +100,20 @@ public class TrendScreenChartFactory implements Factory<TrendScreen, BufferedIma
         Color lineColor;
         switch (historicalAnalysis) {
             case GOING_UP:
-                lineColor = Color.GREEN;
+                lineColor = CHART_STOCK_GOING_UP_COLOR.get(configurationAdapter);
                 break;
             case GOING_DOWN:
-                lineColor = Color.RED;
+                lineColor = CHART_STOCK_GOING_DOWN_COLOR.get(configurationAdapter);
                 break;
             default:
-                lineColor = Color.WHITE;
+                lineColor = CHART_STOCK_NEUTRAL_COLOR.get(configurationAdapter);
                 break;
         }
 
         // set stroke of line to thick-ish green
         defaultCategoryItemRenderer.setSeriesPaint(0, lineColor);
-        defaultCategoryItemRenderer.setSeriesStroke(0, new BasicStroke(5.0f));
-        defaultCategoryItemRenderer.setLegendTextPaint(0, Color.WHITE);
+        defaultCategoryItemRenderer.setSeriesStroke(0, new BasicStroke(CHART_STOCK_LINE_THICKNESS.get(configurationAdapter).floatValue()));
+        defaultCategoryItemRenderer.setLegendTextPaint(0, CHART_CHART_LEGEND_TEXT_PAINT.get(configurationAdapter));
 
 
         // set renderer

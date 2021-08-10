@@ -23,6 +23,11 @@ public class EcoporiumConfig extends KeyedConfiguration {
         super.load(initial);
     }
 
+    @Override
+    public void reload() {
+        super.reload();
+    }
+
     public Plugin getPlugin() {
         return this.plugin;
     }

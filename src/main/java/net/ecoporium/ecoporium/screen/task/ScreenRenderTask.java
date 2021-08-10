@@ -31,7 +31,7 @@ public class ScreenRenderTask extends RepeatingTask {
         // every 10 seconds
         super(plugin, 200L, true);
         this.parent = parent;
-        this.trendScreenChartFactory = new TrendScreenChartFactory();
+        this.trendScreenChartFactory = new TrendScreenChartFactory(plugin);
     }
 
     @Override
