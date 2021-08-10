@@ -6,6 +6,7 @@ import net.ecoporium.ecoporium.market.FakeMarket;
 import net.ecoporium.ecoporium.market.Market;
 import net.ecoporium.ecoporium.market.MarketType;
 import net.ecoporium.ecoporium.market.RealMarket;
+import net.ecoporium.ecoporium.market.stock.StockTicker;
 import net.ecoporium.ecoporium.market.stock.fake.FakeStockTicker;
 import net.ecoporium.ecoporium.market.stock.real.RealStockTicker;
 import net.ecoporium.ecoporium.user.EcoporiumUser;
@@ -69,21 +70,13 @@ public class EcoporiumExpansion extends PlaceholderExpansion {
                 return null;
             }
 
-            if (market.getMarketType() == MarketType.FAKE) {
-                FakeMarket fakeMarket = (FakeMarket) market;
-                FakeStockTicker fakeStockTicker = fakeMarket.getTickerCache().get(symbol);
-                if (fakeStockTicker == null) {
-                    return null;
-                }
-                return NumberUtil.formatToPlaces(fakeStockTicker.getCurrentQuote().getPrice(), 2);
-            } else if (market.getMarketType() == MarketType.REAL) {
-                RealMarket realMarket = (RealMarket) market;
-                RealStockTicker realStockTicker = realMarket.getTickerCache().get(symbol);
-                if (realStockTicker == null) {
-                    return null;
-                }
-                return NumberUtil.formatToPlaces(realStockTicker.getCurrentStockData().getQuote().getPrice().floatValue(), 2);
+            if (!market.containsStock(symbol)) {
+                return null;
             }
+
+            StockTicker<?> ticker = market.getStock(symbol);
+
+            return NumberUtil.formatToPlaces(ticker.getCurrentQuote().getPrice(), 2);
         }
 
         if (request.equalsIgnoreCase("player-shares")) {
