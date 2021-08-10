@@ -1,9 +1,11 @@
 package net.ecoporium.ecoporium.screen.chart;
 
+import net.ecoporium.ecoporium.market.stock.HistoricalAnalysis;
 import net.ecoporium.ecoporium.market.stock.quote.SimpleStockQuote;
 import net.ecoporium.ecoporium.model.factory.Factory;
 import net.ecoporium.ecoporium.screen.TrendScreen;
 import net.ecoporium.ecoporium.screen.info.ScreenInfo;
+import net.ecoporium.ecoporium.util.ChartUtil;
 import net.ecoporium.ecoporium.util.NumberUtil;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
@@ -24,10 +26,12 @@ public class TrendScreenChartFactory implements Factory<TrendScreen, BufferedIma
     public BufferedImage build(TrendScreen context) {
         // get history
         LinkedList<SimpleStockQuote> history = context.getTicker().getHistory();
+        // get historical analysis
+        HistoricalAnalysis historicalAnalysis = context.getTicker().getHistoricalAnalysis();
 
-        // if there's no history yet, just return a blank screen
+        // if there's no history yet, just return a blank screen (aka we need at least two data-points)
         if (history == null || history.size() <= 0) {
-            return createSingleColoredImage(context.getScreenInfo(), Color.WHITE);
+            return ChartUtil.createLoadingImage(context.getScreenInfo());
         }
 
         // create dataset
@@ -58,8 +62,21 @@ public class TrendScreenChartFactory implements Factory<TrendScreen, BufferedIma
         // create renderer
         DefaultCategoryItemRenderer defaultCategoryItemRenderer = new DefaultCategoryItemRenderer();
 
+        Color lineColor;
+        switch (historicalAnalysis) {
+            case GOING_UP:
+                lineColor = Color.GREEN;
+                break;
+            case GOING_DOWN:
+                lineColor = Color.RED;
+                break;
+            default:
+                lineColor = Color.WHITE;
+                break;
+        }
+
         // set stroke of line to thick-ish green
-        defaultCategoryItemRenderer.setSeriesPaint(0, Color.GREEN);
+        defaultCategoryItemRenderer.setSeriesPaint(0, lineColor);
         defaultCategoryItemRenderer.setSeriesStroke(0, new BasicStroke(5.0f));
         defaultCategoryItemRenderer.setLegendTextPaint(0, Color.WHITE);
 
@@ -69,23 +86,6 @@ public class TrendScreenChartFactory implements Factory<TrendScreen, BufferedIma
 
         return chart.createBufferedImage(context.getScreenInfo().getWidth(), context.getScreenInfo().getHeight());
     }
-
-    /**
-     * Create single colored image
-     *
-     * @param screenInfo screen info
-     * @param color      color
-     * @return image
-     */
-    private static BufferedImage createSingleColoredImage(ScreenInfo screenInfo, Color color) {
-        BufferedImage image = new BufferedImage(screenInfo.getWidth(), screenInfo.getHeight(), 1);
-        Graphics2D graphics = image.createGraphics();
-        graphics.setPaint(color);
-        graphics.fillRect(0, 0, image.getWidth(), image.getHeight());
-        graphics.dispose();
-        return image;
-    }
-
 
     /**
      * Returns the lowest quote given data

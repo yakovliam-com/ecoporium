@@ -38,8 +38,12 @@ public class Storage {
      *
      * @param user user
      */
-    public void saveUser(EcoporiumUser user) {
-        CompletableFuture.runAsync(() -> this.storageImplementation.saveUser(user));
+    public void saveUser(EcoporiumUser user, boolean asynchronous) {
+        if (asynchronous) {
+            CompletableFuture.runAsync(() -> this.storageImplementation.saveUser(user));
+        } else {
+            this.storageImplementation.saveUser(user);
+        }
     }
 
     /**

@@ -43,6 +43,20 @@ public class TrendScreenManager implements Manager {
     }
 
     /**
+     * Returns a trend screen with a certain map id
+     *
+     * @param mapId map id
+     * @return screen
+     */
+    public TrendScreen getByMapId(int mapId) {
+        return this.trendScreenMap.values().stream()
+                .filter(s -> s.getMapInfo().getMapIds().contains(mapId))
+                .findFirst()
+                .orElse(null);
+    }
+
+
+    /**
      * Removes a trend screen fom the map
      *
      * @param trendScreen trend screen

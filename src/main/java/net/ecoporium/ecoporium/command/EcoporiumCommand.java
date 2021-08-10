@@ -3,30 +3,26 @@ package net.ecoporium.ecoporium.command;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.CommandHelp;
 import co.aikar.commands.InvalidCommandArgument;
-import co.aikar.commands.annotation.*;
 import co.aikar.commands.annotation.Optional;
-import com.github.johnnyjayjay.spigotmaps.util.Compatibility;
+import co.aikar.commands.annotation.*;
 import net.ecoporium.ecoporium.EcoporiumPlugin;
 import net.ecoporium.ecoporium.api.message.Message;
 import net.ecoporium.ecoporium.api.wrapper.Pair;
-import net.ecoporium.ecoporium.market.FakeMarket;
-import net.ecoporium.ecoporium.market.Market;
-import net.ecoporium.ecoporium.market.MarketCache;
-import net.ecoporium.ecoporium.market.MarketType;
-import net.ecoporium.ecoporium.market.RealMarket;
+import net.ecoporium.ecoporium.market.*;
 import net.ecoporium.ecoporium.market.factory.FakeMarketFactory;
 import net.ecoporium.ecoporium.market.factory.RealMarketFactory;
 import net.ecoporium.ecoporium.market.stock.StockTicker;
 import net.ecoporium.ecoporium.market.stock.fake.FakeStockTicker;
-import net.ecoporium.ecoporium.market.stock.real.RealStockTicker;
 import net.ecoporium.ecoporium.market.stock.fake.FakeStockTickerFactory;
+import net.ecoporium.ecoporium.market.stock.real.RealStockTicker;
 import net.ecoporium.ecoporium.screen.TrendScreen;
-import net.ecoporium.ecoporium.screen.info.MapInfo;
 import net.ecoporium.ecoporium.screen.info.ScreenInfo;
 import net.ecoporium.ecoporium.util.ScreenCalculationUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.MapMeta;
@@ -242,13 +238,12 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
     }
 
     @CommandAlias("ecoporium")
-    @Subcommand("createscreen")
-    public class CreateCommand extends BaseCommand {
+    @Subcommand("screen")
+    public class ScreenCommand extends BaseCommand {
 
-        @Subcommand("start")
-        @Description("Starts creating a trend screen")
-        @Default
-        public void onStart(Player player, @Single String market, @Single String symbol, @Syntax("EXAMPLES: 5x5 or 7x7") @Single String dimensions) {
+        @Subcommand("create")
+        @Description("Creates a trend screen through a placement session")
+        public void onCreate(Player player, @Single String market, @Single String symbol, @Syntax("EXAMPLES: 5x5 or 7x7") @Single String dimensions) {
             plugin.getMessages().retrievingMarket.message(player);
 
             // if already in a session
@@ -256,7 +251,7 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
                 plugin.getMessages().screenCreateAlreadyInSession.message(player);
             }
 
-            // does market already exist?
+            // does the market exist?
             plugin.getMarketCache().getCache().get(market).thenAccept(marketObj -> {
                 // if doesn't exist
                 if (marketObj == null) {
@@ -289,8 +284,9 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
             });
         }
 
-        @Subcommand("cancel")
-        public void onCancel(Player player) {
+        @Subcommand("cancelsession")
+        @Description("Cancels an ongoing creation session")
+        public void onCancelSession(Player player) {
             Pair<UUID, LinkedList<ItemStack>> queue = plugin.getMapPlacementHandler().getPlayerItemPlaceQueue().get(player.getUniqueId());
 
             if (queue == null) {
@@ -309,6 +305,43 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
 
             // message
             plugin.getMessages().screenCreateCanceled.message(player);
+        }
+
+        @Subcommand("delete")
+        @Description("Deletes a trend screen that the player is looking at")
+        public void onDelete(Player player) {
+            // get point the player is looking at
+            Block targetBlock = player.getTargetBlockExact(15);
+
+            // get entities nearby, see if item frame
+            MapView mapView = Objects.requireNonNull(Objects.requireNonNull(targetBlock).getLocation().getWorld()).getNearbyEntities(targetBlock.getLocation(), 5, 5, 5).stream()
+                    .filter(e -> e instanceof ItemFrame)
+                    .map(e -> (ItemFrame) e)
+                    .filter(i -> i.getItem().getType().equals(Material.FILLED_MAP))
+                    .map(i -> ((MapMeta) Objects.requireNonNull(i.getItem().getItemMeta())).getMapView())
+                    .findFirst()
+                    .orElse(null);
+
+            if (mapView == null) {
+                // can't find screen
+                plugin.getMessages().screenCantFind.message(player);
+                return;
+            }
+
+            // get trend screen
+            TrendScreen trendScreen = plugin.getTrendScreenManager().getByMapId(mapView.getId());
+
+            if (trendScreen == null) {
+                plugin.getMessages().screenCantFind.message(player);
+                return;
+            }
+
+            // delete / remove
+            trendScreen.stopScreen();
+            plugin.getTrendScreenManager().removeTrendScreen(trendScreen);
+            plugin.getStorage().deleteTrendScreen(trendScreen);
+
+            plugin.getMessages().screenDeleted.message(player);
         }
     }
 

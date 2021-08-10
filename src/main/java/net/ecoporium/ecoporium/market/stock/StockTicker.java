@@ -116,4 +116,26 @@ public abstract class StockTicker<T> {
     public synchronized LinkedList<SimpleStockQuote> getHistory() {
         return this.history;
     }
+
+    /**
+     * Returns the historical analysis of the current data
+     *
+     * @return hist analysis
+     */
+    public HistoricalAnalysis getHistoricalAnalysis() {
+        if (this.history.size() < 2) {
+            return HistoricalAnalysis.NOT_APPLICABLE;
+        }
+
+        // get last two
+        float lastPrice = this.history.getLast().getPrice();
+        float secondToLastPrice = this.history.get(this.history.size() - 2).getPrice();
+
+        // analyze
+        if (lastPrice > secondToLastPrice) {
+            return HistoricalAnalysis.GOING_UP;
+        } else {
+            return HistoricalAnalysis.GOING_DOWN;
+        }
+    }
 }

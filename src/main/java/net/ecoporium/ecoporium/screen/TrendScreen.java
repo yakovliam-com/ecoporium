@@ -9,7 +9,6 @@ import net.ecoporium.ecoporium.screen.info.ScreenInfo;
 import net.ecoporium.ecoporium.screen.renderer.AbstractMapImageRenderer;
 import net.ecoporium.ecoporium.screen.renderer.ImageRenderer;
 import net.ecoporium.ecoporium.screen.task.ScreenRenderTask;
-import net.ecoporium.ecoporium.screen.trend.TrendImageCache;
 import net.ecoporium.ecoporium.util.ScreenCalculationUtil;
 import org.bukkit.Bukkit;
 

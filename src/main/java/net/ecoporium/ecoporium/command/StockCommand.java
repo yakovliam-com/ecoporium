@@ -63,7 +63,7 @@ public class StockCommand extends AbstractEcoporiumCommand {
             // give user shares
             user.addShares(marketObj.getHandle(), stockTicker.getSymbol(), amountToBuy);
             // save user
-            plugin.getStorage().saveUser(user);
+            plugin.getStorage().saveUser(user, true);
 
             // withdraw
             plugin.getEconomy().withdrawPlayer(player, amountNeededToBuy);
@@ -119,7 +119,7 @@ public class StockCommand extends AbstractEcoporiumCommand {
             // remove user shares
             user.removeShares(marketObj.getHandle(), stockTicker.getSymbol(), amountToSell);
             // save user
-            plugin.getStorage().saveUser(user);
+            plugin.getStorage().saveUser(user, true);
 
             plugin.getMessages().stockSellSold.message(player,
                     "%shares%", Integer.toString(amountToSell),

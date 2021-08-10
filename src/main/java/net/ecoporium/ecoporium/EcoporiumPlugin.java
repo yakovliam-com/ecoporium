@@ -101,9 +101,7 @@ public class EcoporiumPlugin extends Plugin {
     @Override
     public void onDisable() {
         // save users
-        getUserCache().getCache().synchronous().asMap().values().forEach(user -> getStorage().saveUser(user));
-        // save markets
-        getMarketCache().getCache().synchronous().asMap().values().forEach(market -> getStorage().saveMarket(market));
+        getUserCache().getCache().synchronous().asMap().values().forEach(user -> getStorage().saveUser(user, false));
     }
 
     /**

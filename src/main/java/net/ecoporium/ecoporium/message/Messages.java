@@ -77,6 +77,16 @@ public class Messages {
             .addLine("&7Canceled.")
             .build();
 
+    // screen cant find
+    public Message screenCantFind = Message.builder()
+            .addLine("&7Can't find a screen that you're looking at")
+            .build();
+
+    // screen deleted
+    public final Message screenDeleted = Message.builder()
+            .addLine("&7Screen deleted.")
+            .build();
+
     /**
      * Stock command
      */

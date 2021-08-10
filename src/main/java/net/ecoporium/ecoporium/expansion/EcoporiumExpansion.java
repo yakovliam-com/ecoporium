@@ -74,6 +74,29 @@ public class EcoporiumExpansion extends PlaceholderExpansion {
             return NumberUtil.formatToPlaces(ticker.getCurrentQuote().getPrice(), 2);
         }
 
+        if(request.equalsIgnoreCase("direction") || request.equalsIgnoreCase("historical-analysis")){
+            if (parts.length != 3) {
+                return null;
+            }
+
+            String marketHandle = parts[1];
+            String symbol = parts[2];
+
+            Market<?> market = plugin.getMarketCache().getCache().get(marketHandle).join();
+
+            if (market == null) {
+                return null;
+            }
+
+            if (!market.containsStock(symbol)) {
+                return null;
+            }
+
+            StockTicker<?> ticker = market.getStock(symbol);
+
+            return ticker.getHistoricalAnalysis().name();
+        }
+
         if (request.equalsIgnoreCase("player-shares")) {
             if (parts.length != 3) {
                 return null;
