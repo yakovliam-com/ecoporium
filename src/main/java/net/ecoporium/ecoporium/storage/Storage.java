@@ -16,11 +16,6 @@ public class Storage {
     private final StorageImplementation storageImplementation;
 
     /**
-     * Ecoporium plugin
-     */
-    private final EcoporiumPlugin plugin;
-
-    /**
      * Storage
      *
      * @param storageImplementation storage implementation
@@ -28,7 +23,9 @@ public class Storage {
      */
     public Storage(StorageImplementation storageImplementation, EcoporiumPlugin plugin) {
         this.storageImplementation = storageImplementation;
-        this.plugin = plugin;
+        /**
+         * Ecoporium plugin
+         */
     }
 
     /**

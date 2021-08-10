@@ -40,7 +40,7 @@ public abstract class StockTicker<T> {
     /**
      * The local quote history (since instantiation)
      */
-    protected LinkedList<SimpleStockQuote> history;
+    protected final LinkedList<SimpleStockQuote> history;
 
     /**
      * Stock

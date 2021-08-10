@@ -13,7 +13,7 @@ import org.spongepowered.configurate.serialize.TypeSerializer;
 import java.lang.reflect.Type;
 import java.util.List;
 
-public class StockTickerSerializer implements TypeSerializer<StockTicker> {
+public class StockTickerSerializer implements TypeSerializer<StockTicker<?>> {
 
     /**
      * Instance
@@ -44,7 +44,7 @@ public class StockTickerSerializer implements TypeSerializer<StockTicker> {
      * @since 4.0.0
      */
     @Override
-    public StockTicker deserialize(Type type, ConfigurationNode node) throws SerializationException {
+    public StockTicker<?> deserialize(Type type, ConfigurationNode node) throws SerializationException {
         StockType stockType = node.node("type").get(StockType.class);
         String symbol = node.node("symbol").getString();
 

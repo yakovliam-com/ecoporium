@@ -12,13 +12,11 @@ import net.ecoporium.ecoporium.screen.task.ScreenRenderTask;
 import net.ecoporium.ecoporium.screen.trend.TrendImageCache;
 import net.ecoporium.ecoporium.util.ScreenCalculationUtil;
 import org.bukkit.Bukkit;
-import org.bukkit.map.MapView;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -85,6 +83,7 @@ public class TrendScreen {
         Iterator<ImageRenderer> iterator = this.rendererList.iterator();
 
         // get all maps, and apply the renderers to all, so that they update whenever the renderers update
+        //noinspection deprecation
         this.mapInfo.getMapIds().stream()
                 .map(Bukkit::getMap)
                 .forEach(map -> {

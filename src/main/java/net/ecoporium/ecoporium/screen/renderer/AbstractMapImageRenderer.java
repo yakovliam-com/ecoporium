@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class AbstractMapImageRenderer extends MapRenderer {
 
@@ -43,7 +44,7 @@ public abstract class AbstractMapImageRenderer extends MapRenderer {
         this.shouldRenderImage = false;
     }
 
-    public final void render(MapView map, MapCanvas canvas, Player player) {
+    public final void render(@NotNull MapView map, @NotNull MapCanvas canvas, @NotNull Player player) {
         RenderContext context = RenderContext.create(map, canvas, player);
         if (this.mayRender(context)) {
             this.render(context);
@@ -118,7 +119,7 @@ public abstract class AbstractMapImageRenderer extends MapRenderer {
         }
 
         public U addPlayers(Player... players) {
-            return (U) this.addPlayers((Collection<Player>) Arrays.asList(players));
+            return this.addPlayers(Arrays.asList(players));
         }
 
         public U renderOnce(boolean renderOnce) {

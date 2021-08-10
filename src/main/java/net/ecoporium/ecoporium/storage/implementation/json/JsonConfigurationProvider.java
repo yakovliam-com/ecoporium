@@ -3,7 +3,6 @@ package net.ecoporium.ecoporium.storage.implementation.json;
 import com.google.common.collect.Table;
 import io.leangen.geantyref.TypeToken;
 import net.ecoporium.ecoporium.EcoporiumPlugin;
-import net.ecoporium.ecoporium.api.wrapper.Pair;
 import net.ecoporium.ecoporium.market.Market;
 import net.ecoporium.ecoporium.market.stock.StockTicker;
 import net.ecoporium.ecoporium.storage.implementation.json.serializer.market.MarketSerializer;
@@ -18,6 +17,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Objects;
 
 public class JsonConfigurationProvider {
 
@@ -79,7 +79,7 @@ public class JsonConfigurationProvider {
             }
 
             try (InputStream is = getClass().getClassLoader().getResourceAsStream(path)) {
-                Files.copy(is, configFile);
+                Files.copy(Objects.requireNonNull(is), configFile);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

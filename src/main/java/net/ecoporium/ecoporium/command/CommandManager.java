@@ -9,6 +9,7 @@ import java.util.Arrays;
 
 public class CommandManager extends BukkitCommandManager {
 
+    @SuppressWarnings("deprecation")
     public CommandManager(EcoporiumPlugin plugin) {
         super(plugin);
 

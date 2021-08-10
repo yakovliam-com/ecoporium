@@ -12,7 +12,6 @@ import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
-import com.github.johnnyjayjay.spigotmaps.RenderedMap;
 import com.github.johnnyjayjay.spigotmaps.util.Compatibility;
 import net.ecoporium.ecoporium.EcoporiumPlugin;
 import net.ecoporium.ecoporium.api.message.Message;
@@ -284,7 +283,7 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
     private ItemStack createItemStack(MapView mapView, String displayName, String... lore) {
         ItemStack itemStack = new ItemStack(Compatibility.isLegacy() ? Material.MAP : Material.FILLED_MAP);
         MapMeta mapMeta = (MapMeta) itemStack.getItemMeta();
-        mapMeta.setMapView(mapView);
+        Objects.requireNonNull(mapMeta).setMapView(mapView);
         mapMeta.setDisplayName(displayName);
         mapMeta.setLore(lore.length == 0 ? null : Arrays.asList(lore));
         itemStack.setItemMeta(mapMeta);

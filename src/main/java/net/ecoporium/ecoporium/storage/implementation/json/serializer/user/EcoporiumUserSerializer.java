@@ -2,7 +2,6 @@ package net.ecoporium.ecoporium.storage.implementation.json.serializer.user;
 
 import com.google.common.collect.Table;
 import io.leangen.geantyref.TypeToken;
-import net.ecoporium.ecoporium.api.wrapper.Pair;
 import net.ecoporium.ecoporium.user.EcoporiumUser;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.configurate.ConfigurationNode;
@@ -10,7 +9,6 @@ import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.serialize.TypeSerializer;
 
 import java.lang.reflect.Type;
-import java.util.LinkedHashMap;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -70,7 +68,7 @@ public class EcoporiumUserSerializer implements TypeSerializer<EcoporiumUser> {
      */
     @Override
     public void serialize(Type type, @Nullable EcoporiumUser obj, ConfigurationNode node) throws SerializationException {
-        node.node("uuid").set(obj.getUuid().toString());
+        node.node("uuid").set(Objects.requireNonNull(obj).getUuid().toString());
         node.node("sharesOwnedTable").set(tableType, obj.getSharesOwnedTable());
     }
 }
