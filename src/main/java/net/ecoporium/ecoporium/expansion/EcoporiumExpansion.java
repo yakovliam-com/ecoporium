@@ -75,7 +75,7 @@ public class EcoporiumExpansion extends PlaceholderExpansion {
                 if (fakeStockTicker == null) {
                     return null;
                 }
-                return NumberUtil.formatToPlaces(fakeStockTicker.getQuote(), 2);
+                return NumberUtil.formatToPlaces(fakeStockTicker.getCurrentQuote().getPrice(), 2);
             } else if (market.getMarketType() == MarketType.REAL) {
                 RealMarket realMarket = (RealMarket) market;
                 RealStockTicker realStockTicker = realMarket.getTickerCache().get(symbol);

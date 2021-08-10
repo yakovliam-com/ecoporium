@@ -82,7 +82,7 @@ public class StockTickerSerializer implements TypeSerializer<StockTicker> {
             FakeStockTicker fakeStockTicker = (FakeStockTicker) obj;
 
             node.node("aliases").set(fakeStockTicker.getAliases());
-            node.node("previousClosingPrice").set(fakeStockTicker.getQuote());
+            node.node("previousClosingPrice").set(fakeStockTicker.getCurrentQuote().getPrice());
         }
     }
 }

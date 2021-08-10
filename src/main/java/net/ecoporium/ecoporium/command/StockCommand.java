@@ -1,20 +1,10 @@
 package net.ecoporium.ecoporium.command;
 
 import co.aikar.commands.CommandHelp;
-import co.aikar.commands.annotation.CatchUnknown;
-import co.aikar.commands.annotation.CommandAlias;
-import co.aikar.commands.annotation.CommandPermission;
-import co.aikar.commands.annotation.Default;
-import co.aikar.commands.annotation.Description;
-import co.aikar.commands.annotation.HelpCommand;
-import co.aikar.commands.annotation.Single;
-import co.aikar.commands.annotation.Subcommand;
+import co.aikar.commands.annotation.*;
 import net.ecoporium.ecoporium.EcoporiumPlugin;
 import net.ecoporium.ecoporium.api.message.Message;
-import net.ecoporium.ecoporium.market.stock.fake.FakeStockTicker;
-import net.ecoporium.ecoporium.market.stock.real.RealStockTicker;
 import net.ecoporium.ecoporium.market.stock.StockTicker;
-import net.ecoporium.ecoporium.market.stock.StockType;
 import net.ecoporium.ecoporium.user.EcoporiumUser;
 import net.ecoporium.ecoporium.util.NumberUtil;
 import org.bukkit.command.CommandSender;
@@ -56,17 +46,7 @@ public class StockCommand extends AbstractEcoporiumCommand {
             }
 
             StockTicker<?> stockTicker = marketObj.getStock(symbol);
-
-            if (stockTicker.getStockType() == StockType.FAKE) {
-                FakeStockTicker fakeStockTicker = (FakeStockTicker) stockTicker;
-                pricePerShare = fakeStockTicker.getQuote();
-            } else if (stockTicker.getStockType() == StockType.REAL) {
-                RealStockTicker realStockTicker = (RealStockTicker) stockTicker;
-                pricePerShare = realStockTicker.getCurrentStockData().getQuote().getPrice().floatValue();
-            } else {
-                plugin.getMessages().somethingWentWrong.message(player);
-                return;
-            }
+            pricePerShare = stockTicker.getCurrentQuote().getPrice();
 
             // if the user has enough to pay for the stocks they are buying
             float amountNeededToBuy = pricePerShare * amountToBuy;
@@ -118,17 +98,7 @@ public class StockCommand extends AbstractEcoporiumCommand {
             }
 
             StockTicker<?> stockTicker = marketObj.getStock(symbol);
-
-            if (stockTicker.getStockType() == StockType.FAKE) {
-                FakeStockTicker fakeStockTicker = (FakeStockTicker) stockTicker;
-                pricePerShare = fakeStockTicker.getQuote();
-            } else if (stockTicker.getStockType() == StockType.REAL) {
-                RealStockTicker realStockTicker = (RealStockTicker) stockTicker;
-                pricePerShare = realStockTicker.getCurrentStockData().getQuote().getPrice().floatValue();
-            } else {
-                plugin.getMessages().somethingWentWrong.message(player);
-                return;
-            }
+            pricePerShare = stockTicker.getCurrentQuote().getPrice();
 
             // get user
             EcoporiumUser user = plugin.getUserCache().getCache().get(player.getUniqueId()).join();

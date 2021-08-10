@@ -12,6 +12,8 @@ import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
+import com.github.johnnyjayjay.spigotmaps.RenderedMap;
+import com.github.johnnyjayjay.spigotmaps.util.Compatibility;
 import net.ecoporium.ecoporium.EcoporiumPlugin;
 import net.ecoporium.ecoporium.api.message.Message;
 import net.ecoporium.ecoporium.api.wrapper.Pair;
@@ -22,15 +24,22 @@ import net.ecoporium.ecoporium.market.MarketType;
 import net.ecoporium.ecoporium.market.RealMarket;
 import net.ecoporium.ecoporium.market.factory.FakeMarketFactory;
 import net.ecoporium.ecoporium.market.factory.RealMarketFactory;
+import net.ecoporium.ecoporium.market.stock.StockTicker;
 import net.ecoporium.ecoporium.market.stock.fake.FakeStockTicker;
 import net.ecoporium.ecoporium.market.stock.real.RealStockTicker;
 import net.ecoporium.ecoporium.market.stock.fake.FakeStockTickerFactory;
+import net.ecoporium.ecoporium.screen.TrendScreen;
+import net.ecoporium.ecoporium.screen.info.MapInfo;
+import net.ecoporium.ecoporium.screen.info.ScreenInfo;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.MapMeta;
+import org.bukkit.map.MapView;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @CommandAlias("ecoporium")
 @CommandPermission("ecoporium.command.ecoporium")
@@ -52,11 +61,11 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
 
         @Subcommand("create")
         @CommandPermission("ecoporium.command.ecoporium.market.create")
-        public void onMarketCreate(Player player, @Single String handle, @Syntax("<market type>") @Single MarketType marketType) {
+        public void onMarketCreate(Player player, @Single String market, @Syntax("<market type>") @Single MarketType marketType) {
             MarketCache marketCache = plugin.getMarketCache();
 
             // does market already exist?
-            Market<?> marketPresent = marketCache.getCache().synchronous().getIfPresent(handle);
+            Market<?> marketPresent = marketCache.getCache().synchronous().getIfPresent(market);
 
             if (marketPresent != null) {
                 // exists already
@@ -64,13 +73,13 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
                 return;
             }
 
-            Market<?> market;
+            Market<?> marketObj;
 
             // create new market
             if (marketType == MarketType.FAKE) {
-                market = new FakeMarketFactory().build(handle);
+                marketObj = new FakeMarketFactory().build(market);
             } else if (marketType == MarketType.REAL) {
-                market = new RealMarketFactory().build(handle);
+                marketObj = new RealMarketFactory().build(market);
             } else {
                 // something went wrong
                 plugin.getMessages().somethingWentWrong.message(player);
@@ -82,8 +91,8 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
 
             // save market in storage, load into cache (async)
             Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-                plugin.getStorage().saveMarket(market);
-                plugin.getMarketCache().getCache().get(market.getHandle());
+                plugin.getStorage().saveMarket(marketObj);
+                plugin.getMarketCache().getCache().get(marketObj.getHandle());
             });
         }
 
@@ -237,6 +246,49 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
                 builder.build().message(player);
             });
         }
+    }
+
+    @Subcommand("test")
+    public void onTest(Player player, @Single String market, @Single String symbol) {
+        plugin.getMessages().retrievingMarket.message(player);
+
+        // does market already exist?
+        plugin.getMarketCache().getCache().get(market).thenAccept(marketObj -> {
+            // if doesn't exist
+            if (marketObj == null) {
+                plugin.getMessages().marketNonexistent.message(player);
+                return;
+            }
+
+            // does the stock exist?
+            if (!marketObj.containsStock(symbol)) {
+                plugin.getMessages().marketSymbolDoesntExist.message(player);
+                return;
+            }
+
+            StockTicker<?> stockTicker = marketObj.getStock(symbol);
+
+            // create maps
+            MapView singleMapView = Bukkit.createMap(player.getWorld());
+
+            // give to player
+            player.getInventory().addItem(createItemStack(singleMapView, "Ticker screen for " + stockTicker.getSymbol()));
+            player.updateInventory();
+
+            // create trend screen
+            TrendScreen screen = new TrendScreen(marketObj, stockTicker, new ScreenInfo(128, 128), new MapInfo(Collections.singletonList(singleMapView.getId())));
+            screen.startScreen(plugin);
+        });
+    }
+
+    private ItemStack createItemStack(MapView mapView, String displayName, String... lore) {
+        ItemStack itemStack = new ItemStack(Compatibility.isLegacy() ? Material.MAP : Material.FILLED_MAP);
+        MapMeta mapMeta = (MapMeta) itemStack.getItemMeta();
+        mapMeta.setMapView(mapView);
+        mapMeta.setDisplayName(displayName);
+        mapMeta.setLore(lore.length == 0 ? null : Arrays.asList(lore));
+        itemStack.setItemMeta(mapMeta);
+        return itemStack;
     }
 
     @HelpCommand

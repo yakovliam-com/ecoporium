@@ -55,6 +55,7 @@ public abstract class StockTicker<T> {
         this.aliases = aliases;
         this.stock = stock;
         this.stockType = stockType;
+        this.history = new LinkedList<>();
     }
 
     /**
