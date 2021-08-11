@@ -3,7 +3,6 @@ package net.ecoporium.ecoporium.market;
 import net.ecoporium.ecoporium.market.stock.StockTicker;
 
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public abstract class Market<T extends StockTicker<?>> {
 

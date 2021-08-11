@@ -4,8 +4,8 @@ import net.ecoporium.ecoporium.market.FakeMarket;
 import net.ecoporium.ecoporium.market.Market;
 import net.ecoporium.ecoporium.market.MarketType;
 import net.ecoporium.ecoporium.market.RealMarket;
-import net.ecoporium.ecoporium.market.stock.FakeStockTicker;
-import net.ecoporium.ecoporium.market.stock.RealStockTicker;
+import net.ecoporium.ecoporium.market.stock.fake.FakeStockTicker;
+import net.ecoporium.ecoporium.market.stock.real.RealStockTicker;
 import net.ecoporium.ecoporium.market.stock.StockTicker;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.configurate.ConfigurationNode;
@@ -15,6 +15,7 @@ import org.spongepowered.configurate.serialize.TypeSerializer;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -54,11 +55,11 @@ public class MarketSerializer implements TypeSerializer<Market<?>> {
         MarketType marketType = node.node("type").get(MarketType.class);
 
         // deserialize ticker cache
-        List<StockTicker> tickers = node.node("stocks").getList(StockTicker.class);
+        @SuppressWarnings("rawtypes") List<StockTicker> tickers = node.node("stocks").getList(StockTicker.class);
 
         // type of market
         if (marketType == MarketType.FAKE) {
-            List<FakeStockTicker> fakeStockTickers = tickers.stream()
+            List<FakeStockTicker> fakeStockTickers = Objects.requireNonNull(tickers).stream()
                     .map(t -> (FakeStockTicker) t)
                     .collect(Collectors.toList());
 
@@ -67,7 +68,7 @@ public class MarketSerializer implements TypeSerializer<Market<?>> {
 
             return new FakeMarket(handle, tickerCache);
         } else if (marketType == MarketType.REAL) {
-            List<RealStockTicker> realStockTickers = tickers.stream()
+            List<RealStockTicker> realStockTickers = Objects.requireNonNull(tickers).stream()
                     .map(t -> (RealStockTicker) t)
                     .collect(Collectors.toList());
 
@@ -98,7 +99,7 @@ public class MarketSerializer implements TypeSerializer<Market<?>> {
         node.node("handle").set(obj.getHandle());
         node.node("type").set(obj.getMarketType().name());
 
-        List<StockTicker> tickers = (List<StockTicker>) obj.getTickerCache().values().stream()
+        @SuppressWarnings({"unchecked", "rawtypes"}) List<StockTicker> tickers = (List<StockTicker>) obj.getTickerCache().values().stream()
                 .collect(Collectors.toList());
         node.node("stocks").setList(StockTicker.class, tickers);
     }

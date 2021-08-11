@@ -1,8 +1,8 @@
 package net.ecoporium.ecoporium.storage.implementation.json.serializer.stock;
 
-import net.ecoporium.ecoporium.market.stock.FakeStockProvider;
-import net.ecoporium.ecoporium.market.stock.FakeStockTicker;
-import net.ecoporium.ecoporium.market.stock.RealStockTicker;
+import net.ecoporium.ecoporium.market.stock.fake.FakeStockProvider;
+import net.ecoporium.ecoporium.market.stock.fake.FakeStockTicker;
+import net.ecoporium.ecoporium.market.stock.real.RealStockTicker;
 import net.ecoporium.ecoporium.market.stock.StockTicker;
 import net.ecoporium.ecoporium.market.stock.StockType;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -13,7 +13,7 @@ import org.spongepowered.configurate.serialize.TypeSerializer;
 import java.lang.reflect.Type;
 import java.util.List;
 
-public class StockTickerSerializer implements TypeSerializer<StockTicker> {
+public class StockTickerSerializer implements TypeSerializer<StockTicker<?>> {
 
     /**
      * Instance
@@ -44,7 +44,7 @@ public class StockTickerSerializer implements TypeSerializer<StockTicker> {
      * @since 4.0.0
      */
     @Override
-    public StockTicker deserialize(Type type, ConfigurationNode node) throws SerializationException {
+    public StockTicker<?> deserialize(Type type, ConfigurationNode node) throws SerializationException {
         StockType stockType = node.node("type").get(StockType.class);
         String symbol = node.node("symbol").getString();
 
@@ -82,7 +82,7 @@ public class StockTickerSerializer implements TypeSerializer<StockTicker> {
             FakeStockTicker fakeStockTicker = (FakeStockTicker) obj;
 
             node.node("aliases").set(fakeStockTicker.getAliases());
-            node.node("previousClosingPrice").set(fakeStockTicker.getPrice());
+            node.node("previousClosingPrice").set(fakeStockTicker.getCurrentQuote().getPrice());
         }
     }
 }

@@ -4,15 +4,15 @@ import com.google.common.collect.HashBasedTable;
 import io.leangen.geantyref.TypeToken;
 import net.ecoporium.ecoporium.EcoporiumPlugin;
 import net.ecoporium.ecoporium.market.Market;
-import net.ecoporium.ecoporium.market.stock.StockTicker;
+import net.ecoporium.ecoporium.screen.TrendScreen;
 import net.ecoporium.ecoporium.storage.StorageImplementation;
 import net.ecoporium.ecoporium.user.EcoporiumUser;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 public class JsonStorageImplementation implements StorageImplementation {
@@ -33,6 +33,11 @@ public class JsonStorageImplementation implements StorageImplementation {
     private final JsonConfigurationProvider usersProvider;
 
     /**
+     * Screens provider
+     */
+    private final JsonConfigurationProvider trendScreensProvider;
+
+    /**
      * Market type
      */
     private final TypeToken<Market<?>> marketType = new io.leangen.geantyref.TypeToken<>() {
@@ -47,6 +52,7 @@ public class JsonStorageImplementation implements StorageImplementation {
         this.plugin = plugin;
         this.marketsProvider = new JsonConfigurationProvider(plugin, "markets.json");
         this.usersProvider = new JsonConfigurationProvider(plugin, "users.json");
+        this.trendScreensProvider = new JsonConfigurationProvider(plugin, "trend-screens.json");
 
         // init
         init();
@@ -60,6 +66,7 @@ public class JsonStorageImplementation implements StorageImplementation {
         // resolves the path which creates the files if they don't already exist
         marketsProvider.load();
         usersProvider.load();
+        trendScreensProvider.load();
     }
 
     /**
@@ -79,7 +86,7 @@ public class JsonStorageImplementation implements StorageImplementation {
             List<EcoporiumUser> userList = node.getList(EcoporiumUser.class);
 
             // remove if exists
-            userList.removeIf(u -> u.getUuid().equals(user.getUuid()));
+            Objects.requireNonNull(userList).removeIf(u -> u.getUuid().equals(user.getUuid()));
             // add to list
             userList.add(user);
             // save to node
@@ -98,7 +105,7 @@ public class JsonStorageImplementation implements StorageImplementation {
         // get users list
         try {
             List<EcoporiumUser> userList = node.getList(EcoporiumUser.class);
-            EcoporiumUser ecoporiumUser = userList.stream()
+            EcoporiumUser ecoporiumUser = Objects.requireNonNull(userList).stream()
                     .filter(u -> u.getUuid().equals(uuid))
                     .findFirst()
                     .orElse(null);
@@ -127,7 +134,7 @@ public class JsonStorageImplementation implements StorageImplementation {
             List<Market<?>> marketList = node.getList(marketType);
 
             // remove if exists
-            marketList.removeIf(m -> m.getHandle().equals(market.getHandle()));
+            Objects.requireNonNull(marketList).removeIf(m -> m.getHandle().equals(market.getHandle()));
             // add to list
             marketList.add(market);
             // save to node
@@ -148,7 +155,7 @@ public class JsonStorageImplementation implements StorageImplementation {
             List<Market<?>> marketList = node.getList(marketType);
 
             // remove if exists
-            marketList.removeIf(m -> m.getHandle().equals(market.getHandle()));
+            Objects.requireNonNull(marketList).removeIf(m -> m.getHandle().equals(market.getHandle()));
             // save to node
             node.setList(marketType, marketList);
 
@@ -165,7 +172,7 @@ public class JsonStorageImplementation implements StorageImplementation {
         // get markets list
         try {
             List<Market<?>> marketList = node.getList(marketType);
-            return marketList.stream()
+            return Objects.requireNonNull(marketList).stream()
                     .filter(m -> m.getHandle().equals(handle))
                     .findFirst()
                     .orElse(null);
@@ -176,13 +183,73 @@ public class JsonStorageImplementation implements StorageImplementation {
         return null;
     }
 
+    @Override
+    public List<TrendScreen> loadTrendScreens() {
+        ConfigurationNode node = trendScreensProvider.getRoot().node("screens");
+        // get screens list
+        try {
+            return node.getList(TrendScreen.class);
+        } catch (SerializationException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    @Override
+    public void saveTrendScreen(TrendScreen trendScreen) {
+        ConfigurationNode node = trendScreensProvider.getRoot().node("screens");
+        // get screens list
+        try {
+            List<TrendScreen> trendScreens = node.getList(TrendScreen.class);
+            // remove trend screen that we're saving back (if it exists)
+            Objects.requireNonNull(trendScreens).removeIf(t -> t.getUuid().equals(trendScreen.getUuid()));
+            // add back to list
+            trendScreens.add(trendScreen);
+            // set list
+            node.setList(TrendScreen.class, trendScreens);
+            // save
+            save();
+        } catch (SerializationException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void deleteTrendScreen(TrendScreen trendScreen) {
+        ConfigurationNode node = trendScreensProvider.getRoot().node("screens");
+        // get screens list
+        try {
+            List<TrendScreen> trendScreens = node.getList(TrendScreen.class);
+            // remove trend screen
+            Objects.requireNonNull(trendScreens).removeIf(t -> t.getUuid().equals(trendScreen.getUuid()));
+            // set list
+            node.setList(TrendScreen.class, trendScreens);
+            // save
+            save();
+        } catch (SerializationException e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * Saves the file
      */
     private void save() {
         try {
             marketsProvider.getLoader().save(marketsProvider.getRoot());
+        } catch (ConfigurateException e) {
+            e.printStackTrace();
+        }
+
+        try {
             usersProvider.getLoader().save(usersProvider.getRoot());
+        } catch (ConfigurateException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            trendScreensProvider.getLoader().save(trendScreensProvider.getRoot());
         } catch (ConfigurateException e) {
             e.printStackTrace();
         }

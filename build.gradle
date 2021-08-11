@@ -30,8 +30,8 @@ repositories {
 }
 
 dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.2'
 
     compileOnly "org.spigotmc:spigot-api:1.17-R0.1-SNAPSHOT"
     compileOnly 'me.clip:placeholderapi:2.10.10'
@@ -46,7 +46,7 @@ dependencies {
     implementation "de.sfuhrm:YahooFinanceAPI:3.16.2"
     implementation "com.github.ben-manes.caffeine:caffeine:3.0.3"
     implementation "me.mattstudios:triumph-msg-adventure:2.2.4-SNAPSHOT"
-    implementation "org.spongepowered:configurate-gson:4.0.0"
+    implementation 'org.spongepowered:configurate-gson:4.1.1'
     implementation "org.jfree:jfreechart:1.5.3"
     implementation files('libs/spigot-maps-2.1.1.jar')
 

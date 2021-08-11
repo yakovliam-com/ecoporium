@@ -2,7 +2,6 @@ package net.ecoporium.ecoporium.storage.implementation.json.serializer.table;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
-import net.ecoporium.ecoporium.storage.implementation.json.serializer.market.MarketSerializer;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;

@@ -1,6 +1,6 @@
 package net.ecoporium.ecoporium.market;
 
-import net.ecoporium.ecoporium.market.stock.FakeStockTicker;
+import net.ecoporium.ecoporium.market.stock.fake.FakeStockTicker;
 
 import java.util.Map;
 

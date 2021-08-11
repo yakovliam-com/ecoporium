@@ -3,34 +3,32 @@ package net.ecoporium.ecoporium.command;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.CommandHelp;
 import co.aikar.commands.InvalidCommandArgument;
-import co.aikar.commands.annotation.CatchUnknown;
-import co.aikar.commands.annotation.CommandAlias;
-import co.aikar.commands.annotation.CommandPermission;
-import co.aikar.commands.annotation.Default;
-import co.aikar.commands.annotation.HelpCommand;
 import co.aikar.commands.annotation.Optional;
-import co.aikar.commands.annotation.Single;
-import co.aikar.commands.annotation.Subcommand;
-import co.aikar.commands.annotation.Syntax;
+import co.aikar.commands.annotation.*;
 import net.ecoporium.ecoporium.EcoporiumPlugin;
 import net.ecoporium.ecoporium.api.message.Message;
 import net.ecoporium.ecoporium.api.wrapper.Pair;
-import net.ecoporium.ecoporium.market.FakeMarket;
-import net.ecoporium.ecoporium.market.Market;
-import net.ecoporium.ecoporium.market.MarketCache;
-import net.ecoporium.ecoporium.market.MarketType;
-import net.ecoporium.ecoporium.market.RealMarket;
+import net.ecoporium.ecoporium.market.*;
 import net.ecoporium.ecoporium.market.factory.FakeMarketFactory;
 import net.ecoporium.ecoporium.market.factory.RealMarketFactory;
-import net.ecoporium.ecoporium.market.stock.FakeStockTicker;
-import net.ecoporium.ecoporium.market.stock.RealStockTicker;
-import net.ecoporium.ecoporium.market.stock.factory.FakeStockTickerFactory;
+import net.ecoporium.ecoporium.market.stock.StockTicker;
+import net.ecoporium.ecoporium.market.stock.fake.FakeStockTicker;
+import net.ecoporium.ecoporium.market.stock.fake.FakeStockTickerFactory;
+import net.ecoporium.ecoporium.market.stock.real.RealStockTicker;
+import net.ecoporium.ecoporium.screen.TrendScreen;
+import net.ecoporium.ecoporium.screen.info.ScreenInfo;
+import net.ecoporium.ecoporium.util.ScreenCalculationUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.MapMeta;
+import org.bukkit.map.MapView;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @CommandAlias("ecoporium")
 @CommandPermission("ecoporium.command.ecoporium")
@@ -46,17 +44,27 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
         super(manager, plugin);
     }
 
+    @Subcommand("reload")
+    @CommandPermission("ecoporium.command.ecoporium.reload")
+    @Description("Reloads configuration values")
+    public void onReload(Player player) {
+        // reload config
+        plugin.getEcoporiumConfig().reload();
+
+        plugin.getMessages().reloaded.message(player);
+    }
+
     @CommandAlias("ecoporium")
     @Subcommand("market")
     public class MarketCommand extends BaseCommand {
 
         @Subcommand("create")
         @CommandPermission("ecoporium.command.ecoporium.market.create")
-        public void onMarketCreate(Player player, @Single String handle, @Syntax("<market type>") @Single MarketType marketType) {
+        public void onMarketCreate(Player player, @Single String market, @Syntax("<market type>") @Single MarketType marketType) {
             MarketCache marketCache = plugin.getMarketCache();
 
             // does market already exist?
-            Market<?> marketPresent = marketCache.getCache().synchronous().getIfPresent(handle);
+            Market<?> marketPresent = marketCache.getCache().synchronous().getIfPresent(market);
 
             if (marketPresent != null) {
                 // exists already
@@ -64,13 +72,13 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
                 return;
             }
 
-            Market<?> market;
+            Market<?> marketObj;
 
             // create new market
             if (marketType == MarketType.FAKE) {
-                market = new FakeMarketFactory().build(handle);
+                marketObj = new FakeMarketFactory().build(market);
             } else if (marketType == MarketType.REAL) {
-                market = new RealMarketFactory().build(handle);
+                marketObj = new RealMarketFactory().build(market);
             } else {
                 // something went wrong
                 plugin.getMessages().somethingWentWrong.message(player);
@@ -82,8 +90,8 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
 
             // save market in storage, load into cache (async)
             Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-                plugin.getStorage().saveMarket(market);
-                plugin.getMarketCache().getCache().get(market.getHandle());
+                plugin.getStorage().saveMarket(marketObj);
+                plugin.getMarketCache().getCache().get(marketObj.getHandle());
             });
         }
 
@@ -236,6 +244,117 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
                 symbols.forEach(s -> builder.addLine("&7- &f" + s));
                 builder.build().message(player);
             });
+        }
+    }
+
+    @CommandAlias("ecoporium")
+    @Subcommand("screen")
+    public class ScreenCommand extends BaseCommand {
+
+        @Subcommand("create")
+        @Description("Creates a trend screen through a placement session")
+        @CommandPermission("ecoporium.command.ecoporium.screen.create")
+        public void onCreate(Player player, @Single String market, @Single String symbol, @Syntax("EXAMPLES: 5x5 or 7x7") @Single String dimensions) {
+            plugin.getMessages().retrievingMarket.message(player);
+
+            // if already in a session
+            if (plugin.getMapPlacementHandler().getPlayerItemPlaceQueue().containsKey(player.getUniqueId())) {
+                plugin.getMessages().screenCreateAlreadyInSession.message(player);
+            }
+
+            // does the market exist?
+            plugin.getMarketCache().getCache().get(market).thenAccept(marketObj -> {
+                // if doesn't exist
+                if (marketObj == null) {
+                    plugin.getMessages().marketNonexistent.message(player);
+                    return;
+                }
+
+                // does the stock exist?
+                if (!marketObj.containsStock(symbol)) {
+                    plugin.getMessages().marketSymbolDoesntExist.message(player);
+                    return;
+                }
+
+                StockTicker<?> stockTicker = marketObj.getStock(symbol);
+
+                // calculate dimensions
+                Pair<Integer, Integer> dimensionsPair = ScreenCalculationUtil.parseDimensions(dimensions);
+
+                if (dimensionsPair == null) {
+                    // oops!
+                    plugin.getMessages().somethingWentWrong.message(player);
+                    return;
+                }
+
+                // parse into screen info
+                ScreenInfo screenInfo = ScreenCalculationUtil.constructFromMapSizeDimensions(dimensionsPair);
+
+                // call map placement handler to create screen
+                plugin.getMapPlacementHandler().createScreen(player, marketObj, stockTicker, screenInfo);
+            });
+        }
+
+        @Subcommand("cancelsession")
+        @Description("Cancels an ongoing creation session")
+        @CommandPermission("ecoporium.command.ecoporium.screen.cancel")
+        public void onCancelSession(Player player) {
+            Pair<UUID, LinkedList<ItemStack>> queue = plugin.getMapPlacementHandler().getPlayerItemPlaceQueue().get(player.getUniqueId());
+
+            if (queue == null) {
+                plugin.getMessages().screenCreateCancelNotInPlacementSession.message(player);
+                return;
+            }
+
+            // remove from handler
+            plugin.getMapPlacementHandler().getPlayerItemPlaceQueue().remove(player.getUniqueId());
+
+            TrendScreen trendScreen = plugin.getTrendScreenManager().getByUUID(queue.getLeft());
+            // remove from manager
+            plugin.getTrendScreenManager().removeTrendScreen(trendScreen);
+            // remove from storage
+            plugin.getStorage().deleteTrendScreen(trendScreen);
+
+            // message
+            plugin.getMessages().screenCreateCanceled.message(player);
+        }
+
+        @Subcommand("delete")
+        @Description("Deletes a trend screen that the player is looking at")
+        @CommandPermission("ecoporium.command.ecoporium.screen.delete")
+        public void onDelete(Player player) {
+            // get point the player is looking at
+            Block targetBlock = player.getTargetBlockExact(15);
+
+            // get entities nearby, see if item frame
+            MapView mapView = Objects.requireNonNull(Objects.requireNonNull(targetBlock).getLocation().getWorld()).getNearbyEntities(targetBlock.getLocation(), 5, 5, 5).stream()
+                    .filter(e -> e instanceof ItemFrame)
+                    .map(e -> (ItemFrame) e)
+                    .filter(i -> i.getItem().getType().equals(Material.FILLED_MAP))
+                    .map(i -> ((MapMeta) Objects.requireNonNull(i.getItem().getItemMeta())).getMapView())
+                    .findFirst()
+                    .orElse(null);
+
+            if (mapView == null) {
+                // can't find screen
+                plugin.getMessages().screenCantFind.message(player);
+                return;
+            }
+
+            // get trend screen
+            TrendScreen trendScreen = plugin.getTrendScreenManager().getByMapId(mapView.getId());
+
+            if (trendScreen == null) {
+                plugin.getMessages().screenCantFind.message(player);
+                return;
+            }
+
+            // delete / remove
+            trendScreen.stopScreen();
+            plugin.getTrendScreenManager().removeTrendScreen(trendScreen);
+            plugin.getStorage().deleteTrendScreen(trendScreen);
+
+            plugin.getMessages().screenDeleted.message(player);
         }
     }
 

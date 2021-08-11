@@ -1,4 +1,4 @@
-package net.ecoporium.ecoporium.market.stock;
+package net.ecoporium.ecoporium.market.stock.fake;
 
 import java.util.concurrent.ThreadLocalRandom;
 

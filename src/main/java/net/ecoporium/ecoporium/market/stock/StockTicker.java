@@ -1,8 +1,16 @@
 package net.ecoporium.ecoporium.market.stock;
 
+import net.ecoporium.ecoporium.market.stock.quote.SimpleStockQuote;
+
+import java.util.LinkedList;
 import java.util.List;
 
 public abstract class StockTicker<T> {
+
+    /**
+     * Maximum size before pop
+     */
+    protected static final int MAX_HISTORY_SIZE_BEFORE_POP = 30;
 
     /**
      * Symbol
@@ -25,6 +33,16 @@ public abstract class StockTicker<T> {
     private final StockType stockType;
 
     /**
+     * The current stock quote
+     */
+    protected SimpleStockQuote currentQuote;
+
+    /**
+     * The local quote history (since instantiation)
+     */
+    protected final LinkedList<SimpleStockQuote> history;
+
+    /**
      * Stock
      *
      * @param symbol    symbol
@@ -37,6 +55,7 @@ public abstract class StockTicker<T> {
         this.aliases = aliases;
         this.stock = stock;
         this.stockType = stockType;
+        this.history = new LinkedList<>();
     }
 
     /**
@@ -78,5 +97,45 @@ public abstract class StockTicker<T> {
      */
     public StockType getStockType() {
         return stockType;
+    }
+
+    /**
+     * Returns the current quote
+     *
+     * @return quote
+     */
+    public SimpleStockQuote getCurrentQuote() {
+        return currentQuote;
+    }
+
+    /**
+     * Returns the stock's history
+     *
+     * @return history
+     */
+    public synchronized LinkedList<SimpleStockQuote> getHistory() {
+        return this.history;
+    }
+
+    /**
+     * Returns the historical analysis of the current data
+     *
+     * @return hist analysis
+     */
+    public HistoricalAnalysis getHistoricalAnalysis() {
+        if (this.history.size() < 2) {
+            return HistoricalAnalysis.NOT_APPLICABLE;
+        }
+
+        // get last two
+        float lastPrice = this.history.getLast().getPrice();
+        float secondToLastPrice = this.history.get(this.history.size() - 2).getPrice();
+
+        // analyze
+        if (lastPrice > secondToLastPrice) {
+            return HistoricalAnalysis.GOING_UP;
+        } else {
+            return HistoricalAnalysis.GOING_DOWN;
+        }
     }
 }

@@ -6,8 +6,10 @@ import net.ecoporium.ecoporium.command.CommandManager;
 import net.ecoporium.ecoporium.config.EcoporiumConfig;
 import net.ecoporium.ecoporium.expansion.EcoporiumExpansion;
 import net.ecoporium.ecoporium.listener.PlayerListener;
+import net.ecoporium.ecoporium.map.MapPlacementHandler;
 import net.ecoporium.ecoporium.market.MarketCache;
 import net.ecoporium.ecoporium.message.Messages;
+import net.ecoporium.ecoporium.screen.TrendScreenManager;
 import net.ecoporium.ecoporium.storage.Storage;
 import net.ecoporium.ecoporium.storage.implementation.json.JsonStorageImplementation;
 import net.ecoporium.ecoporium.task.MarketUpdateTask;
@@ -43,6 +45,16 @@ public class EcoporiumPlugin extends Plugin {
     private UserCache userCache;
 
     /**
+     * Trend screen manager
+     */
+    private TrendScreenManager trendScreenManager;
+
+    /**
+     * Map placement handler
+     */
+    private MapPlacementHandler mapPlacementHandler;
+
+    /**
      * Economy
      */
     private Economy economy;
@@ -61,9 +73,11 @@ public class EcoporiumPlugin extends Plugin {
         this.ecoporiumConfig = new EcoporiumConfig(this, provideConfigAdapter("config.yml"));
         this.marketCache = new MarketCache(this);
 
-        this.storage = new Storage(new JsonStorageImplementation(this), this);
+        this.storage = new Storage(new JsonStorageImplementation(this));
 
         this.userCache = new UserCache(this);
+        this.trendScreenManager = new TrendScreenManager(this);
+        this.mapPlacementHandler = new MapPlacementHandler(this);
 
         new CommandManager(this);
 
@@ -86,9 +100,7 @@ public class EcoporiumPlugin extends Plugin {
     @Override
     public void onDisable() {
         // save users
-        getUserCache().getCache().synchronous().asMap().values().forEach(user -> getStorage().saveUser(user));
-        // save markets
-        getMarketCache().getCache().synchronous().asMap().values().forEach(market -> getStorage().saveMarket(market));
+        getUserCache().getCache().synchronous().asMap().values().forEach(user -> getStorage().saveUser(user, false));
     }
 
     /**
@@ -136,6 +148,24 @@ public class EcoporiumPlugin extends Plugin {
         return userCache;
     }
 
+
+    /**
+     * Returns trend screen manager
+     *
+     * @return trend screen manager
+     */
+    public TrendScreenManager getTrendScreenManager() {
+        return trendScreenManager;
+    }
+
+    /**
+     * Returns the map placement handler
+     *
+     * @return map placement handler
+     */
+    public MapPlacementHandler getMapPlacementHandler() {
+        return mapPlacementHandler;
+    }
 
     /**
      * Returns economy

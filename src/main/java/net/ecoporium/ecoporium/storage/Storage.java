@@ -1,10 +1,10 @@
 package net.ecoporium.ecoporium.storage;
 
-
-import net.ecoporium.ecoporium.EcoporiumPlugin;
 import net.ecoporium.ecoporium.market.Market;
+import net.ecoporium.ecoporium.screen.TrendScreen;
 import net.ecoporium.ecoporium.user.EcoporiumUser;
 
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -16,19 +16,12 @@ public class Storage {
     private final StorageImplementation storageImplementation;
 
     /**
-     * Ecoporium plugin
-     */
-    private final EcoporiumPlugin plugin;
-
-    /**
      * Storage
      *
      * @param storageImplementation storage implementation
-     * @param plugin                plugin
      */
-    public Storage(StorageImplementation storageImplementation, EcoporiumPlugin plugin) {
+    public Storage(StorageImplementation storageImplementation) {
         this.storageImplementation = storageImplementation;
-        this.plugin = plugin;
     }
 
     /**
@@ -45,8 +38,12 @@ public class Storage {
      *
      * @param user user
      */
-    public void saveUser(EcoporiumUser user) {
-        CompletableFuture.runAsync(() -> this.storageImplementation.saveUser(user));
+    public void saveUser(EcoporiumUser user, boolean asynchronous) {
+        if (asynchronous) {
+            CompletableFuture.runAsync(() -> this.storageImplementation.saveUser(user));
+        } else {
+            this.storageImplementation.saveUser(user);
+        }
     }
 
     /**
@@ -84,5 +81,30 @@ public class Storage {
      */
     public Market<?> loadMarket(String handle) {
         return this.storageImplementation.loadMarket(handle);
+    }
+
+    /**
+     * Loads trend screens
+     */
+    public List<TrendScreen> loadTrendScreens() {
+        return this.storageImplementation.loadTrendScreens();
+    }
+
+    /**
+     * Saves a trend screen
+     *
+     * @param trendScreen trend screen
+     */
+    public void saveTrendScreen(TrendScreen trendScreen) {
+        CompletableFuture.runAsync(() -> this.storageImplementation.saveTrendScreen(trendScreen));
+    }
+
+    /**
+     * Deletes a trend screen
+     *
+     * @param trendScreen trend screen
+     */
+    public void deleteTrendScreen(TrendScreen trendScreen) {
+        CompletableFuture.runAsync(() -> this.storageImplementation.deleteTrendScreen(trendScreen));
     }
 }
