@@ -289,8 +289,6 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
 
                 // parse into screen info
                 ScreenInfo screenInfo = ScreenCalculationUtil.constructFromMapSizeDimensions(dimensionsPair);
-                System.out.println("Width: " + screenInfo.getWidth());
-                System.out.println("Height: " + screenInfo.getHeight());
 
                 // call map placement handler to create screen
                 plugin.getMapPlacementHandler().createScreen(player, marketObj, stockTicker, screenInfo);

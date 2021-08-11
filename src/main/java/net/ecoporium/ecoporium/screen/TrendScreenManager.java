@@ -11,11 +11,6 @@ import java.util.UUID;
 public class TrendScreenManager implements Manager {
 
     /**
-     * Ecoporium plugin
-     */
-    private final EcoporiumPlugin plugin;
-
-    /**
      * Trend screen map
      */
     private final Map<UUID, TrendScreen> trendScreenMap;
@@ -26,7 +21,9 @@ public class TrendScreenManager implements Manager {
      * @param plugin plugin
      */
     public TrendScreenManager(EcoporiumPlugin plugin) {
-        this.plugin = plugin;
+        /**
+         * Ecoporium plugin
+         */
         this.trendScreenMap = new HashMap<>();
 
         // load from storage

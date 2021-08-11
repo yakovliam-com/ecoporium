@@ -7,10 +7,7 @@ import net.ecoporium.ecoporium.api.wrapper.Pair;
 import net.ecoporium.ecoporium.util.ColorUtil;
 
 import java.awt.*;
-import java.util.*;
 import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import static net.ecoporium.ecoporium.api.config.generic.key.ConfigKeyFactory.key;
 

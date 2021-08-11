@@ -9,7 +9,6 @@ import net.ecoporium.ecoporium.listener.PlayerListener;
 import net.ecoporium.ecoporium.map.MapPlacementHandler;
 import net.ecoporium.ecoporium.market.MarketCache;
 import net.ecoporium.ecoporium.message.Messages;
-import net.ecoporium.ecoporium.screen.TrendScreen;
 import net.ecoporium.ecoporium.screen.TrendScreenManager;
 import net.ecoporium.ecoporium.storage.Storage;
 import net.ecoporium.ecoporium.storage.implementation.json.JsonStorageImplementation;

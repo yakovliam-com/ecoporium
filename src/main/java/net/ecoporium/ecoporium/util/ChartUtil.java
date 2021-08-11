@@ -34,8 +34,6 @@ public class ChartUtil {
     public static BufferedImage createLoadingImage(ScreenInfo screenInfo) {
         BufferedImage image = new BufferedImage(screenInfo.getWidth(), screenInfo.getHeight(), 1);
         Graphics2D graphics = image.createGraphics();
-//        graphics.setPaint(Color.WHITE);
-//        graphics.fillRect(0, 0, image.getWidth(), image.getHeight());
         setTextCenter(graphics, generateLoadingMessage(), image);
         graphics.dispose();
         return image;

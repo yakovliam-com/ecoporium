@@ -96,7 +96,7 @@ public class TrendScreenSerializer implements TypeSerializer<TrendScreen> {
     @Override
     public void serialize(Type type, @Nullable TrendScreen obj, ConfigurationNode node) throws SerializationException {
         // set uuid
-        node.node("uuid").set(obj.getUuid().toString());
+        node.node("uuid").set(Objects.requireNonNull(obj).getUuid().toString());
 
         // set market
         node.node("market").set(obj.getMarket().getHandle());

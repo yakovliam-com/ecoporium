@@ -3,7 +3,6 @@ package net.ecoporium.ecoporium.screen.chart;
 import net.ecoporium.ecoporium.EcoporiumPlugin;
 import net.ecoporium.ecoporium.api.config.generic.adapter.ConfigurationAdapter;
 import net.ecoporium.ecoporium.api.wrapper.Pair;
-import net.ecoporium.ecoporium.config.EcoporiumConfigKeys;
 import net.ecoporium.ecoporium.market.stock.HistoricalAnalysis;
 import net.ecoporium.ecoporium.market.stock.quote.SimpleStockQuote;
 import net.ecoporium.ecoporium.model.factory.Factory;
@@ -11,7 +10,6 @@ import net.ecoporium.ecoporium.screen.TrendScreen;
 import net.ecoporium.ecoporium.util.ChartUtil;
 import net.ecoporium.ecoporium.util.NumberUtil;
 import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartRenderingInfo;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
@@ -29,11 +27,6 @@ import static net.ecoporium.ecoporium.config.EcoporiumConfigKeys.*;
 public class TrendScreenChartFactory implements Factory<TrendScreen, BufferedImage> {
 
     /**
-     * Ecoporium plugin
-     */
-    private final EcoporiumPlugin plugin;
-
-    /**
      * Configuration adapter
      */
     private final ConfigurationAdapter configurationAdapter;
@@ -44,7 +37,9 @@ public class TrendScreenChartFactory implements Factory<TrendScreen, BufferedIma
      * @param plugin plugin
      */
     public TrendScreenChartFactory(EcoporiumPlugin plugin) {
-        this.plugin = plugin;
+        /**
+         * Ecoporium plugin
+         */
         this.configurationAdapter = plugin.getEcoporiumConfig().getAdapter();
     }
 
@@ -97,18 +92,11 @@ public class TrendScreenChartFactory implements Factory<TrendScreen, BufferedIma
         // create renderer
         DefaultCategoryItemRenderer defaultCategoryItemRenderer = new DefaultCategoryItemRenderer();
 
-        Color lineColor;
-        switch (historicalAnalysis) {
-            case GOING_UP:
-                lineColor = CHART_STOCK_GOING_UP_COLOR.get(configurationAdapter);
-                break;
-            case GOING_DOWN:
-                lineColor = CHART_STOCK_GOING_DOWN_COLOR.get(configurationAdapter);
-                break;
-            default:
-                lineColor = CHART_STOCK_NEUTRAL_COLOR.get(configurationAdapter);
-                break;
-        }
+        Color lineColor = switch (historicalAnalysis) {
+            case GOING_UP -> CHART_STOCK_GOING_UP_COLOR.get(configurationAdapter);
+            case GOING_DOWN -> CHART_STOCK_GOING_DOWN_COLOR.get(configurationAdapter);
+            default -> CHART_STOCK_NEUTRAL_COLOR.get(configurationAdapter);
+        };
 
         // set stroke of line to thick-ish green
         defaultCategoryItemRenderer.setSeriesPaint(0, lineColor);
@@ -119,6 +107,7 @@ public class TrendScreenChartFactory implements Factory<TrendScreen, BufferedIma
         // set renderer
         plot.setRenderer(defaultCategoryItemRenderer);
 
+        // resize
         return chart.createBufferedImage(context.getScreenInfo().getWidth(), context.getScreenInfo().getHeight());
     }
 

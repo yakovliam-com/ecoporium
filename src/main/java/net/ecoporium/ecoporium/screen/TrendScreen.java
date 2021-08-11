@@ -145,7 +145,7 @@ public class TrendScreen {
      */
     public void updateScreen(BufferedImage bufferedImage) {
         // update all renderers
-        List<BufferedImage> bufferedImages = ImageTools.divideIntoMapSizedParts(bufferedImage, true);
+        List<BufferedImage> bufferedImages = ScreenCalculationUtil.divideIntoParts(screenInfo, bufferedImage);
         Iterator<BufferedImage> iterator = bufferedImages.iterator();
         this.rendererList.forEach(r -> r.setImage(iterator.next()));
     }
