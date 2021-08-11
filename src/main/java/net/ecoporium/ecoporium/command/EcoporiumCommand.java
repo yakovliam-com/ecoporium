@@ -326,6 +326,12 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
             // get point the player is looking at
             Block targetBlock = player.getTargetBlockExact(15);
 
+            if (targetBlock == null) {
+                // can't find screen
+                plugin.getMessages().screenCantFind.message(player);
+                return;
+            }
+
             // get entities nearby, see if item frame
             MapView mapView = Objects.requireNonNull(Objects.requireNonNull(targetBlock).getLocation().getWorld()).getNearbyEntities(targetBlock.getLocation(), 5, 5, 5).stream()
                     .filter(e -> e instanceof ItemFrame)
