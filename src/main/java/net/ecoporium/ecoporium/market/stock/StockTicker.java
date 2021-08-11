@@ -2,6 +2,8 @@ package net.ecoporium.ecoporium.market.stock;
 
 import net.ecoporium.ecoporium.market.stock.quote.SimpleStockQuote;
 
+import java.time.Instant;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -56,6 +58,7 @@ public abstract class StockTicker<T> {
         this.stock = stock;
         this.stockType = stockType;
         this.history = new LinkedList<>();
+        this.currentQuote = new SimpleStockQuote(0f, Date.from(Instant.now()));
     }
 
     /**
