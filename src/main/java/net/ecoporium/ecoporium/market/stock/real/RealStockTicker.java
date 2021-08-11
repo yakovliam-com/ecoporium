@@ -62,20 +62,9 @@ public class RealStockTicker extends StockTicker<Stock> {
      */
     @Override
     public void update() {
-        updateStockData(false);
-    }
-
-    /**
-     * Returns the current stock data
-     *
-     * @return stock
-     */
-    public Stock getCurrentStockData() {
-        if (stock == null) {
-            // fetch first, since it's null (meaning it was JUST initialized)
-            updateStockData(true).join();
-        }
-        return stock;
+        updateStockData(false).thenAccept(data -> {
+            this.currentQuote = new SimpleStockQuote(stock.getQuote().getPrice().floatValue(), Date.from(Instant.now()));
+        });
     }
 
     /**
