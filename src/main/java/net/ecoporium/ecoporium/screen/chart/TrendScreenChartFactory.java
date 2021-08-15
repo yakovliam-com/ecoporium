@@ -18,8 +18,10 @@ import org.jfree.data.category.DefaultCategoryDataset;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.LinkedBlockingDeque;
 import java.util.stream.IntStream;
 
 import static net.ecoporium.ecoporium.config.EcoporiumConfigKeys.*;
@@ -37,16 +39,13 @@ public class TrendScreenChartFactory implements Factory<TrendScreen, BufferedIma
      * @param plugin plugin
      */
     public TrendScreenChartFactory(EcoporiumPlugin plugin) {
-        /**
-         * Ecoporium plugin
-         */
         this.configurationAdapter = plugin.getEcoporiumConfig().getAdapter();
     }
 
     @Override
     public BufferedImage build(TrendScreen context) {
         // get history
-        LinkedList<SimpleStockQuote> history = context.getTicker().getHistory();
+        LinkedBlockingDeque<SimpleStockQuote> history = context.getTicker().getHistory();
         // get historical analysis
         HistoricalAnalysis historicalAnalysis = context.getTicker().getHistoricalAnalysis();
 
@@ -58,7 +57,11 @@ public class TrendScreenChartFactory implements Factory<TrendScreen, BufferedIma
         // create dataset
         DefaultCategoryDataset defaultCategoryDataset = new DefaultCategoryDataset();
 
-        IntStream.range(0, history.size()).forEach(i -> defaultCategoryDataset.addValue(history.get(i).getPrice(), "Price", Integer.toString(i)));
+        int i = 0;
+        for (SimpleStockQuote quote : history.toArray(SimpleStockQuote[]::new)) {
+            defaultCategoryDataset.addValue(quote.getPrice(), "Price", Integer.toString(i));
+            i++;
+        }
 
         JFreeChart chart = ChartFactory.createLineChart(
                 CHART_TITLE.get(configurationAdapter)
@@ -117,16 +120,8 @@ public class TrendScreenChartFactory implements Factory<TrendScreen, BufferedIma
      * @param data data
      * @return lowest quote
      */
-    private Float getLowestQuote(List<SimpleStockQuote> data) {
-        Float lowest = null;
-
-        for (SimpleStockQuote datum : data) {
-            if (lowest == null || datum.getPrice() < lowest) {
-                lowest = datum.getPrice();
-            }
-        }
-
-        return lowest;
+    private Float getLowestQuote(LinkedBlockingDeque<SimpleStockQuote> data) {
+        return Collections.min(data, (s1, s2) -> Float.compare(s1.getPrice(), s2.getPrice())).getPrice();
     }
 
     /**
@@ -135,15 +130,7 @@ public class TrendScreenChartFactory implements Factory<TrendScreen, BufferedIma
      * @param data data
      * @return highest quote
      */
-    private Float getHighestQuote(List<SimpleStockQuote> data) {
-        Float highest = null;
-
-        for (SimpleStockQuote datum : data) {
-            if (highest == null || datum.getPrice() > highest) {
-                highest = datum.getPrice();
-            }
-        }
-
-        return highest;
+    private Float getHighestQuote(LinkedBlockingDeque<SimpleStockQuote> data) {
+        return Collections.max(data, (s1, s2) -> Float.compare(s1.getPrice(), s2.getPrice())).getPrice();
     }
 }

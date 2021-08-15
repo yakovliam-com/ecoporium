@@ -3,9 +3,9 @@ package net.ecoporium.ecoporium.market.stock;
 import net.ecoporium.ecoporium.market.stock.quote.SimpleStockQuote;
 
 import java.time.Instant;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public abstract class StockTicker<T> {
 
@@ -42,7 +42,7 @@ public abstract class StockTicker<T> {
     /**
      * The local quote history (since instantiation)
      */
-    protected final LinkedList<SimpleStockQuote> history;
+    protected final LinkedBlockingDeque<SimpleStockQuote> history;
 
     /**
      * Stock
@@ -57,7 +57,7 @@ public abstract class StockTicker<T> {
         this.aliases = aliases;
         this.stock = stock;
         this.stockType = stockType;
-        this.history = new LinkedList<>();
+        this.history = new LinkedBlockingDeque<>();
         this.currentQuote = new SimpleStockQuote(0f, Date.from(Instant.now()));
     }
 
@@ -116,7 +116,7 @@ public abstract class StockTicker<T> {
      *
      * @return history
      */
-    public synchronized LinkedList<SimpleStockQuote> getHistory() {
+    public LinkedBlockingDeque<SimpleStockQuote> getHistory() {
         return this.history;
     }
 
@@ -126,13 +126,21 @@ public abstract class StockTicker<T> {
      * @return hist analysis
      */
     public HistoricalAnalysis getHistoricalAnalysis() {
-        if (this.history.size() < 2) {
+        if (this.history.size() <= 1) {
             return HistoricalAnalysis.NOT_APPLICABLE;
         }
 
+        LinkedBlockingDeque<SimpleStockQuote> historyCopy = new LinkedBlockingDeque<>(history);
+
         // get last two
-        float lastPrice = this.history.getLast().getPrice();
-        float secondToLastPrice = this.history.get(this.history.size() - 2).getPrice();
+        float lastPrice = 0;
+        float secondToLastPrice = 0;
+        try {
+            lastPrice = historyCopy.takeLast().getPrice();
+            secondToLastPrice = historyCopy.takeLast().getPrice();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         // analyze
         if (lastPrice > secondToLastPrice) {
