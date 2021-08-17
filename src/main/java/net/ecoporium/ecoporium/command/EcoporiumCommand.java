@@ -50,8 +50,10 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
     public void onReload(Player player) {
         // reload config
         plugin.getEcoporiumConfig().reload();
+        plugin.getLangConfig().reload();
+        plugin.loadMessages();
 
-        plugin.getMessages().reloaded.message(player);
+        plugin.getMessages().ecoporiumReloaded.message(player);
     }
 
     @CommandAlias("ecoporium")
@@ -68,7 +70,7 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
 
             if (marketPresent != null) {
                 // exists already
-                plugin.getMessages().marketExistsAlready.message(player);
+                plugin.getMessages().ecoporiumMarketExistsAlready.message(player);
                 return;
             }
 
@@ -86,7 +88,7 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
             }
 
             // created message
-            plugin.getMessages().marketCreated.message(player);
+            plugin.getMessages().ecoporiumMarketCreated.message(player);
 
             // save market in storage, load into cache (async)
             Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
@@ -98,13 +100,13 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
         @Subcommand("delete")
         @CommandPermission("ecoporium.command.ecoporium.market.delete")
         public void onMarketDelete(Player player, @Single String market) {
-            plugin.getMessages().retrievingMarket.message(player);
+            plugin.getMessages().ecoporiumMarketGettingData.message(player);
 
             // does market already exist?
             plugin.getMarketCache().getCache().get(market).thenAccept(marketObj -> {
                 // if doesn't exist
                 if (marketObj == null) {
-                    plugin.getMessages().marketNonexistent.message(player);
+                    plugin.getMessages().ecoporiumMarketNonexistent.message(player);
                     return;
                 }
 
@@ -113,20 +115,20 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
                 // invalidate from cache
                 plugin.getMarketCache().getCache().synchronous().invalidate(marketObj.getHandle());
 
-                plugin.getMessages().marketDeleted.message(player);
+                plugin.getMessages().ecoporiumMarketDeleted.message(player);
             });
         }
 
         @Subcommand("addstock")
         @CommandPermission("ecoporium.command.ecoporium.market.addstock")
         public void onMarketAddStock(Player player, @Single String market, @Single String symbol, @Optional String alias) {
-            plugin.getMessages().retrievingMarket.message(player);
+            plugin.getMessages().ecoporiumMarketGettingData.message(player);
 
             // does market already exist?
             plugin.getMarketCache().getCache().get(market).thenAccept(marketObj -> {
                 // if doesn't exist
                 if (marketObj == null) {
-                    plugin.getMessages().marketNonexistent.message(player);
+                    plugin.getMessages().ecoporiumMarketNonexistent.message(player);
                     return;
                 }
 
@@ -135,7 +137,7 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
                     FakeMarket fakeMarket = (FakeMarket) marketObj;
                     // if ticker already exists
                     if (fakeMarket.getTickerCache().containsKey(symbol)) {
-                        plugin.getMessages().marketSymbolAlreadyExists.message(player);
+                        plugin.getMessages().ecoporiumMarketSymbolAlreadyExists.message(player);
                         return;
                     }
 
@@ -148,7 +150,7 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
                     RealMarket realMarket = (RealMarket) marketObj;
                     // if ticker already exists
                     if (realMarket.getTickerCache().containsKey(symbol)) {
-                        plugin.getMessages().marketSymbolAlreadyExists.message(player);
+                        plugin.getMessages().ecoporiumMarketSymbolAlreadyExists.message(player);
                         return;
                     }
 
@@ -164,20 +166,20 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
 
                 // save market
                 plugin.getStorage().saveMarket(marketObj);
-                plugin.getMessages().stockAdded.message(player);
+                plugin.getMessages().ecoporiumMarketStockAdded.message(player);
             });
         }
 
         @Subcommand("removestock")
         @CommandPermission("ecoporium.command.ecoporium.market.removestock")
         public void onMarketRemoveStock(Player player, @Single String market, @Single String symbol) {
-            plugin.getMessages().retrievingMarket.message(player);
+            plugin.getMessages().ecoporiumMarketGettingData.message(player);
 
             // does market already exist?
             plugin.getMarketCache().getCache().get(market).thenAccept(marketObj -> {
                 // if doesn't exist
                 if (marketObj == null) {
-                    plugin.getMessages().marketNonexistent.message(player);
+                    plugin.getMessages().ecoporiumMarketNonexistent.message(player);
                     return;
                 }
 
@@ -186,7 +188,7 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
                     FakeMarket fakeMarket = (FakeMarket) marketObj;
                     // if ticker doesn't exist
                     if (!fakeMarket.getTickerCache().containsKey(symbol)) {
-                        plugin.getMessages().marketSymbolDoesntExist.message(player);
+                        plugin.getMessages().ecoporiumMarketSymbolDoesntExist.message(player);
                         return;
                     }
 
@@ -196,7 +198,7 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
                     RealMarket realMarket = (RealMarket) marketObj;
                     // if ticker doesn't exist
                     if (!realMarket.getTickerCache().containsKey(symbol)) {
-                        plugin.getMessages().marketSymbolDoesntExist.message(player);
+                        plugin.getMessages().ecoporiumMarketSymbolDoesntExist.message(player);
                         return;
                     }
 
@@ -209,20 +211,20 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
 
                 // save market
                 plugin.getStorage().saveMarket(marketObj);
-                plugin.getMessages().stockRemoved.message(player);
+                plugin.getMessages().ecoporiumMarketStockRemoved.message(player);
             });
         }
 
         @Subcommand("info")
         @CommandPermission("ecoporium.command.ecoporium.market.info")
         public void onMarketInfo(Player player, @Single String market) {
-            plugin.getMessages().retrievingMarket.message(player);
+            plugin.getMessages().ecoporiumMarketGettingData.message(player);
 
             // does market already exist?
             plugin.getMarketCache().getCache().get(market).thenAccept(marketObj -> {
                 // if doesn't exist
                 if (marketObj == null) {
-                    plugin.getMessages().marketNonexistent.message(player);
+                    plugin.getMessages().ecoporiumMarketNonexistent.message(player);
                     return;
                 }
 
@@ -255,24 +257,24 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
         @Description("Creates a trend screen through a placement session")
         @CommandPermission("ecoporium.command.ecoporium.screen.create")
         public void onCreate(Player player, @Single String market, @Single String symbol, @Syntax("EXAMPLES: 5x5 or 7x7") @Single String dimensions) {
-            plugin.getMessages().retrievingMarket.message(player);
+            plugin.getMessages().ecoporiumMarketGettingData.message(player);
 
             // if already in a session
             if (plugin.getMapPlacementHandler().getPlayerItemPlaceQueue().containsKey(player.getUniqueId())) {
-                plugin.getMessages().screenCreateAlreadyInSession.message(player);
+                plugin.getMessages().ecoporiumScreenCreateAlreadyInPlacementSession.message(player);
             }
 
             // does the market exist?
             plugin.getMarketCache().getCache().get(market).thenAccept(marketObj -> {
                 // if doesn't exist
                 if (marketObj == null) {
-                    plugin.getMessages().marketNonexistent.message(player);
+                    plugin.getMessages().ecoporiumMarketNonexistent.message(player);
                     return;
                 }
 
                 // does the stock exist?
                 if (!marketObj.containsStock(symbol)) {
-                    plugin.getMessages().marketSymbolDoesntExist.message(player);
+                    plugin.getMessages().ecoporiumMarketSymbolDoesntExist.message(player);
                     return;
                 }
 
@@ -302,7 +304,7 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
             Pair<UUID, LinkedList<ItemStack>> queue = plugin.getMapPlacementHandler().getPlayerItemPlaceQueue().get(player.getUniqueId());
 
             if (queue == null) {
-                plugin.getMessages().screenCreateCancelNotInPlacementSession.message(player);
+                plugin.getMessages().ecoporiumScreenCreateNotInPlacementSession.message(player);
                 return;
             }
 
@@ -316,7 +318,7 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
             plugin.getStorage().deleteTrendScreen(trendScreen);
 
             // message
-            plugin.getMessages().screenCreateCanceled.message(player);
+            plugin.getMessages().ecoporiumScreenCreateCanceled.message(player);
         }
 
         @Subcommand("delete")
@@ -328,7 +330,7 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
 
             if (targetBlock == null) {
                 // can't find screen
-                plugin.getMessages().screenCantFind.message(player);
+                plugin.getMessages().ecoporiumScreenDeleteCantFind.message(player);
                 return;
             }
 
@@ -343,7 +345,7 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
 
             if (mapView == null) {
                 // can't find screen
-                plugin.getMessages().screenCantFind.message(player);
+                plugin.getMessages().ecoporiumScreenDeleteCantFind.message(player);
                 return;
             }
 
@@ -351,7 +353,7 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
             TrendScreen trendScreen = plugin.getTrendScreenManager().getByMapId(mapView.getId());
 
             if (trendScreen == null) {
-                plugin.getMessages().screenCantFind.message(player);
+                plugin.getMessages().ecoporiumScreenDeleteCantFind.message(player);
                 return;
             }
 
@@ -360,7 +362,7 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
             plugin.getTrendScreenManager().removeTrendScreen(trendScreen);
             plugin.getStorage().deleteTrendScreen(trendScreen);
 
-            plugin.getMessages().screenDeleted.message(player);
+            plugin.getMessages().ecoporiumScreenDeleteDeleted.message(player);
         }
     }
 
@@ -368,7 +370,7 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
     @Default
     @CatchUnknown
     public void doHelp(CommandSender sender, CommandHelp help) {
-        plugin.getMessages().help.message(sender);
+        plugin.getMessages().ecoporiumHelp.message(sender);
         help.showHelp();
     }
 

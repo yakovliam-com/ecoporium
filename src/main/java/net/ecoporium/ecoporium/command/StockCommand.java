@@ -27,13 +27,13 @@ public class StockCommand extends AbstractEcoporiumCommand {
     @Subcommand("buy|b")
     @Description("Buys a stock from a particular market")
     public void onBuy(Player player, @Single String market, @Single String symbol, @Single Integer amountToBuy) {
-        plugin.getMessages().retrievingMarket.message(player);
+        plugin.getMessages().ecoporiumMarketGettingData.message(player);
 
         // does market already exist?
         plugin.getMarketCache().getCache().get(market).thenAccept(marketObj -> {
             // if doesn't exist
             if (marketObj == null) {
-                plugin.getMessages().marketNonexistent.message(player);
+                plugin.getMessages().ecoporiumMarketNonexistent.message(player);
                 return;
             }
 
@@ -41,7 +41,7 @@ public class StockCommand extends AbstractEcoporiumCommand {
 
             // does the stock exist?
             if (!marketObj.containsStock(symbol)) {
-                plugin.getMessages().marketSymbolDoesntExist.message(player);
+                plugin.getMessages().ecoporiumMarketSymbolDoesntExist.message(player);
                 return;
             }
 
@@ -53,7 +53,7 @@ public class StockCommand extends AbstractEcoporiumCommand {
             float balance = (float) plugin.getEconomy().getBalance(player);
 
             if (balance < amountNeededToBuy) {
-                plugin.getMessages().stockBuyNotEnoughMoney.message(player, "%balance-needed%", NumberUtil.formatToPlaces(amountNeededToBuy, 2));
+                plugin.getMessages().stockBuyNotEnough.message(player, "%balance-needed%", NumberUtil.formatToPlaces(amountNeededToBuy, 2));
                 return;
             }
 
@@ -79,13 +79,13 @@ public class StockCommand extends AbstractEcoporiumCommand {
     @Subcommand("sell|s")
     @Description("Sells a stock from a particular market")
     public void onSell(Player player, @Single String market, @Single String symbol, @Single Integer amountToSell) {
-        plugin.getMessages().retrievingMarket.message(player);
+        plugin.getMessages().ecoporiumMarketGettingData.message(player);
 
         // does market already exist?
         plugin.getMarketCache().getCache().get(market).thenAccept(marketObj -> {
             // if doesn't exist
             if (marketObj == null) {
-                plugin.getMessages().marketNonexistent.message(player);
+                plugin.getMessages().ecoporiumMarketNonexistent.message(player);
                 return;
             }
 
@@ -93,7 +93,7 @@ public class StockCommand extends AbstractEcoporiumCommand {
 
             // does the stock exist?
             if (!marketObj.containsStock(symbol)) {
-                plugin.getMessages().marketSymbolDoesntExist.message(player);
+                plugin.getMessages().ecoporiumMarketSymbolDoesntExist.message(player);
                 return;
             }
 
@@ -107,7 +107,7 @@ public class StockCommand extends AbstractEcoporiumCommand {
             int sharesOwned = user.getShares(marketObj.getHandle(), stockTicker.getSymbol());
 
             if (sharesOwned < amountToSell) {
-                plugin.getMessages().stockSellNotEnoughShares.message(player);
+                plugin.getMessages().stockSellNotEnough.message(player);
                 return;
             }
 
@@ -136,7 +136,7 @@ public class StockCommand extends AbstractEcoporiumCommand {
         EcoporiumUser user = plugin.getUserCache().getCache().get(player.getUniqueId()).join();
 
         // portfolio header
-        plugin.getMessages().stockPortfolioHeader.message(player);
+        plugin.getMessages().stockPortfolio.message(player);
         Message.Builder builder = Message.builder()
                 .addLine("&7&m--------");
 
@@ -149,7 +149,7 @@ public class StockCommand extends AbstractEcoporiumCommand {
     @Default
     @CatchUnknown
     public void doHelp(CommandSender sender, CommandHelp help) {
-        plugin.getMessages().help.message(sender);
+        plugin.getMessages().ecoporiumHelp.message(sender);
         help.showHelp();
     }
 

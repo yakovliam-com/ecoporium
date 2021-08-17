@@ -25,6 +25,11 @@ public class EcoporiumPlugin extends Plugin {
     private EcoporiumConfig ecoporiumConfig;
 
     /**
+     * Language config
+     */
+    private EcoporiumConfig langConfig;
+
+    /**
      * Market cache
      */
     private MarketCache marketCache;
@@ -71,6 +76,7 @@ public class EcoporiumPlugin extends Plugin {
         Message.initAudience(this);
 
         this.ecoporiumConfig = new EcoporiumConfig(this, provideConfigAdapter("config.yml"));
+        this.langConfig = new EcoporiumConfig(this, provideConfigAdapter("lang.yml"));
         this.marketCache = new MarketCache(this);
 
         this.storage = new Storage(new JsonStorageImplementation(this));
@@ -81,7 +87,7 @@ public class EcoporiumPlugin extends Plugin {
 
         new CommandManager(this);
 
-        this.messages = new Messages();
+        loadMessages();
 
         this.getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
 
@@ -174,6 +180,22 @@ public class EcoporiumPlugin extends Plugin {
      */
     public Economy getEconomy() {
         return economy;
+    }
+
+    /**
+     * Returns lang config
+     *
+     * @return lang config
+     */
+    public EcoporiumConfig getLangConfig() {
+        return langConfig;
+    }
+
+    /**
+     * Loads messages
+     */
+    public void loadMessages() {
+        this.messages = new Messages(this);
     }
 
     /**
