@@ -1,4 +1,4 @@
-package net.ecoporium.ecoporium.model.cache;
+package net.ecoporium.ecoporium.api.model.cache;
 
 import com.google.common.cache.LoadingCache;
 

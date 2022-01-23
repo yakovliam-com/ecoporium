@@ -1,4 +1,4 @@
-package net.ecoporium.ecoporium.model.factory;
+package net.ecoporium.ecoporium.api.model.factory;
 
 public interface Factory<K, V> {
 

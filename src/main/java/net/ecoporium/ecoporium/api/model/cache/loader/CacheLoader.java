@@ -1,4 +1,4 @@
-package net.ecoporium.ecoporium.model.cache.loader;
+package net.ecoporium.ecoporium.api.model.cache.loader;
 
 public abstract class CacheLoader<T> {
 

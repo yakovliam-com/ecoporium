@@ -5,28 +5,3 @@
 # ██      ██      ██    ██ ██      ██    ██ ██   ██ ██ ██    ██ ██  ██  ██
 # ███████  ██████  ██████  ██       ██████  ██   ██ ██  ██████  ██      ██
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-# Visit https://ecoporium.net
-chart:
-  # Available placeholders: %symbol%, %price%
-  title: "%symbol% - $%price%"
-  category-axis-label: "Time"
-  value-axis-label: "Price"
-  domain-axis-visible: false
-  # The range (up & down) scaling
-  range:
-    # What to multiply the lowest value by (MUST BE BELOW 1)
-    lower: 0.99
-    # What to multiply the highest value by (MUST BE ABOVE 1)
-    higher: 1.01
-  # The chart background paint rgba (e.g. color(255, 255, 255, 127) = white, 50% transparency
-  chart-background-paint: "0,0,0,255" # black 100%
-  chart-title-paint: "255,255,255,255" # white 100%
-  chart-legend-background-paint: "0,0,0,255" # black 100%
-  chart-legend-text-paint: "255,255,255,255" # white 100%
-  plot-background-paint: "0,0,0,255" # black 100%
-  plot-domain-gridline-paint: "255,255,255,127" # white 50%
-  plot-range-gridline-paint: "255,255,255,127" # white 50%
-  stock-going-up-color: "0,255,0,255" # green 100%
-  stock-going-down-color: "255,0,0,255" # red 100%
-  stock-neutral-color: "255,255,255,255" # white 100%
-  stock-line-thickness: 5.0

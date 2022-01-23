@@ -1,4 +1,4 @@
-package net.ecoporium.ecoporium.model.cache;
+package net.ecoporium.ecoporium.api.model.cache;
 
 import java.util.Map;
 import java.util.function.Predicate;

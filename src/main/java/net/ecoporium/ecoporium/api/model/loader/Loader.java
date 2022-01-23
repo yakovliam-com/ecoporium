@@ -1,4 +1,4 @@
-package net.ecoporium.ecoporium.model.loader;
+package net.ecoporium.ecoporium.api.model.loader;
 
 public interface Loader {
 

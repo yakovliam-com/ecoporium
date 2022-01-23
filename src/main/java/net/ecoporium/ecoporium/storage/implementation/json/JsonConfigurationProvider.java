@@ -5,9 +5,7 @@ import io.leangen.geantyref.TypeToken;
 import net.ecoporium.ecoporium.EcoporiumPlugin;
 import net.ecoporium.ecoporium.market.Market;
 import net.ecoporium.ecoporium.market.stock.StockTicker;
-import net.ecoporium.ecoporium.screen.TrendScreen;
 import net.ecoporium.ecoporium.storage.implementation.json.serializer.market.MarketSerializer;
-import net.ecoporium.ecoporium.storage.implementation.json.serializer.screen.TrendScreenSerializer;
 import net.ecoporium.ecoporium.storage.implementation.json.serializer.stock.StockTickerSerializer;
 import net.ecoporium.ecoporium.storage.implementation.json.serializer.table.TableSerializer;
 import net.ecoporium.ecoporium.storage.implementation.json.serializer.user.EcoporiumUserSerializer;
@@ -59,7 +57,6 @@ public class JsonConfigurationProvider {
                     build.register(stockTickerType, StockTickerSerializer.getInstance());
                     build.register(marketType, MarketSerializer.getInstance());
                     build.register(tableType, TableSerializer.getInstance());
-                    build.register(TrendScreen.class, TrendScreenSerializer.getInstance(plugin));
                 }))
                 .path(resolve(path))
                 .build();

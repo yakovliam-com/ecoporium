@@ -2,7 +2,7 @@ package net.ecoporium.ecoporium.user;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import net.ecoporium.ecoporium.EcoporiumPlugin;
-import net.ecoporium.ecoporium.model.cache.AsyncCache;
+import net.ecoporium.ecoporium.api.model.cache.AsyncCache;
 
 import java.util.UUID;
 

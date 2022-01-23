@@ -1,7 +1,7 @@
 package net.ecoporium.ecoporium.market.stock.fake;
 
 import net.ecoporium.ecoporium.api.wrapper.Pair;
-import net.ecoporium.ecoporium.model.factory.Factory;
+import net.ecoporium.ecoporium.api.model.factory.Factory;
 
 import java.util.Collections;
 

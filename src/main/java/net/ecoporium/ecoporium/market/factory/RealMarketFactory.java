@@ -1,7 +1,7 @@
 package net.ecoporium.ecoporium.market.factory;
 
 import net.ecoporium.ecoporium.market.RealMarket;
-import net.ecoporium.ecoporium.model.factory.Factory;
+import net.ecoporium.ecoporium.api.model.factory.Factory;
 
 import java.util.HashMap;
 
