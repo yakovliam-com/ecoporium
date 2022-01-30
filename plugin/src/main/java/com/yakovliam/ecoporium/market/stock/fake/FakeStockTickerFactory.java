@@ -1,0 +1,20 @@
+package com.yakovliam.ecoporium.market.stock.fake;
+
+import com.yakovliam.ecoporium.api.model.factory.Factory;
+import com.yakovliam.ecoporium.api.wrapper.Pair;
+
+import java.util.Collections;
+
+public class FakeStockTickerFactory implements Factory<Pair<String, String>, FakeStockTicker> {
+
+    /**
+     * Builds a V from K context
+     *
+     * @param context context
+     * @return v
+     */
+    @Override
+    public FakeStockTicker build(Pair<String, String> context) {
+        return new FakeStockTicker(context.getLeft(), context.getRight() == null ? Collections.emptyList() : Collections.singletonList(context.getRight()), new FakeStockProvider());
+    }
+}

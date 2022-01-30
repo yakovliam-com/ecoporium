@@ -1,0 +1,10 @@
+name: @name@
+version: @version@
+description: A Minecraft Plugin designed to synchronize real-world stock and cryptocurrency markets with in-game currency through Vault
+authors: [yakovliam, bobby29831]
+website: https://ecoporium.net
+main: com.yakovliam.ecoporium.EcoporiumPlugin
+api-version: 1.17
+depend:
+  - PlaceholderAPI
+  - Vault
