@@ -2,9 +2,9 @@ package com.yakovliam.ecoporium.storage.implementation.json;
 
 import com.google.common.collect.HashBasedTable;
 import com.yakovliam.ecoporium.EcoporiumPlugin;
-import com.yakovliam.ecoporium.market.Market;
+import com.yakovliam.ecoporium.api.market.Market;
 import com.yakovliam.ecoporium.storage.StorageImplementation;
-import com.yakovliam.ecoporium.user.EcoporiumUser;
+import com.yakovliam.ecoporium.user.EcoporiumUserImpl;
 import io.leangen.geantyref.TypeToken;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
@@ -71,18 +71,18 @@ public class JsonStorageImplementation implements StorageImplementation {
     }
 
     @Override
-    public void saveUser(EcoporiumUser user) {
+    public void saveUser(EcoporiumUserImpl user) {
         ConfigurationNode node = usersProvider.getRoot().node("users");
         // get users list
         try {
-            List<EcoporiumUser> userList = node.getList(EcoporiumUser.class);
+            List<EcoporiumUserImpl> userList = node.getList(EcoporiumUserImpl.class);
 
             // remove if exists
             Objects.requireNonNull(userList).removeIf(u -> u.getUuid().equals(user.getUuid()));
             // add to list
             userList.add(user);
             // save to node
-            node.setList(EcoporiumUser.class, userList);
+            node.setList(EcoporiumUserImpl.class, userList);
 
             // save
             save();
@@ -92,26 +92,26 @@ public class JsonStorageImplementation implements StorageImplementation {
     }
 
     @Override
-    public EcoporiumUser loadUser(UUID uuid) {
+    public EcoporiumUserImpl loadUser(UUID uuid) {
         ConfigurationNode node = usersProvider.getRoot().node("users");
         // get users list
         try {
-            List<EcoporiumUser> userList = node.getList(EcoporiumUser.class);
-            EcoporiumUser ecoporiumUser = Objects.requireNonNull(userList).stream()
+            List<EcoporiumUserImpl> userList = node.getList(EcoporiumUserImpl.class);
+            EcoporiumUserImpl ecoporiumUserImpl = Objects.requireNonNull(userList).stream()
                     .filter(u -> u.getUuid().equals(uuid))
                     .findFirst()
                     .orElse(null);
 
             // if null, create
-            if (ecoporiumUser == null) {
-                ecoporiumUser = new EcoporiumUser(uuid, HashBasedTable.create());
+            if (ecoporiumUserImpl == null) {
+                ecoporiumUserImpl = new EcoporiumUserImpl(uuid, HashBasedTable.create());
 
                 // save
-                saveUser(ecoporiumUser);
+                saveUser(ecoporiumUserImpl);
             }
 
             // return
-            return ecoporiumUser;
+            return ecoporiumUserImpl;
         } catch (SerializationException e) {
             e.printStackTrace();
         }

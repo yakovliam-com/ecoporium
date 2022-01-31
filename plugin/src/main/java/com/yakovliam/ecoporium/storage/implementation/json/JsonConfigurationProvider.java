@@ -2,13 +2,13 @@ package com.yakovliam.ecoporium.storage.implementation.json;
 
 import com.google.common.collect.Table;
 import com.yakovliam.ecoporium.EcoporiumPlugin;
-import com.yakovliam.ecoporium.market.Market;
-import com.yakovliam.ecoporium.market.stock.StockTicker;
+import com.yakovliam.ecoporium.api.market.Market;
+import com.yakovliam.ecoporium.api.market.stock.StockTicker;
 import com.yakovliam.ecoporium.storage.implementation.json.serializer.market.MarketSerializer;
 import com.yakovliam.ecoporium.storage.implementation.json.serializer.stock.StockTickerSerializer;
 import com.yakovliam.ecoporium.storage.implementation.json.serializer.table.TableSerializer;
 import com.yakovliam.ecoporium.storage.implementation.json.serializer.user.EcoporiumUserSerializer;
-import com.yakovliam.ecoporium.user.EcoporiumUser;
+import com.yakovliam.ecoporium.user.EcoporiumUserImpl;
 import io.leangen.geantyref.TypeToken;
 import org.spongepowered.configurate.BasicConfigurationNode;
 import org.spongepowered.configurate.gson.GsonConfigurationLoader;
@@ -53,7 +53,7 @@ public class JsonConfigurationProvider {
 
         this.loader = GsonConfigurationLoader.builder()
                 .defaultOptions(opts -> opts.serializers(build -> {
-                    build.register(EcoporiumUser.class, EcoporiumUserSerializer.getInstance());
+                    build.register(EcoporiumUserImpl.class, EcoporiumUserSerializer.getInstance());
                     build.register(stockTickerType, StockTickerSerializer.getInstance());
                     build.register(marketType, MarketSerializer.getInstance());
                     build.register(tableType, TableSerializer.getInstance());

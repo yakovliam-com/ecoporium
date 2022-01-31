@@ -1,8 +1,9 @@
 package com.yakovliam.ecoporium.market.stock.real;
 
-import com.yakovliam.ecoporium.market.stock.StockTicker;
-import com.yakovliam.ecoporium.market.stock.StockType;
-import com.yakovliam.ecoporium.market.stock.quote.SimpleStockQuote;
+import com.yakovliam.ecoporium.api.market.stock.StockTicker;
+import com.yakovliam.ecoporium.api.market.stock.StockType;
+import com.yakovliam.ecoporium.api.market.stock.quote.SimpleStockQuote;
+import com.yakovliam.ecoporium.api.market.stock.real.RealStockTicker;
 import com.yakovliam.ecoporium.quotes.HistQuotes2Request;
 import yahoofinance.Stock;
 import yahoofinance.YahooFinance;
@@ -14,7 +15,7 @@ import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
-public class RealStockTicker extends StockTicker<Stock> {
+public class RealStockTickerImpl extends RealStockTicker {
 
     /**
      * The symbol for the current stock ticker
@@ -43,7 +44,7 @@ public class RealStockTicker extends StockTicker<Stock> {
      *
      * @param symbol symbol
      */
-    public RealStockTicker(String symbol) {
+    public RealStockTickerImpl(String symbol) {
         super(symbol, Collections.emptyList(), null, StockType.REAL);
         this.symbol = symbol;
         this.stock = null;
@@ -66,6 +67,7 @@ public class RealStockTicker extends StockTicker<Stock> {
      *
      * @return history
      */
+    @Override
     public Map<Date, StockQuote> getYfHistory() {
         if (this.yfHistory.size() <= 0) {
             this.updateStockData(false).join();
@@ -79,6 +81,7 @@ public class RealStockTicker extends StockTicker<Stock> {
      *
      * @return history
      */
+    @Override
     public Map<Calendar, HistoricalQuote> getYfPreviousHistory() {
         return yfPreviousHistory;
     }
@@ -88,6 +91,7 @@ public class RealStockTicker extends StockTicker<Stock> {
      *
      * @return void completable future
      */
+    @Override
     public CompletableFuture<Void> updateStockData(boolean previousHistory) {
         if (stock != null) {
             // do update

@@ -1,12 +1,14 @@
 package com.yakovliam.ecoporium.storage.implementation.json.serializer.market;
 
-import com.yakovliam.ecoporium.market.FakeMarket;
-import com.yakovliam.ecoporium.market.Market;
-import com.yakovliam.ecoporium.market.MarketType;
-import com.yakovliam.ecoporium.market.RealMarket;
-import com.yakovliam.ecoporium.market.stock.StockTicker;
-import com.yakovliam.ecoporium.market.stock.fake.FakeStockTicker;
-import com.yakovliam.ecoporium.market.stock.real.RealStockTicker;
+import com.yakovliam.ecoporium.api.market.stock.fake.FakeStockTicker;
+import com.yakovliam.ecoporium.api.market.stock.real.RealStockTicker;
+import com.yakovliam.ecoporium.market.FakeMarketImpl;
+import com.yakovliam.ecoporium.api.market.Market;
+import com.yakovliam.ecoporium.api.market.MarketType;
+import com.yakovliam.ecoporium.market.RealMarketImpl;
+import com.yakovliam.ecoporium.api.market.stock.StockTicker;
+import com.yakovliam.ecoporium.market.stock.fake.FakeStockTickerImpl;
+import com.yakovliam.ecoporium.market.stock.real.RealStockTickerImpl;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
@@ -59,23 +61,21 @@ public class MarketSerializer implements TypeSerializer<Market<?>> {
 
         // type of market
         if (marketType == MarketType.FAKE) {
-            List<FakeStockTicker> fakeStockTickers = Objects.requireNonNull(tickers).stream()
-                    .map(t -> (FakeStockTicker) t)
-                    .collect(Collectors.toList());
+            List<FakeStockTickerImpl> fakeStockTickerImpls = Objects.requireNonNull(tickers).stream()
+                    .map(t -> (FakeStockTickerImpl) t).toList();
 
-            Map<String, FakeStockTicker> tickerCache = fakeStockTickers.stream()
+            Map<String, FakeStockTicker> tickerCache = fakeStockTickerImpls.stream()
                     .collect(Collectors.toMap(StockTicker::getSymbol, Function.identity()));
 
-            return new FakeMarket(handle, tickerCache);
+            return new FakeMarketImpl(handle, tickerCache);
         } else if (marketType == MarketType.REAL) {
-            List<RealStockTicker> realStockTickers = Objects.requireNonNull(tickers).stream()
-                    .map(t -> (RealStockTicker) t)
-                    .collect(Collectors.toList());
+            List<RealStockTickerImpl> realStockTickerImpls = Objects.requireNonNull(tickers).stream()
+                    .map(t -> (RealStockTickerImpl) t).toList();
 
-            Map<String, RealStockTicker> tickerCache = realStockTickers.stream()
+            Map<String, RealStockTicker> tickerCache = realStockTickerImpls.stream()
                     .collect(Collectors.toMap(StockTicker::getSymbol, Function.identity()));
 
-            return new RealMarket(handle, tickerCache);
+            return new RealMarketImpl(handle, tickerCache);
         }
 
         return null;

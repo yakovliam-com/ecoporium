@@ -1,4 +1,4 @@
-package com.yakovliam.ecoporium.market.stock;
+package com.yakovliam.ecoporium.api.market.stock;
 
 public enum HistoricalAnalysis {
     GOING_UP,

@@ -4,8 +4,9 @@ import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
 import com.yakovliam.ecoporium.EcoporiumPlugin;
 import com.yakovliam.ecoporium.api.message.Message;
-import com.yakovliam.ecoporium.market.stock.StockTicker;
-import com.yakovliam.ecoporium.user.EcoporiumUser;
+import com.yakovliam.ecoporium.api.market.stock.StockTicker;
+import com.yakovliam.ecoporium.api.user.EcoporiumUser;
+import com.yakovliam.ecoporium.user.EcoporiumUserImpl;
 import com.yakovliam.ecoporium.util.NumberUtil;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -58,7 +59,7 @@ public class StockCommand extends AbstractEcoporiumCommand {
             }
 
             // get user
-            EcoporiumUser user = plugin.getUserCache().getCache().get(player.getUniqueId()).join();
+            EcoporiumUserImpl user = plugin.getUserCache().getCache().get(player.getUniqueId()).join();
 
             // give user shares
             user.addShares(marketObj.getHandle(), stockTicker.getSymbol(), amountToBuy);
@@ -101,7 +102,7 @@ public class StockCommand extends AbstractEcoporiumCommand {
             pricePerShare = stockTicker.getCurrentQuote().getPrice();
 
             // get user
-            EcoporiumUser user = plugin.getUserCache().getCache().get(player.getUniqueId()).join();
+            EcoporiumUserImpl user = plugin.getUserCache().getCache().get(player.getUniqueId()).join();
 
             // if user doesn't have enough shares
             int sharesOwned = user.getShares(marketObj.getHandle(), stockTicker.getSymbol());

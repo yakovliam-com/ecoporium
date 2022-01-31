@@ -1,6 +1,6 @@
-package com.yakovliam.ecoporium.market;
+package com.yakovliam.ecoporium.api.market;
 
-import com.yakovliam.ecoporium.market.stock.StockTicker;
+import com.yakovliam.ecoporium.api.market.stock.StockTicker;
 
 import java.util.Map;
 

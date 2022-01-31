@@ -1,8 +1,10 @@
 package com.yakovliam.ecoporium.market.stock.fake;
 
+import com.yakovliam.ecoporium.api.market.stock.fake.FakeStockProvider;
+
 import java.util.concurrent.ThreadLocalRandom;
 
-public class FakeStockProvider {
+public class FakeStockProviderImpl implements FakeStockProvider {
 
     /**
      * Previous closing price
@@ -14,14 +16,14 @@ public class FakeStockProvider {
      *
      * @param previousClosingPrice previous closing price
      */
-    public FakeStockProvider(float previousClosingPrice) {
+    public FakeStockProviderImpl(float previousClosingPrice) {
         this.previousClosingPrice = previousClosingPrice;
     }
 
     /**
      * Fake stock provider
      */
-    public FakeStockProvider() {
+    public FakeStockProviderImpl() {
         // generate ipo
         this.previousClosingPrice = generateRandomFloat(20f, 1000f);
     }
@@ -47,6 +49,7 @@ public class FakeStockProvider {
      *
      * @return opening price
      */
+    @Override
     public float calculateOpeningPrice() {
         return calculatePrice(previousClosingPrice);
     }
@@ -57,6 +60,7 @@ public class FakeStockProvider {
      * @param previous previous
      * @return next price
      */
+    @Override
     public float calculatePrice(float previous) {
         // Instead of a fixed volatility, pick a random volatility
         // each time, between 2 and 10.

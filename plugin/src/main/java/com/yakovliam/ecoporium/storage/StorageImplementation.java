@@ -1,8 +1,8 @@
 package com.yakovliam.ecoporium.storage;
 
 import com.yakovliam.ecoporium.EcoporiumPlugin;
-import com.yakovliam.ecoporium.market.Market;
-import com.yakovliam.ecoporium.user.EcoporiumUser;
+import com.yakovliam.ecoporium.api.market.Market;
+import com.yakovliam.ecoporium.user.EcoporiumUserImpl;
 
 import java.util.UUID;
 
@@ -12,9 +12,9 @@ public interface StorageImplementation {
 
     void shutdown();
 
-    void saveUser(EcoporiumUser user);
+    void saveUser(EcoporiumUserImpl user);
 
-    EcoporiumUser loadUser(UUID uuid);
+    EcoporiumUserImpl loadUser(UUID uuid);
 
     void saveMarket(Market<?> market);
 

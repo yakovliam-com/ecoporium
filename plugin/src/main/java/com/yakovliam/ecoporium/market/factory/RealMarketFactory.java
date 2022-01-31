@@ -1,11 +1,11 @@
 package com.yakovliam.ecoporium.market.factory;
 
 import com.yakovliam.ecoporium.api.model.factory.Factory;
-import com.yakovliam.ecoporium.market.RealMarket;
+import com.yakovliam.ecoporium.market.RealMarketImpl;
 
 import java.util.HashMap;
 
-public class RealMarketFactory implements Factory<String, RealMarket> {
+public class RealMarketFactory implements Factory<String, RealMarketImpl> {
 
     /**
      * Builds a V from K context
@@ -14,7 +14,7 @@ public class RealMarketFactory implements Factory<String, RealMarket> {
      * @return v
      */
     @Override
-    public RealMarket build(String context) {
-        return new RealMarket(context, new HashMap<>());
+    public RealMarketImpl build(String context) {
+        return new RealMarketImpl(context, new HashMap<>());
     }
 }

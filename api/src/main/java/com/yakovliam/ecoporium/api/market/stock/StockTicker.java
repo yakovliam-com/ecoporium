@@ -1,6 +1,6 @@
-package com.yakovliam.ecoporium.market.stock;
+package com.yakovliam.ecoporium.api.market.stock;
 
-import com.yakovliam.ecoporium.market.stock.quote.SimpleStockQuote;
+import com.yakovliam.ecoporium.api.market.stock.quote.SimpleStockQuote;
 
 import java.time.Instant;
 import java.util.Date;

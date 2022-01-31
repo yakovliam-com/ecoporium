@@ -1,10 +1,11 @@
 package com.yakovliam.ecoporium.user;
 
 import com.google.common.collect.Table;
+import com.yakovliam.ecoporium.api.user.EcoporiumUser;
 
 import java.util.UUID;
 
-public class EcoporiumUser {
+public class EcoporiumUserImpl extends EcoporiumUser {
 
     /**
      * The uuid of the associated player
@@ -24,7 +25,7 @@ public class EcoporiumUser {
      * @param uuid             uuid
      * @param sharesOwnedTable shares table
      */
-    public EcoporiumUser(UUID uuid, Table<String, String, Integer> sharesOwnedTable) {
+    public EcoporiumUserImpl(UUID uuid, Table<String, String, Integer> sharesOwnedTable) {
         this.uuid = uuid;
         this.sharesOwnedTable = sharesOwnedTable;
     }
@@ -34,6 +35,7 @@ public class EcoporiumUser {
      *
      * @return uuid
      */
+    @Override
     public UUID getUuid() {
         return uuid;
     }
@@ -43,6 +45,7 @@ public class EcoporiumUser {
      *
      * @return shares table
      */
+    @Override
     public Table<String, String, Integer> getSharesOwnedTable() {
         return sharesOwnedTable;
     }
@@ -54,6 +57,7 @@ public class EcoporiumUser {
      * @param symbol       symbol
      * @param amountToAdd  amount to add
      */
+    @Override
     public void addShares(String marketHandle, String symbol, Integer amountToAdd) {
         int currentShares = 0;
         if (sharesOwnedTable.contains(marketHandle, symbol)) {
@@ -70,6 +74,7 @@ public class EcoporiumUser {
      * @param symbol         symbol
      * @param amountToRemove amount to remove
      */
+    @Override
     public void removeShares(String marketHandle, String symbol, Integer amountToRemove) {
         int currentShares = 0;
         if (sharesOwnedTable.contains(marketHandle, symbol)) {
@@ -90,6 +95,7 @@ public class EcoporiumUser {
      * @param marketHandle market handle
      * @return shares
      */
+    @Override
     public int getShares(String marketHandle, String symbol) {
         return sharesOwnedTable.contains(marketHandle, symbol) ? sharesOwnedTable.get(marketHandle, symbol) : 0;
     }

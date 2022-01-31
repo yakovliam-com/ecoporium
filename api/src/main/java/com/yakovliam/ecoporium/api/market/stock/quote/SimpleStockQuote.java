@@ -1,4 +1,4 @@
-package com.yakovliam.ecoporium.market.stock.quote;
+package com.yakovliam.ecoporium.api.market.stock.quote;
 
 import java.util.Date;
 

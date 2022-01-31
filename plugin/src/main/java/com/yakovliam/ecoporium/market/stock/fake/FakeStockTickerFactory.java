@@ -5,7 +5,7 @@ import com.yakovliam.ecoporium.api.wrapper.Pair;
 
 import java.util.Collections;
 
-public class FakeStockTickerFactory implements Factory<Pair<String, String>, FakeStockTicker> {
+public class FakeStockTickerFactory implements Factory<Pair<String, String>, FakeStockTickerImpl> {
 
     /**
      * Builds a V from K context
@@ -14,7 +14,7 @@ public class FakeStockTickerFactory implements Factory<Pair<String, String>, Fak
      * @return v
      */
     @Override
-    public FakeStockTicker build(Pair<String, String> context) {
-        return new FakeStockTicker(context.getLeft(), context.getRight() == null ? Collections.emptyList() : Collections.singletonList(context.getRight()), new FakeStockProvider());
+    public FakeStockTickerImpl build(Pair<String, String> context) {
+        return new FakeStockTickerImpl(context.getLeft(), context.getRight() == null ? Collections.emptyList() : Collections.singletonList(context.getRight()), new FakeStockProviderImpl());
     }
 }

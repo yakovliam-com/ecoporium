@@ -1,21 +1,21 @@
 package com.yakovliam.ecoporium;
 
-import com.yakovliam.ecoporium.api.Plugin;
 import com.yakovliam.ecoporium.api.message.Message;
 import com.yakovliam.ecoporium.command.CommandManager;
 import com.yakovliam.ecoporium.config.EcoporiumConfig;
 import com.yakovliam.ecoporium.expansion.EcoporiumExpansion;
 import com.yakovliam.ecoporium.listener.PlayerListener;
-import com.yakovliam.ecoporium.market.MarketCache;
+import com.yakovliam.ecoporium.market.MarketCacheImpl;
 import com.yakovliam.ecoporium.message.Messages;
 import com.yakovliam.ecoporium.storage.Storage;
 import com.yakovliam.ecoporium.storage.implementation.json.JsonStorageImplementation;
 import com.yakovliam.ecoporium.task.MarketUpdateTask;
-import com.yakovliam.ecoporium.user.UserCache;
+import com.yakovliam.ecoporium.user.UserCacheImpl;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.plugin.RegisteredServiceProvider;
+import org.bukkit.plugin.ServicePriority;
 
-public class EcoporiumPlugin extends Plugin {
+public class EcoporiumPlugin extends com.yakovliam.ecoporium.api.EcoporiumPlugin {
 
     /**
      * Ecoporium configuration
@@ -30,7 +30,7 @@ public class EcoporiumPlugin extends Plugin {
     /**
      * Market cache
      */
-    private MarketCache marketCache;
+    private MarketCacheImpl marketCacheImpl;
 
     /**
      * Storage
@@ -45,7 +45,7 @@ public class EcoporiumPlugin extends Plugin {
     /**
      * User cache
      */
-    private UserCache userCache;
+    private UserCacheImpl userCacheImpl;
 
     /**
      * Economy
@@ -60,16 +60,19 @@ public class EcoporiumPlugin extends Plugin {
     public void onEnable() {
         super.onEnable();
 
+        // register self in service provider
+        this.getServer().getServicesManager().register(EcoporiumPlugin.class, this, this, ServicePriority.Normal);
+
         // initialize audience provider
         Message.initAudience(this);
 
         this.ecoporiumConfig = new EcoporiumConfig(this, provideConfigAdapter("config.yml"));
         this.langConfig = new EcoporiumConfig(this, provideConfigAdapter("lang.yml"));
-        this.marketCache = new MarketCache(this);
+        this.marketCacheImpl = new MarketCacheImpl(this);
 
         this.storage = new Storage(new JsonStorageImplementation(this));
 
-        this.userCache = new UserCache(this);
+        this.userCacheImpl = new UserCacheImpl(this);
 
         new CommandManager(this);
 
@@ -92,7 +95,7 @@ public class EcoporiumPlugin extends Plugin {
     @Override
     public void onDisable() {
         // save users
-        getUserCache().getCache().synchronous().asMap().values().forEach(user -> getStorage().saveUser(user, false));
+        this.getUserCache().getCache().synchronous().asMap().values().forEach(user -> getStorage().saveUser(user, false));
     }
 
     /**
@@ -109,8 +112,9 @@ public class EcoporiumPlugin extends Plugin {
      *
      * @return market cache
      */
-    public MarketCache getMarketCache() {
-        return marketCache;
+    @Override
+    public MarketCacheImpl getMarketCache() {
+        return marketCacheImpl;
     }
 
     /**
@@ -136,8 +140,9 @@ public class EcoporiumPlugin extends Plugin {
      *
      * @return user cache
      */
-    public UserCache getUserCache() {
-        return userCache;
+    @Override
+    public UserCacheImpl getUserCache() {
+        return userCacheImpl;
     }
 
     /**
@@ -171,7 +176,7 @@ public class EcoporiumPlugin extends Plugin {
      * @return economy
      */
     private boolean setupEconomy() {
-        if (getServer().getPluginManager().getPlugin("Vault") == null) {
+        if (this.getServer().getPluginManager().getPlugin("Vault") == null) {
             return false;
         }
 

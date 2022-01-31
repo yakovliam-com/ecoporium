@@ -1,4 +1,4 @@
-package com.yakovliam.ecoporium.market;
+package com.yakovliam.ecoporium.api.market;
 
 public enum MarketType {
     FAKE,

@@ -1,10 +1,10 @@
 package com.yakovliam.ecoporium.storage.implementation.json.serializer.stock;
 
-import com.yakovliam.ecoporium.market.stock.StockTicker;
-import com.yakovliam.ecoporium.market.stock.StockType;
-import com.yakovliam.ecoporium.market.stock.fake.FakeStockProvider;
-import com.yakovliam.ecoporium.market.stock.fake.FakeStockTicker;
-import com.yakovliam.ecoporium.market.stock.real.RealStockTicker;
+import com.yakovliam.ecoporium.api.market.stock.StockTicker;
+import com.yakovliam.ecoporium.api.market.stock.StockType;
+import com.yakovliam.ecoporium.market.stock.fake.FakeStockProviderImpl;
+import com.yakovliam.ecoporium.market.stock.fake.FakeStockTickerImpl;
+import com.yakovliam.ecoporium.market.stock.real.RealStockTickerImpl;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
@@ -52,9 +52,9 @@ public class StockTickerSerializer implements TypeSerializer<StockTicker<?>> {
             List<String> aliases = node.node("aliases").getList(String.class);
             float previousClosingPrice = node.node("previousClosingPrice").getFloat();
 
-            return new FakeStockTicker(symbol, aliases, new FakeStockProvider(previousClosingPrice));
+            return new FakeStockTickerImpl(symbol, aliases, new FakeStockProviderImpl(previousClosingPrice));
         } else if (stockType == StockType.REAL) {
-            return new RealStockTicker(symbol);
+            return new RealStockTickerImpl(symbol);
         }
 
         return null;
@@ -79,10 +79,10 @@ public class StockTickerSerializer implements TypeSerializer<StockTicker<?>> {
         node.node("symbol").set(obj.getSymbol());
 
         if (obj.getStockType() == StockType.FAKE) {
-            FakeStockTicker fakeStockTicker = (FakeStockTicker) obj;
+            FakeStockTickerImpl fakeStockTickerImpl = (FakeStockTickerImpl) obj;
 
-            node.node("aliases").set(fakeStockTicker.getAliases());
-            node.node("previousClosingPrice").set(fakeStockTicker.getCurrentQuote().getPrice());
+            node.node("aliases").set(fakeStockTickerImpl.getAliases());
+            node.node("previousClosingPrice").set(fakeStockTickerImpl.getCurrentQuote().getPrice());
         }
     }
 }

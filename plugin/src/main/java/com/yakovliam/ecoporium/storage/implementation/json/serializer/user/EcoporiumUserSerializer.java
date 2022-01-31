@@ -1,7 +1,7 @@
 package com.yakovliam.ecoporium.storage.implementation.json.serializer.user;
 
 import com.google.common.collect.Table;
-import com.yakovliam.ecoporium.user.EcoporiumUser;
+import com.yakovliam.ecoporium.user.EcoporiumUserImpl;
 import io.leangen.geantyref.TypeToken;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.configurate.ConfigurationNode;
@@ -12,7 +12,7 @@ import java.lang.reflect.Type;
 import java.util.Objects;
 import java.util.UUID;
 
-public class EcoporiumUserSerializer implements TypeSerializer<EcoporiumUser> {
+public class EcoporiumUserSerializer implements TypeSerializer<EcoporiumUserImpl> {
 
     /**
      * Instance
@@ -50,11 +50,11 @@ public class EcoporiumUserSerializer implements TypeSerializer<EcoporiumUser> {
      * @since 4.0.0
      */
     @Override
-    public EcoporiumUser deserialize(Type type, ConfigurationNode node) throws SerializationException {
+    public EcoporiumUserImpl deserialize(Type type, ConfigurationNode node) throws SerializationException {
         UUID uuid = UUID.fromString(Objects.requireNonNull(node.node("uuid").getString()));
         Table<String, String, Integer> sharedOwnedTable = node.node("sharesOwnedTable").get(tableType);
 
-        return new EcoporiumUser(uuid, sharedOwnedTable);
+        return new EcoporiumUserImpl(uuid, sharedOwnedTable);
     }
 
     /**
@@ -67,7 +67,7 @@ public class EcoporiumUserSerializer implements TypeSerializer<EcoporiumUser> {
      * @since 4.0.0
      */
     @Override
-    public void serialize(Type type, @Nullable EcoporiumUser obj, ConfigurationNode node) throws SerializationException {
+    public void serialize(Type type, @Nullable EcoporiumUserImpl obj, ConfigurationNode node) throws SerializationException {
         node.node("uuid").set(Objects.requireNonNull(obj).getUuid().toString());
         node.node("sharesOwnedTable").set(tableType, obj.getSharesOwnedTable());
     }

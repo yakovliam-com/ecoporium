@@ -1,9 +1,9 @@
 package com.yakovliam.ecoporium.expansion;
 
 import com.yakovliam.ecoporium.EcoporiumPlugin;
-import com.yakovliam.ecoporium.market.Market;
-import com.yakovliam.ecoporium.market.stock.StockTicker;
-import com.yakovliam.ecoporium.user.EcoporiumUser;
+import com.yakovliam.ecoporium.api.market.Market;
+import com.yakovliam.ecoporium.api.market.stock.StockTicker;
+import com.yakovliam.ecoporium.api.user.EcoporiumUser;
 import com.yakovliam.ecoporium.util.NumberUtil;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;

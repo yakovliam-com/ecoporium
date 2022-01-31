@@ -1,7 +1,7 @@
 package com.yakovliam.ecoporium.storage;
 
-import com.yakovliam.ecoporium.market.Market;
-import com.yakovliam.ecoporium.user.EcoporiumUser;
+import com.yakovliam.ecoporium.api.market.Market;
+import com.yakovliam.ecoporium.user.EcoporiumUserImpl;
 
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -36,7 +36,7 @@ public class Storage {
      *
      * @param user user
      */
-    public void saveUser(EcoporiumUser user, boolean asynchronous) {
+    public void saveUser(EcoporiumUserImpl user, boolean asynchronous) {
         if (asynchronous) {
             CompletableFuture.runAsync(() -> this.storageImplementation.saveUser(user));
         } else {
@@ -49,7 +49,7 @@ public class Storage {
      *
      * @param uuid user
      */
-    public EcoporiumUser loadUser(UUID uuid) {
+    public EcoporiumUserImpl loadUser(UUID uuid) {
         return this.storageImplementation.loadUser(uuid);
     }
 
