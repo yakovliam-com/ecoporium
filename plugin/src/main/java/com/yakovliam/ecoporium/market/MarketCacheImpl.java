@@ -1,6 +1,6 @@
 package com.yakovliam.ecoporium.market;
 
-import com.github.benmanes.caffeine.cache.Caffeine;
+import com.yakovliam.ecoporium.lib.caffeine.cache.Caffeine;
 import com.yakovliam.ecoporium.EcoporiumPlugin;
 import com.yakovliam.ecoporium.api.market.MarketCache;
 import com.yakovliam.ecoporium.api.market.MarketType;

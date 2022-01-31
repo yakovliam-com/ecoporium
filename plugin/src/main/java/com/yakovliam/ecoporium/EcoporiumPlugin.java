@@ -61,7 +61,7 @@ public class EcoporiumPlugin extends com.yakovliam.ecoporium.api.EcoporiumPlugin
         super.onEnable();
 
         // register self in service provider
-        this.getServer().getServicesManager().register(EcoporiumPlugin.class, this, this, ServicePriority.Normal);
+        this.getServer().getServicesManager().register(com.yakovliam.ecoporium.api.EcoporiumPlugin.class, this, this, ServicePriority.Normal);
 
         // initialize audience provider
         Message.initAudience(this);

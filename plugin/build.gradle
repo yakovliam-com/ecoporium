@@ -6,7 +6,7 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":ecoporium-api"))
+    implementation project(path: ":ecoporium-api", configuration: "shadow")
 
     compileOnly "org.spigotmc:spigot-api:1.18-R0.1-SNAPSHOT"
     compileOnly "me.clip:placeholderapi:2.11.1"
@@ -19,7 +19,6 @@ dependencies {
     implementation "dev.triumphteam:triumph-gui:3.1.1"
     implementation "co.aikar:acf-bukkit:0.5.0-SNAPSHOT"
     implementation"de.sfuhrm:YahooFinanceAPI:3.16.3"
-    implementation "com.github.ben-manes.caffeine:caffeine:3.0.5"
     implementation "me.mattstudios:triumph-msg-adventure:2.2.4-SNAPSHOT"
     implementation "me.mattstudios:triumph-msg:2.2.4-SNAPSHOT"
     implementation "org.spongepowered:configurate-gson:4.1.2"
@@ -41,7 +40,6 @@ shadowJar {
     relocate "net.kyori", "${project.ext.groupId}.lib.kyori"
     relocate "yahoofinance", "${project.ext.groupId}.lib.yahoofinance"
     relocate "com.fasterxml.jackson", "${project.ext.groupId}.lib.yahoofinance.jackson"
-    relocate "com.github.benmanes.caffeine", "${project.ext.groupId}.lib.caffeine"
     relocate "me.lucko.commodore", "${project.ext.groupId}.lib.commodore"
 
     relocate "co.aikar.commands.lib.timings", "${project.ext.groupId}.lib.aikar.timings"

@@ -1,6 +1,6 @@
 package com.yakovliam.ecoporium.user;
 
-import com.github.benmanes.caffeine.cache.Caffeine;
+import com.yakovliam.ecoporium.lib.caffeine.cache.Caffeine;
 import com.yakovliam.ecoporium.EcoporiumPlugin;
 import com.yakovliam.ecoporium.api.user.UserCache;
 
