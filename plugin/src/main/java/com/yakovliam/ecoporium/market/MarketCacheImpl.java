@@ -10,7 +10,7 @@ public class MarketCacheImpl extends MarketCache {
     /**
      * Cache
      *
-     * @param plugin plugin
+     * @param plugin pluging
      */
     public MarketCacheImpl(EcoporiumPlugin plugin) {
         super(Caffeine.newBuilder()

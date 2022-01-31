@@ -18,7 +18,7 @@ dependencies {
     implementation "me.lucko:commodore:1.11"
     implementation "dev.triumphteam:triumph-gui:3.1.1"
     implementation "co.aikar:acf-bukkit:0.5.0-SNAPSHOT"
-    implementation"de.sfuhrm:YahooFinanceAPI:3.16.3"
+    implementation "de.sfuhrm:YahooFinanceAPI:3.16.3"
     implementation "me.mattstudios:triumph-msg-adventure:2.2.4-SNAPSHOT"
     implementation "me.mattstudios:triumph-msg:2.2.4-SNAPSHOT"
     implementation "org.spongepowered:configurate-gson:4.1.2"
