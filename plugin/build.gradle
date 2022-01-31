@@ -48,7 +48,6 @@ shadowJar {
     relocate "co.aikar.commands", "${project.ext.groupId}.lib.aikar.acf"
     relocate "co.aikar.locales", "${project.ext.groupId}.lib.aikar.locales"
 
-    relocate "org.jfree", "${project.ext.groupId}.lib.jfree"
     relocate "org.spongepowered", "${project.ext.groupId}.lib.spongepowered"
     relocate "org.slf4j", "${project.ext.groupId}.lib.slf4j"
     relocate "org.checkerframework", "${project.ext.groupId}.lib.checkerframework"
