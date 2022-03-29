@@ -132,14 +132,14 @@ public class StockCommand extends AbstractEcoporiumCommand {
 
     @Subcommand("price|pr")
     @Description("Views a stock's price")
-    public void onPrice(Player player, @Single String market, @Single String symbol) {
-        plugin.getMessages().ecoporiumMarketGettingData.message(player);
+    public void onPrice(CommandSender sender, @Single String market, @Single String symbol) {
+        plugin.getMessages().ecoporiumMarketGettingData.message(sender);
 
         // does market already exist?
         plugin.getMarketCache().getCache().get(market).thenAccept(marketObj -> {
             // if doesn't exist
             if (marketObj == null) {
-                plugin.getMessages().ecoporiumMarketNonexistent.message(player);
+                plugin.getMessages().ecoporiumMarketNonexistent.message(sender);
                 return;
             }
 
@@ -147,14 +147,14 @@ public class StockCommand extends AbstractEcoporiumCommand {
 
             // does the stock exist?
             if (!marketObj.containsStock(symbol)) {
-                plugin.getMessages().ecoporiumMarketSymbolDoesntExist.message(player);
+                plugin.getMessages().ecoporiumMarketSymbolDoesntExist.message(sender);
                 return;
             }
 
             StockTicker<?> stockTicker = marketObj.getStock(symbol);
             pricePerShare = stockTicker.getCurrentQuote().getPrice();
 
-            plugin.getMessages().stockPrice.message(player,
+            plugin.getMessages().stockPrice.message(sender,
                     "%symbol%", stockTicker.getSymbol(),
                     "%price-per-share%", NumberUtil.formatToPlaces(pricePerShare, 2)
             );
