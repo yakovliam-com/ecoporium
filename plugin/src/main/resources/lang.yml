@@ -52,3 +52,5 @@ stock:
       - "&7You sold &f%shares% &7of &f%symbol% &7at &f%price-per-share% &7per share for a total of &f%amount-given%&7."
   price:
     - "&7Current price of &f%symbol%&7: &6%price-per-share%"
+  price-not-available:
+    - "&7The price is not yet available; &fwe're working on it!"

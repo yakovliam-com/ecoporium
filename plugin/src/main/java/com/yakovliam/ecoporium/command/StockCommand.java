@@ -3,8 +3,8 @@ package com.yakovliam.ecoporium.command;
 import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
 import com.yakovliam.ecoporium.EcoporiumPlugin;
-import com.yakovliam.ecoporium.api.message.Message;
 import com.yakovliam.ecoporium.api.market.stock.StockTicker;
+import com.yakovliam.ecoporium.api.message.Message;
 import com.yakovliam.ecoporium.api.user.EcoporiumUser;
 import com.yakovliam.ecoporium.user.EcoporiumUserImpl;
 import com.yakovliam.ecoporium.util.NumberUtil;
@@ -47,7 +47,12 @@ public class StockCommand extends AbstractEcoporiumCommand {
             }
 
             StockTicker<?> stockTicker = marketObj.getStock(symbol);
-            pricePerShare = stockTicker.getCurrentQuote().getPrice();
+            if (stockTicker.getCurrentQuote().isEmpty()) {
+                plugin.getMessages().stockPriceNotAvailable.message(player);
+                return;
+            }
+
+            pricePerShare = stockTicker.getCurrentQuote().get().getPrice();
 
             // if the user has enough to pay for the stocks they are buying
             float amountNeededToBuy = pricePerShare * amountToBuy;
@@ -99,7 +104,13 @@ public class StockCommand extends AbstractEcoporiumCommand {
             }
 
             StockTicker<?> stockTicker = marketObj.getStock(symbol);
-            pricePerShare = stockTicker.getCurrentQuote().getPrice();
+
+            if (stockTicker.getCurrentQuote().isEmpty()) {
+                plugin.getMessages().stockPriceNotAvailable.message(player);
+                return;
+            }
+
+            pricePerShare = stockTicker.getCurrentQuote().get().getPrice();
 
             // get user
             EcoporiumUserImpl user = plugin.getUserCache().getCache().get(player.getUniqueId()).join();
@@ -152,12 +163,14 @@ public class StockCommand extends AbstractEcoporiumCommand {
             }
 
             StockTicker<?> stockTicker = marketObj.getStock(symbol);
-            pricePerShare = stockTicker.getCurrentQuote().getPrice();
-
-            plugin.getMessages().stockPrice.message(sender,
-                    "%symbol%", stockTicker.getSymbol(),
-                    "%price-per-share%", NumberUtil.formatToPlaces(pricePerShare, 2)
-            );
+            stockTicker.getCurrentQuote().ifPresentOrElse((quote) -> {
+                plugin.getMessages().stockPrice.message(sender,
+                        "%symbol%", stockTicker.getSymbol(),
+                        "%price-per-share%", NumberUtil.formatToPlaces(quote.getPrice(), 2)
+                );
+            }, () -> {
+                plugin.getMessages().stockPriceNotAvailable.message(sender);
+            });
         });
     }
 

@@ -71,10 +71,14 @@ public class EcoporiumExpansion extends PlaceholderExpansion {
 
             StockTicker<?> ticker = market.getStock(symbol);
 
-            return NumberUtil.formatToPlaces(ticker.getCurrentQuote().getPrice(), 2);
+            if (ticker.getCurrentQuote().isEmpty()) {
+                return "unavailable";
+            }
+
+            return NumberUtil.formatToPlaces(ticker.getCurrentQuote().get().getPrice(), 2);
         }
 
-        if(request.equalsIgnoreCase("direction") || request.equalsIgnoreCase("historical-analysis")){
+        if (request.equalsIgnoreCase("direction") || request.equalsIgnoreCase("historical-analysis")) {
             if (parts.length != 3) {
                 return null;
             }

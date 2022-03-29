@@ -58,7 +58,7 @@ public class RealStockTickerImpl extends RealStockTicker {
     @Override
     public void update() {
         updateStockData(false).thenAccept(data -> {
-            this.currentQuote = new SimpleStockQuote(stock.getQuote().getPrice().floatValue(), Date.from(Instant.now()));
+            this.currentQuote = Optional.of(new SimpleStockQuote(stock.getQuote().getPrice().floatValue(), Date.from(Instant.now())));
         });
     }
 

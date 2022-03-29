@@ -44,43 +44,34 @@ public class Messages {
 
     // stock removed
     public final Message ecoporiumMarketStockRemoved;
-
-    // screen create cancel not in placement session
-    public Message ecoporiumScreenCreateNotInPlacementSession;
-
-    // screen create already in session
-    public Message ecoporiumScreenCreateAlreadyInPlacementSession;
-
-    // screen create canceled
-    public Message ecoporiumScreenCreateCanceled;
-
-    // screen cant find
-    public Message ecoporiumScreenDeleteCantFind;
-
     // screen deleted
     public final Message ecoporiumScreenDeleteDeleted;
-
     /**
      * Stock command
      */
 
     // stock portfolio header
     public final Message stockPortfolio;
-
     // stock buy not enough
     public final Message stockBuyNotEnough;
-
     // stock buy bought
     public final Message stockBuyBought;
-
     // stock sell not enough
     public final Message stockSellNotEnough;
-
     // stock sell sold
     public final Message stockSellSold;
-
     // stock price
     public final Message stockPrice;
+    // stock price not available
+    public final Message stockPriceNotAvailable;
+    // screen create cancel not in placement session
+    public Message ecoporiumScreenCreateNotInPlacementSession;
+    // screen create already in session
+    public Message ecoporiumScreenCreateAlreadyInPlacementSession;
+    // screen create canceled
+    public Message ecoporiumScreenCreateCanceled;
+    // screen cant find
+    public Message ecoporiumScreenDeleteCantFind;
 
     /**
      * Messages
@@ -113,5 +104,6 @@ public class Messages {
         stockSellNotEnough = Message.fromConfigurationSection("stock.sell.not-enough", adapter);
         stockSellSold = Message.fromConfigurationSection("stock.sell.sold", adapter);
         stockPrice = Message.fromConfigurationSection("stock.price", adapter);
+        stockPriceNotAvailable = Message.fromConfigurationSection("stock.price-not-available", adapter);
     }
 }
