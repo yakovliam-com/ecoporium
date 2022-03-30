@@ -52,6 +52,14 @@ public class Messages {
 
     // stock portfolio header
     public final Message stockPortfolio;
+    // stock portfolio item
+    public final Message stockPortfolioItem;
+    // stock portfolio position up
+    public final Message stockPortfolioPositionUp;
+    // stock portfolio position down
+    public final Message stockPortfolioPositionDown;
+    // stock portfolio position unchanged
+    public final Message stockPortfolioPositionUnchanged;
     // stock buy not enough
     public final Message stockBuyNotEnough;
     // stock buy bought
@@ -99,6 +107,10 @@ public class Messages {
         ecoporiumScreenDeleteCantFind = Message.fromConfigurationSection("ecoporium.screen.delete.cant-find", adapter);
         ecoporiumScreenDeleteDeleted = Message.fromConfigurationSection("ecoporium.screen.delete.deleted", adapter);
         stockPortfolio = Message.fromConfigurationSection("stock.portfolio", adapter);
+        stockPortfolioItem = Message.fromConfigurationSection("stock.portfolio-item", adapter);
+        stockPortfolioPositionUp = Message.fromConfigurationSection("stock.portfolio-position-up", adapter);
+        stockPortfolioPositionDown = Message.fromConfigurationSection("stock.portfolio-position-down", adapter);
+        stockPortfolioPositionUnchanged = Message.fromConfigurationSection("stock.portfolio-position-unchanged", adapter);
         stockBuyNotEnough = Message.fromConfigurationSection("stock.buy.not-enough", adapter);
         stockBuyBought = Message.fromConfigurationSection("stock.buy.bought", adapter);
         stockSellNotEnough = Message.fromConfigurationSection("stock.sell.not-enough", adapter);

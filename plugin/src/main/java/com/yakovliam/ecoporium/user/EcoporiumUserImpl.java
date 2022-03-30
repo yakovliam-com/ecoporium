@@ -2,8 +2,10 @@ package com.yakovliam.ecoporium.user;
 
 import com.google.common.collect.Table;
 import com.yakovliam.ecoporium.api.user.EcoporiumUser;
+import com.yakovliam.ecoporium.api.user.share.OwnedShare;
 
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Stream;
 
 public class EcoporiumUserImpl extends EcoporiumUser {
 
@@ -17,7 +19,7 @@ public class EcoporiumUserImpl extends EcoporiumUser {
      * <p>
      * [market handle, symbol, shares owned]
      */
-    private final Table<String, String, Integer> sharesOwnedTable;
+    private final Table<String, String, List<OwnedShare>> sharesOwnedTable;
 
     /**
      * Ecoporium user
@@ -25,7 +27,7 @@ public class EcoporiumUserImpl extends EcoporiumUser {
      * @param uuid             uuid
      * @param sharesOwnedTable shares table
      */
-    public EcoporiumUserImpl(UUID uuid, Table<String, String, Integer> sharesOwnedTable) {
+    public EcoporiumUserImpl(UUID uuid, Table<String, String, List<OwnedShare>> sharesOwnedTable) {
         this.uuid = uuid;
         this.sharesOwnedTable = sharesOwnedTable;
     }
@@ -46,25 +48,34 @@ public class EcoporiumUserImpl extends EcoporiumUser {
      * @return shares table
      */
     @Override
-    public Table<String, String, Integer> getSharesOwnedTable() {
+    public Table<String, String, List<OwnedShare>> getSharesOwnedTable() {
         return sharesOwnedTable;
     }
 
     /**
      * Add shares
      *
-     * @param marketHandle market handle
-     * @param symbol       symbol
-     * @param amountToAdd  amount to add
+     * @param marketHandle     market handle
+     * @param symbol           symbol
+     * @param amountOfShares   amount of shares
+     * @param priceOfEachShare the price of each share
      */
     @Override
-    public void addShares(String marketHandle, String symbol, Integer amountToAdd) {
-        int currentShares = 0;
+    public void addShares(String marketHandle, String symbol, Integer amountOfShares, Float priceOfEachShare) {
+        List<OwnedShare> currentShares = new ArrayList<>();
         if (sharesOwnedTable.contains(marketHandle, symbol)) {
-            currentShares = sharesOwnedTable.get(marketHandle, symbol);
+            List<OwnedShare> value = sharesOwnedTable.get(marketHandle, symbol);
+            if (value != null) {
+                currentShares = value;
+            }
         }
 
-        sharesOwnedTable.put(marketHandle, symbol, currentShares + amountToAdd);
+        // add new shares
+        for (int i = 0; i < amountOfShares; i++) {
+            currentShares.add(new OwnedShare(priceOfEachShare));
+        }
+
+        sharesOwnedTable.put(marketHandle, symbol, currentShares);
     }
 
     /**
@@ -76,16 +87,27 @@ public class EcoporiumUserImpl extends EcoporiumUser {
      */
     @Override
     public void removeShares(String marketHandle, String symbol, Integer amountToRemove) {
-        int currentShares = 0;
+        List<OwnedShare> currentShares = new ArrayList<>();
         if (sharesOwnedTable.contains(marketHandle, symbol)) {
-            currentShares = sharesOwnedTable.get(marketHandle, symbol);
+            List<OwnedShare> value = sharesOwnedTable.get(marketHandle, symbol);
+            if (value != null) {
+                currentShares = value;
+            }
         }
 
-        if ((currentShares - amountToRemove) <= 0) {
+        int amountOfSharesOwned = currentShares.size();
+
+        if (amountOfSharesOwned - amountToRemove <= 0) {
             sharesOwnedTable.remove(marketHandle, symbol);
-        } else {
-            sharesOwnedTable.put(marketHandle, symbol, currentShares - amountToRemove);
+            return;
         }
+
+        // remove x # of stocks
+        // currently stocks are removed essentially at random
+        // todo add a way to chose which stocks are removed? or calculate which would just be best for the customer
+        currentShares.subList(0, amountToRemove).clear();
+
+        sharesOwnedTable.put(marketHandle, symbol, currentShares);
     }
 
     /**
@@ -96,7 +118,31 @@ public class EcoporiumUserImpl extends EcoporiumUser {
      * @return shares
      */
     @Override
-    public int getShares(String marketHandle, String symbol) {
-        return sharesOwnedTable.contains(marketHandle, symbol) ? sharesOwnedTable.get(marketHandle, symbol) : 0;
+    public int getNumberOfShares(String marketHandle, String symbol) {
+        return getOwnedShares(marketHandle, symbol).size();
+    }
+
+    @Override
+    public int getTotalNumberOfShares() {
+        return sharesOwnedTable.columnMap()
+                .values()
+                .stream()
+                .flatMap(map -> Stream.of(map.values()))
+                .flatMap(Collection::stream)
+                .mapToInt(Collection::size)
+                .sum();
+
+    }
+
+    /**
+     * Get owned shares object array for a symbol
+     *
+     * @param symbol       symbol
+     * @param marketHandle market handle
+     * @return shares
+     */
+    @Override
+    public List<OwnedShare> getOwnedShares(String marketHandle, String symbol) {
+        return sharesOwnedTable.contains(marketHandle, symbol) ? Objects.requireNonNull(sharesOwnedTable.get(marketHandle, symbol)) : new ArrayList<>();
     }
 }

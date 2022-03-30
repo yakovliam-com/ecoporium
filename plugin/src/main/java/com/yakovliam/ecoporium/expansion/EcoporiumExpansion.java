@@ -110,7 +110,7 @@ public class EcoporiumExpansion extends PlaceholderExpansion {
 
             EcoporiumUser user = plugin.getUserCache().getCache().get(player.getUniqueId()).join();
 
-            return Integer.toString(user.getShares(marketHandle, symbol));
+            return Integer.toString(user.getNumberOfShares(marketHandle, symbol));
         }
 
         return null;

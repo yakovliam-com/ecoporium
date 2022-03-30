@@ -3,13 +3,20 @@ package com.yakovliam.ecoporium.command;
 import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
 import com.yakovliam.ecoporium.EcoporiumPlugin;
+import com.yakovliam.ecoporium.api.market.Market;
 import com.yakovliam.ecoporium.api.market.stock.StockTicker;
+import com.yakovliam.ecoporium.api.market.stock.quote.SimpleStockQuote;
 import com.yakovliam.ecoporium.api.message.Message;
 import com.yakovliam.ecoporium.api.user.EcoporiumUser;
+import com.yakovliam.ecoporium.api.user.share.OwnedShare;
 import com.yakovliam.ecoporium.user.EcoporiumUserImpl;
 import com.yakovliam.ecoporium.util.NumberUtil;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @CommandAlias("stock")
 @CommandPermission("ecoporium.command.stock")
@@ -71,18 +78,14 @@ public class StockCommand extends AbstractEcoporiumCommand {
             EcoporiumUserImpl user = plugin.getUserCache().getCache().get(player.getUniqueId()).join();
 
             // give user shares
-            user.addShares(marketObj.getHandle(), stockTicker.getSymbol(), amountToBuy);
+            user.addShares(marketObj.getHandle(), stockTicker.getSymbol(), amountToBuy, pricePerShare);
             // save user
             plugin.getStorage().saveUser(user, true);
 
             // withdraw
             plugin.getEconomy().withdrawPlayer(player, amountNeededToBuy);
 
-            plugin.getMessages().stockBuyBought.message(player,
-                    "%symbol%", symbol,
-                    "%shares%", Integer.toString(amountToBuy),
-                    "%price-per-share%", NumberUtil.formatToPlaces(pricePerShare, 2),
-                    "%amount-paid%", NumberUtil.formatToPlaces(amountNeededToBuy, 2));
+            plugin.getMessages().stockBuyBought.message(player, "%symbol%", symbol, "%shares%", Integer.toString(amountToBuy), "%price-per-share%", NumberUtil.formatToPlaces(pricePerShare, 2), "%amount-paid%", NumberUtil.formatToPlaces(amountNeededToBuy, 2));
         });
     }
 
@@ -120,7 +123,7 @@ public class StockCommand extends AbstractEcoporiumCommand {
             EcoporiumUserImpl user = plugin.getUserCache().getCache().get(player.getUniqueId()).join();
 
             // if user doesn't have enough shares
-            int sharesOwned = user.getShares(marketObj.getHandle(), stockTicker.getSymbol());
+            int sharesOwned = user.getNumberOfShares(marketObj.getHandle(), stockTicker.getSymbol());
 
             if (sharesOwned < amountToSell) {
                 plugin.getMessages().stockSellNotEnough.message(player);
@@ -137,11 +140,7 @@ public class StockCommand extends AbstractEcoporiumCommand {
             // save user
             plugin.getStorage().saveUser(user, true);
 
-            plugin.getMessages().stockSellSold.message(player,
-                    "%shares%", Integer.toString(amountToSell),
-                    "%symbol%", stockTicker.getSymbol(),
-                    "%price-per-share%", NumberUtil.formatToPlaces(pricePerShare, 2),
-                    "%amount-given%", NumberUtil.formatToPlaces(amountToGive, 2));
+            plugin.getMessages().stockSellSold.message(player, "%shares%", Integer.toString(amountToSell), "%symbol%", stockTicker.getSymbol(), "%price-per-share%", NumberUtil.formatToPlaces(pricePerShare, 2), "%amount-given%", NumberUtil.formatToPlaces(amountToGive, 2));
         });
     }
 
@@ -167,10 +166,7 @@ public class StockCommand extends AbstractEcoporiumCommand {
             }
 
             StockTicker<?> stockTicker = marketObj.getStock(symbol);
-            stockTicker.getCurrentQuote().ifPresentOrElse((quote) -> plugin.getMessages().stockPrice.message(sender,
-                    "%symbol%", stockTicker.getSymbol(),
-                    "%price-per-share%", NumberUtil.formatToPlaces(quote.getPrice(), 2)
-            ), () -> plugin.getMessages().stockPriceNotAvailable.message(sender));
+            stockTicker.getCurrentQuote().ifPresentOrElse((quote) -> plugin.getMessages().stockPrice.message(sender, "%symbol%", stockTicker.getSymbol(), "%price-per-share%", NumberUtil.formatToPlaces(quote.getPrice(), 2)), () -> plugin.getMessages().stockPriceNotAvailable.message(sender));
         });
     }
 
@@ -182,19 +178,63 @@ public class StockCommand extends AbstractEcoporiumCommand {
 
         // portfolio header
         plugin.getMessages().stockPortfolio.message(player);
-        Message.Builder builder = Message.builder()
-                .addLine("&7&m--------");
 
-        user.getSharesOwnedTable().cellSet().forEach(
-                (cell) -> builder.addLine("&7- &f" +
-                        cell.getRowKey() +
-                        "&8|&f" +
-                        cell.getColumnKey() +
-                        "&7: &f" +
-                        cell.getValue())
-        );
+        // run this async
+        CompletableFuture.runAsync(() -> {
+            user.getSharesOwnedTable().cellSet().forEach((cell) -> {
+                String market = cell.getRowKey();
+                String stock = cell.getColumnKey();
 
-        builder.build().message(player);
+                // get current price per share
+
+                // does market already exist?
+                Market<?> marketObj = plugin.getMarketCache().getCache().get(market).join();
+
+                // continue in stream by returning
+                if (marketObj == null) {
+                    return;
+                }
+
+                // does the stock exist?
+                if (!marketObj.containsStock(stock)) {
+                    // continue in stream by returning
+                    return;
+                }
+
+                StockTicker<?> stockTicker = marketObj.getStock(stock);
+
+                SimpleStockQuote quote = stockTicker.getCurrentQuote().orElse(null);
+
+                // get messages
+                Message stockPortfolioItemMessage = plugin.getMessages().stockPortfolioItem;
+
+                if (quote == null) {
+                    stockPortfolioItemMessage.message(player, "%market%", market, "%stock%", stock, "%shares-amount%", "Loading price...", "%position%", "");
+                    return;
+                }
+
+                List<OwnedShare> ownedShares = cell.getValue();
+                int totalOwnedShares = ownedShares.size();
+
+                // calculate position percent (up or down)
+                float positionSpent = ownedShares.stream().map(OwnedShare::getPriceOfEachShare).reduce(0.0f, Float::sum);
+
+                String positionPercent = NumberUtil.formatToPlaces(Math.abs(((quote.getPrice() * totalOwnedShares / positionSpent) - 1) * 100), 2);
+
+                // get position message
+                Message positionMessage;
+
+                if (quote.getPrice() * totalOwnedShares > positionSpent) {
+                    positionMessage = plugin.getMessages().stockPortfolioPositionUp;
+                } else if (quote.getPrice() * totalOwnedShares < positionSpent) {
+                    positionMessage = plugin.getMessages().stockPortfolioPositionDown;
+                } else {
+                    positionMessage = plugin.getMessages().stockPortfolioPositionUnchanged;
+                }
+
+                stockPortfolioItemMessage.message(player, "%market%", market, "%stock%", stock, "%shares-amount%", Integer.toString(ownedShares.size()), "%position%", LegacyComponentSerializer.legacySection().serialize(positionMessage.compile("%percent%", positionPercent)));
+            });
+        });
     }
 
     @HelpCommand
