@@ -31,11 +31,11 @@ stock:
   portfolio-item:
     - "&7- &f%market%&8|&f%stock%&7: &f%shares-amount%%position%"
   portfolio-position-up:
-    - " &a&o(⬆ %percent%)"
+    - " &a&o(⬆ %percent%%)"
   portfolio-position-down:
-    - " &c&o(⬇ %percent%)"
+    - " &c&o(⬇ %percent%%)"
   portfolio-position-unchanged:
-    - " &7&o(%percent%)"
+    - " &7&o(%percent%%)"
   buy:
     not-enough:
       - "&7You need &f%balance-needed% &7to buy that much of that stock."

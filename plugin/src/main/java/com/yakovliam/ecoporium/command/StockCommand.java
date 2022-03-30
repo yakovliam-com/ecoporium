@@ -220,7 +220,7 @@ public class StockCommand extends AbstractEcoporiumCommand {
                 float positionSpent = ownedShares.stream().map(OwnedShare::getPriceOfEachShare).reduce(0.0f, Float::sum);
 
                 String positionPercent = NumberUtil.formatToPlaces(Math.abs(((quote.getPrice() * totalOwnedShares / positionSpent) - 1) * 100), 2);
-
+ 
                 // get position message
                 Message positionMessage;
 
