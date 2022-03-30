@@ -56,8 +56,7 @@ public class FakeStockTickerImpl extends FakeStockTicker {
             this.history.pop();
         }
     }
-
-
+    
     /**
      * Returns the fake stock provider
      *
