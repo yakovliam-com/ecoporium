@@ -25,6 +25,10 @@ public class StockCommand extends AbstractEcoporiumCommand {
         super(manager, plugin);
     }
 
+    @Override
+    protected void registerContexts() {
+    }
+
     @Subcommand("buy|b")
     @Description("Buys a stock from a particular market")
     public void onBuy(Player player, @Single String market, @Single String symbol, @Single Integer amountToBuy) {
