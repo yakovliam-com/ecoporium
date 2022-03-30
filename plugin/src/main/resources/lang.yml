@@ -1,4 +1,5 @@
-something-went-wrong: "&cSomething went wrong!"
+something-went-wrong:
+  - "&cSomething went wrong!"
 ecoporium:
   help:
     - "&7Help"
@@ -24,19 +25,6 @@ ecoporium:
         - "&7Stock added."
       removed:
         - "&7Stock removed."
-    screen:
-      create:
-        not-in-placement-session:
-          - "&cYou're not in a placement session!"
-        already-in-placement-session:
-          - "&cYou're already in a placement session!"
-        canceled:
-          - "&7Canceled."
-      delete:
-        cant-find:
-          - "&7Can't find a screen that you're looking at."
-        deleted:
-          - "&7Screen deleted."
 stock:
   portfolio:
     - "&7Portfolio:"

@@ -18,6 +18,7 @@ import com.yakovliam.ecoporium.market.stock.fake.FakeStockTickerImpl;
 import com.yakovliam.ecoporium.market.stock.fake.FakeStockTickerFactory;
 import com.yakovliam.ecoporium.market.stock.real.RealStockTickerFactory;
 import com.yakovliam.ecoporium.market.stock.real.RealStockTickerImpl;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -79,6 +80,9 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
             } else {
                 // something went wrong
                 plugin.getMessages().somethingWentWrong.message(sender);
+                plugin.getMessages().somethingWentWrong.broadcast();
+                System.out.println(LegacyComponentSerializer.builder().build().serialize(plugin.getMessages().somethingWentWrong.compile()));
+                System.out.println("IN ELSE");
                 return;
             }
 
