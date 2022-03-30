@@ -172,7 +172,7 @@ public class StockCommand extends AbstractEcoporiumCommand {
 
     @Subcommand("portfolio|po")
     @Description("Views your portfolio")
-    public void onPorfolio(Player player) {
+    public void onPortfolio(Player player) {
         // get user
         EcoporiumUser user = plugin.getUserCache().getCache().get(player.getUniqueId()).join();
 
@@ -181,7 +181,14 @@ public class StockCommand extends AbstractEcoporiumCommand {
         Message.Builder builder = Message.builder()
                 .addLine("&7&m--------");
 
-        user.getSharesOwnedTable().cellSet().forEach((cell) -> builder.addLine("&7- &f" + cell.getRowKey() + "&8|&f" + cell.getColumnKey() + "&7: &f" + cell.getValue()));
+        user.getSharesOwnedTable().cellSet().forEach(
+                (cell) -> builder.addLine("&7- &f" +
+                        cell.getRowKey() +
+                        "&8|&f" +
+                        cell.getColumnKey() +
+                        "&7: &f" +
+                        cell.getValue())
+        );
 
         builder.build().message(player);
     }
