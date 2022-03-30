@@ -80,9 +80,6 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
             } else {
                 // something went wrong
                 plugin.getMessages().somethingWentWrong.message(sender);
-                plugin.getMessages().somethingWentWrong.broadcast();
-                System.out.println(LegacyComponentSerializer.builder().build().serialize(plugin.getMessages().somethingWentWrong.compile()));
-                System.out.println("IN ELSE");
                 return;
             }
 
