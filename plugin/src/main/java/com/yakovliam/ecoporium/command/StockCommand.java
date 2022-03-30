@@ -163,14 +163,10 @@ public class StockCommand extends AbstractEcoporiumCommand {
             }
 
             StockTicker<?> stockTicker = marketObj.getStock(symbol);
-            stockTicker.getCurrentQuote().ifPresentOrElse((quote) -> {
-                plugin.getMessages().stockPrice.message(sender,
-                        "%symbol%", stockTicker.getSymbol(),
-                        "%price-per-share%", NumberUtil.formatToPlaces(quote.getPrice(), 2)
-                );
-            }, () -> {
-                plugin.getMessages().stockPriceNotAvailable.message(sender);
-            });
+            stockTicker.getCurrentQuote().ifPresentOrElse((quote) -> plugin.getMessages().stockPrice.message(sender,
+                    "%symbol%", stockTicker.getSymbol(),
+                    "%price-per-share%", NumberUtil.formatToPlaces(quote.getPrice(), 2)
+            ), () -> plugin.getMessages().stockPriceNotAvailable.message(sender));
         });
     }
 
@@ -198,11 +194,4 @@ public class StockCommand extends AbstractEcoporiumCommand {
         help.showHelp();
     }
 
-    @Override
-    protected void registerCompletions() {
-    }
-
-    @Override
-    protected void registerContexts() {
-    }
 }

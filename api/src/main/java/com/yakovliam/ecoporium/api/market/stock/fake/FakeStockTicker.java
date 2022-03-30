@@ -9,13 +9,11 @@ public abstract class FakeStockTicker extends StockTicker<FakeStockProvider> {
 
     /**
      * Stock
-     *
-     * @param symbol    symbol
+     *  @param symbol    symbol
      * @param aliases   aliases
      * @param stock     stock
-     * @param stockType type
      */
-    protected FakeStockTicker(String symbol, List<String> aliases, FakeStockProvider stock, StockType stockType) {
-        super(symbol, aliases, stock, stockType);
+    protected FakeStockTicker(String symbol, List<String> aliases, FakeStockProvider stock) {
+        super(symbol, aliases, stock, StockType.FAKE);
     }
 }

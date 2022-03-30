@@ -1,6 +1,5 @@
 package com.yakovliam.ecoporium.market.stock.fake;
 
-import com.yakovliam.ecoporium.api.market.stock.StockType;
 import com.yakovliam.ecoporium.api.market.stock.fake.FakeStockTicker;
 import com.yakovliam.ecoporium.api.market.stock.quote.SimpleStockQuote;
 
@@ -23,7 +22,7 @@ public class FakeStockTickerImpl extends FakeStockTicker {
      * @param aliases aliases
      */
     public FakeStockTickerImpl(String symbol, List<String> aliases, FakeStockProviderImpl fakeStockProviderImpl) {
-        super(symbol, aliases, fakeStockProviderImpl, StockType.FAKE);
+        super(symbol, aliases, fakeStockProviderImpl);
         this.fakeStockProviderImpl = fakeStockProviderImpl;
         this.currentQuote = Optional.of(new SimpleStockQuote(fakeStockProviderImpl.calculateOpeningPrice(), Date.from(Instant.now())));
     }

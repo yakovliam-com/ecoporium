@@ -25,8 +25,4 @@ public abstract class AbstractEcoporiumCommand extends BaseCommand {
         this.plugin = plugin;
         this.manager = manager;
     }
-
-    protected abstract void registerCompletions();
-
-    protected abstract void registerContexts();
 }

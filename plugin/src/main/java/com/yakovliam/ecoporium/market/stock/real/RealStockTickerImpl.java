@@ -1,7 +1,5 @@
 package com.yakovliam.ecoporium.market.stock.real;
 
-import com.yakovliam.ecoporium.api.market.stock.StockTicker;
-import com.yakovliam.ecoporium.api.market.stock.StockType;
 import com.yakovliam.ecoporium.api.market.stock.quote.SimpleStockQuote;
 import com.yakovliam.ecoporium.api.market.stock.real.RealStockTicker;
 import com.yakovliam.ecoporium.quotes.HistQuotes2Request;
@@ -45,7 +43,7 @@ public class RealStockTickerImpl extends RealStockTicker {
      * @param symbol symbol
      */
     public RealStockTickerImpl(String symbol) {
-        super(symbol, Collections.emptyList(), null, StockType.REAL);
+        super(symbol, Collections.emptyList(), null);
         this.symbol = symbol;
         this.stock = null;
         this.yfHistory = new TreeMap<>();
@@ -57,9 +55,7 @@ public class RealStockTickerImpl extends RealStockTicker {
      */
     @Override
     public void update() {
-        updateStockData(false).thenAccept(data -> {
-            this.currentQuote = Optional.of(new SimpleStockQuote(stock.getQuote().getPrice().floatValue(), Date.from(Instant.now())));
-        });
+        updateStockData(false).thenAccept(data -> this.currentQuote = Optional.of(new SimpleStockQuote(stock.getQuote().getPrice().floatValue(), Date.from(Instant.now()))));
     }
 
     /**

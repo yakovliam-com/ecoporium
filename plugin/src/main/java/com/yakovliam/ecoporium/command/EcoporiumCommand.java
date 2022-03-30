@@ -5,10 +5,8 @@ import co.aikar.commands.CommandHelp;
 import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.annotation.*;
 import com.yakovliam.ecoporium.EcoporiumPlugin;
-import com.yakovliam.ecoporium.market.FakeMarketImpl;
 import com.yakovliam.ecoporium.api.market.Market;
 import com.yakovliam.ecoporium.api.market.MarketType;
-import com.yakovliam.ecoporium.market.RealMarketImpl;
 import com.yakovliam.ecoporium.api.message.Message;
 import com.yakovliam.ecoporium.api.wrapper.Pair;
 import com.yakovliam.ecoporium.market.*;
@@ -18,7 +16,6 @@ import com.yakovliam.ecoporium.market.stock.fake.FakeStockTickerImpl;
 import com.yakovliam.ecoporium.market.stock.fake.FakeStockTickerFactory;
 import com.yakovliam.ecoporium.market.stock.real.RealStockTickerFactory;
 import com.yakovliam.ecoporium.market.stock.real.RealStockTickerImpl;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -251,10 +248,6 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
     public void doHelp(CommandSender sender, CommandHelp help) {
         plugin.getMessages().ecoporiumHelp.message(sender);
         help.showHelp();
-    }
-
-    @Override
-    protected void registerCompletions() {
     }
 
     @Override
