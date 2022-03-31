@@ -8,7 +8,6 @@ pluginManagement {
 rootProject.name = 'ecoporium'
 include 'api'
 include 'plugin'
-include 'plugin'
 
 findProject(":api")?.setName("ecoporium-api")
 
