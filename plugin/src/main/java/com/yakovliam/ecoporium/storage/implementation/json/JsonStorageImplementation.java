@@ -178,7 +178,7 @@ public class JsonStorageImplementation implements StorageImplementation {
     /**
      * Saves the file
      */
-    private void save() {
+    private synchronized void save() {
         try {
             marketsProvider.getLoader().save(marketsProvider.getRoot());
         } catch (ConfigurateException e) {
