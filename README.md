@@ -11,12 +11,9 @@ Ecoporium is a unique plugin because the real world has full control over the ni
 Using a real-world-market in a controlled environment can cause unforeseen economic stress as like in real life, someone could very well become a millionaire overnight.
 
 ## Features
-
 - Vault Support
+- PlaceholderAPI Support
 - No Rate Limiting
-- Configurable Market Hours
-    - Change Timezone
-    - Enable/Disable Entirely
 - Configurable Buy/Sell Limits
 - Command and Interface Trading
 - View Values & Trend Graphs In-Game
@@ -25,4 +22,4 @@ Using a real-world-market in a controlled environment can cause unforeseen econo
 To view a non-exhaustive list of compatible economy plugins of which one is required to successfully run this plugin, view the list on Vault's page [here](https://github.com/MilkBowl/Vault#supported-plugins). Typically most common economy plugins that have been created within the past few years will have used Vault to manage it, but check with each plugin specifically to verify that it is Vault-compatible.
 
 ## Licensing
-This software utilizes [spigot-maps](https://github.com/JohnnyJayJay/spigot-maps) and [YahooFinance-API](https://github.com/sstrickx/yahoofinance-api).
+This software utilizes [YahooFinance-API](https://github.com/sstrickx/yahoofinance-api).
