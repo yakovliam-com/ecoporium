@@ -2,9 +2,8 @@ package com.yakovliam.ecoporium.api.market.stock;
 
 import com.yakovliam.ecoporium.api.market.stock.quote.SimpleStockQuote;
 
-import java.time.Instant;
-import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.LinkedBlockingDeque;
 
 public abstract class StockTicker<T> {
@@ -37,7 +36,7 @@ public abstract class StockTicker<T> {
     /**
      * The current stock quote
      */
-    protected SimpleStockQuote currentQuote;
+    protected Optional<SimpleStockQuote> currentQuote;
 
     /**
      * The local quote history (since instantiation)
@@ -58,7 +57,7 @@ public abstract class StockTicker<T> {
         this.stock = stock;
         this.stockType = stockType;
         this.history = new LinkedBlockingDeque<>();
-        this.currentQuote = new SimpleStockQuote(0f, Date.from(Instant.now()));
+        this.currentQuote = Optional.empty();
     }
 
     /**
@@ -107,7 +106,7 @@ public abstract class StockTicker<T> {
      *
      * @return quote
      */
-    public SimpleStockQuote getCurrentQuote() {
+    public Optional<SimpleStockQuote> getCurrentQuote() {
         return currentQuote;
     }
 

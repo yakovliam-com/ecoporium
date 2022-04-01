@@ -1,6 +1,5 @@
 package com.yakovliam.ecoporium.market;
 
-import com.yakovliam.ecoporium.lib.caffeine.cache.Caffeine;
 import com.yakovliam.ecoporium.EcoporiumPlugin;
 import com.yakovliam.ecoporium.api.market.MarketCache;
 import com.yakovliam.ecoporium.api.market.MarketType;
@@ -13,8 +12,7 @@ public class MarketCacheImpl extends MarketCache {
      * @param plugin plugin
      */
     public MarketCacheImpl(EcoporiumPlugin plugin) {
-        super(Caffeine.newBuilder()
-                .buildAsync(handle -> plugin.getStorage().loadMarket(handle)));
+        super(handle -> plugin.getStorage().loadMarket(handle));
     }
 
     /**

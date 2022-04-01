@@ -2,6 +2,7 @@ package com.yakovliam.ecoporium.storage.implementation.json.serializer.stock;
 
 import com.yakovliam.ecoporium.api.market.stock.StockTicker;
 import com.yakovliam.ecoporium.api.market.stock.StockType;
+import com.yakovliam.ecoporium.api.market.stock.quote.SimpleStockQuote;
 import com.yakovliam.ecoporium.market.stock.fake.FakeStockProviderImpl;
 import com.yakovliam.ecoporium.market.stock.fake.FakeStockTickerImpl;
 import com.yakovliam.ecoporium.market.stock.real.RealStockTickerImpl;
@@ -11,6 +12,7 @@ import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.serialize.TypeSerializer;
 
 import java.lang.reflect.Type;
+import java.util.Date;
 import java.util.List;
 
 public class StockTickerSerializer implements TypeSerializer<StockTicker<?>> {
@@ -82,7 +84,10 @@ public class StockTickerSerializer implements TypeSerializer<StockTicker<?>> {
             FakeStockTickerImpl fakeStockTickerImpl = (FakeStockTickerImpl) obj;
 
             node.node("aliases").set(fakeStockTickerImpl.getAliases());
-            node.node("previousClosingPrice").set(fakeStockTickerImpl.getCurrentQuote().getPrice());
+
+
+            // closing price bypass, because it should never do this...ever
+            node.node("previousClosingPrice").set(fakeStockTickerImpl.getCurrentQuote().orElse(new SimpleStockQuote(0.0f, new Date())).getPrice());
         }
     }
 }

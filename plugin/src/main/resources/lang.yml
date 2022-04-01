@@ -1,4 +1,5 @@
-something-went-wrong: "&cSomething went wrong!"
+something-went-wrong:
+  - "&cSomething went wrong!"
 ecoporium:
   help:
     - "&7Help"
@@ -24,22 +25,17 @@ ecoporium:
         - "&7Stock added."
       removed:
         - "&7Stock removed."
-    screen:
-      create:
-        not-in-placement-session:
-          - "&cYou're not in a placement session!"
-        already-in-placement-session:
-          - "&cYou're already in a placement session!"
-        canceled:
-          - "&7Canceled."
-      delete:
-        cant-find:
-          - "&7Can't find a screen that you're looking at."
-        deleted:
-          - "&7Screen deleted."
 stock:
   portfolio:
     - "&7Portfolio:"
+  portfolio-item:
+    - "&7- &f%market%&8|&f%stock%&7: &f%shares-amount%%position%"
+  portfolio-position-up:
+    - " &a&o(⬆ %percent%%)"
+  portfolio-position-down:
+    - " &c&o(⬇ %percent%%)"
+  portfolio-position-unchanged:
+    - " &7&o(%percent%%)"
   buy:
     not-enough:
       - "&7You need &f%balance-needed% &7to buy that much of that stock."
@@ -52,3 +48,5 @@ stock:
       - "&7You sold &f%shares% &7of &f%symbol% &7at &f%price-per-share% &7per share for a total of &f%amount-given%&7."
   price:
     - "&7Current price of &f%symbol%&7: &6%price-per-share%"
+  price-not-available:
+    - "&7The price is not yet available; &fwe're working on it!"

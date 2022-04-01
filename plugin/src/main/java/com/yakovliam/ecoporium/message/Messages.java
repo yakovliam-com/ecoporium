@@ -44,43 +44,42 @@ public class Messages {
 
     // stock removed
     public final Message ecoporiumMarketStockRemoved;
-
-    // screen create cancel not in placement session
-    public Message ecoporiumScreenCreateNotInPlacementSession;
-
-    // screen create already in session
-    public Message ecoporiumScreenCreateAlreadyInPlacementSession;
-
-    // screen create canceled
-    public Message ecoporiumScreenCreateCanceled;
-
-    // screen cant find
-    public Message ecoporiumScreenDeleteCantFind;
-
     // screen deleted
     public final Message ecoporiumScreenDeleteDeleted;
-
     /**
      * Stock command
      */
 
     // stock portfolio header
     public final Message stockPortfolio;
-
+    // stock portfolio item
+    public final Message stockPortfolioItem;
+    // stock portfolio position up
+    public final Message stockPortfolioPositionUp;
+    // stock portfolio position down
+    public final Message stockPortfolioPositionDown;
+    // stock portfolio position unchanged
+    public final Message stockPortfolioPositionUnchanged;
     // stock buy not enough
     public final Message stockBuyNotEnough;
-
     // stock buy bought
     public final Message stockBuyBought;
-
     // stock sell not enough
     public final Message stockSellNotEnough;
-
     // stock sell sold
     public final Message stockSellSold;
-
     // stock price
     public final Message stockPrice;
+    // stock price not available
+    public final Message stockPriceNotAvailable;
+    // screen create cancel not in placement session
+    public final Message ecoporiumScreenCreateNotInPlacementSession;
+    // screen create already in session
+    public final Message ecoporiumScreenCreateAlreadyInPlacementSession;
+    // screen create canceled
+    public final Message ecoporiumScreenCreateCanceled;
+    // screen cant find
+    public final Message ecoporiumScreenDeleteCantFind;
 
     /**
      * Messages
@@ -108,10 +107,15 @@ public class Messages {
         ecoporiumScreenDeleteCantFind = Message.fromConfigurationSection("ecoporium.screen.delete.cant-find", adapter);
         ecoporiumScreenDeleteDeleted = Message.fromConfigurationSection("ecoporium.screen.delete.deleted", adapter);
         stockPortfolio = Message.fromConfigurationSection("stock.portfolio", adapter);
+        stockPortfolioItem = Message.fromConfigurationSection("stock.portfolio-item", adapter);
+        stockPortfolioPositionUp = Message.fromConfigurationSection("stock.portfolio-position-up", adapter);
+        stockPortfolioPositionDown = Message.fromConfigurationSection("stock.portfolio-position-down", adapter);
+        stockPortfolioPositionUnchanged = Message.fromConfigurationSection("stock.portfolio-position-unchanged", adapter);
         stockBuyNotEnough = Message.fromConfigurationSection("stock.buy.not-enough", adapter);
         stockBuyBought = Message.fromConfigurationSection("stock.buy.bought", adapter);
         stockSellNotEnough = Message.fromConfigurationSection("stock.sell.not-enough", adapter);
         stockSellSold = Message.fromConfigurationSection("stock.sell.sold", adapter);
         stockPrice = Message.fromConfigurationSection("stock.price", adapter);
+        stockPriceNotAvailable = Message.fromConfigurationSection("stock.price-not-available", adapter);
     }
 }

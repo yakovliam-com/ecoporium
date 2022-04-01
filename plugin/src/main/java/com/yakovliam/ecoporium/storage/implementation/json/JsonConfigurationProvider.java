@@ -4,6 +4,7 @@ import com.google.common.collect.Table;
 import com.yakovliam.ecoporium.EcoporiumPlugin;
 import com.yakovliam.ecoporium.api.market.Market;
 import com.yakovliam.ecoporium.api.market.stock.StockTicker;
+import com.yakovliam.ecoporium.api.user.share.OwnedShare;
 import com.yakovliam.ecoporium.storage.implementation.json.serializer.market.MarketSerializer;
 import com.yakovliam.ecoporium.storage.implementation.json.serializer.stock.StockTickerSerializer;
 import com.yakovliam.ecoporium.storage.implementation.json.serializer.table.TableSerializer;
@@ -17,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Objects;
 
 public class JsonConfigurationProvider {
@@ -48,7 +50,7 @@ public class JsonConfigurationProvider {
         };
         TypeToken<StockTicker<?>> stockTickerType = new io.leangen.geantyref.TypeToken<>() {
         };
-        TypeToken<Table<String, String, Integer>> tableType = new TypeToken<>() {
+        TypeToken<Table<String, String, List<OwnedShare>>> tableType = new TypeToken<>() {
         };
 
         this.loader = GsonConfigurationLoader.builder()

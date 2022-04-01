@@ -1,7 +1,9 @@
 package com.yakovliam.ecoporium.api.user;
 
 import com.google.common.collect.Table;
+import com.yakovliam.ecoporium.api.user.share.OwnedShare;
 
+import java.util.List;
 import java.util.UUID;
 
 public abstract class EcoporiumUser {
@@ -18,16 +20,17 @@ public abstract class EcoporiumUser {
      *
      * @return shares table
      */
-    public abstract Table<String, String, Integer> getSharesOwnedTable();
+    public abstract Table<String, String, List<OwnedShare>> getSharesOwnedTable();
 
     /**
      * Add shares
      *
-     * @param marketHandle market handle
-     * @param symbol       symbol
-     * @param amountToAdd  amount to add
+     * @param marketHandle     market handle
+     * @param symbol           symbol
+     * @param amountOfShares   amount of shares
+     * @param priceOfEachShare the price of each share
      */
-    public abstract void addShares(String marketHandle, String symbol, Integer amountToAdd);
+    public abstract void addShares(String marketHandle, String symbol, Integer amountOfShares, Float priceOfEachShare);
 
     /**
      * Removes shares
@@ -45,5 +48,21 @@ public abstract class EcoporiumUser {
      * @param marketHandle market handle
      * @return shares
      */
-    public abstract int getShares(String marketHandle, String symbol);
+    public abstract int getNumberOfShares(String marketHandle, String symbol);
+
+    /**
+     * Get total number of shares
+     *
+     * @return shares
+     */
+    public abstract int getTotalNumberOfShares();
+
+    /**
+     * Get owned shares object array for a symbol
+     *
+     * @param symbol       symbol
+     * @param marketHandle market handle
+     * @return shares
+     */
+    public abstract List<OwnedShare> getOwnedShares(String marketHandle, String symbol);
 }

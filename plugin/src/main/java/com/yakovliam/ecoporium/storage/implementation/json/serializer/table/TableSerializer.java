@@ -2,6 +2,9 @@ package com.yakovliam.ecoporium.storage.implementation.json.serializer.table;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.yakovliam.ecoporium.api.user.share.OwnedShare;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
@@ -12,12 +15,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class TableSerializer implements TypeSerializer<Table<String, String, Integer>> {
+public class TableSerializer implements TypeSerializer<Table<String, String, List<OwnedShare>>> {
 
     /**
      * Instance
      */
     private static TableSerializer instance;
+
+    // gson
+    private final Gson gson = new Gson();
+    private final Type listType = new TypeToken<ArrayList<OwnedShare>>() {
+    }.getType();
 
     /**
      * Returns instance
@@ -43,8 +51,8 @@ public class TableSerializer implements TypeSerializer<Table<String, String, Int
      * @since 4.0.0
      */
     @Override
-    public Table<String, String, Integer> deserialize(Type type, ConfigurationNode node) throws SerializationException {
-        Table<String, String, Integer> table = HashBasedTable.create();
+    public Table<String, String, List<OwnedShare>> deserialize(Type type, ConfigurationNode node) throws SerializationException {
+        Table<String, String, List<OwnedShare>> table = HashBasedTable.create();
         List<String> cells = node.node("cells").getList(String.class);
         Objects.requireNonNull(cells).forEach(cell -> {
             String[] parts = cell.split("\\|");
@@ -53,8 +61,7 @@ public class TableSerializer implements TypeSerializer<Table<String, String, Int
             }
             String rK = parts[0];
             String cK = parts[1];
-            Integer v = Integer.parseInt(parts[2]);
-
+            List<OwnedShare> v = gson.fromJson(parts[2], listType);
 
             table.put(rK, cK, v);
         });
@@ -72,11 +79,11 @@ public class TableSerializer implements TypeSerializer<Table<String, String, Int
      * @since 4.0.0
      */
     @Override
-    public void serialize(Type type, @Nullable Table<String, String, Integer> obj, ConfigurationNode node) throws SerializationException {
+    public void serialize(Type type, @Nullable Table<String, String, List<OwnedShare>> obj, ConfigurationNode node) throws SerializationException {
         List<String> cells = new ArrayList<>();
 
         Objects.requireNonNull(obj).cellSet().forEach(cell -> {
-            String computed = cell.getRowKey() + "|" + cell.getColumnKey() + "|" + cell.getValue();
+            String computed = cell.getRowKey() + "|" + cell.getColumnKey() + "|" + gson.toJson(cell.getValue(), listType);
             cells.add(computed);
         });
 

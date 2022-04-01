@@ -71,10 +71,14 @@ public class EcoporiumExpansion extends PlaceholderExpansion {
 
             StockTicker<?> ticker = market.getStock(symbol);
 
-            return NumberUtil.formatToPlaces(ticker.getCurrentQuote().getPrice(), 2);
+            if (ticker.getCurrentQuote().isEmpty()) {
+                return "unavailable";
+            }
+
+            return NumberUtil.formatToPlaces(ticker.getCurrentQuote().get().getPrice(), 2);
         }
 
-        if(request.equalsIgnoreCase("direction") || request.equalsIgnoreCase("historical-analysis")){
+        if (request.equalsIgnoreCase("direction") || request.equalsIgnoreCase("historical-analysis")) {
             if (parts.length != 3) {
                 return null;
             }
@@ -106,7 +110,7 @@ public class EcoporiumExpansion extends PlaceholderExpansion {
 
             EcoporiumUser user = plugin.getUserCache().getCache().get(player.getUniqueId()).join();
 
-            return Integer.toString(user.getShares(marketHandle, symbol));
+            return Integer.toString(user.getNumberOfShares(marketHandle, symbol));
         }
 
         return null;

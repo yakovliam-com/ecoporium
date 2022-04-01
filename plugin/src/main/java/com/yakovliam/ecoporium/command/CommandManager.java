@@ -26,7 +26,6 @@ public class CommandManager extends BukkitCommandManager {
                 new EcoporiumCommand(this, plugin),
                 new StockCommand(this, plugin)
         ).forEach(c -> {
-            c.registerCompletions();
             c.registerContexts();
 
             this.registerCommand(c);

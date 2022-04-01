@@ -16,14 +16,12 @@ public abstract class RealStockTicker extends StockTicker<Stock> {
 
     /**
      * Stock
-     *
-     * @param symbol    symbol
+     *  @param symbol    symbol
      * @param aliases   aliases
      * @param stock     stock
-     * @param stockType type
      */
-    protected RealStockTicker(String symbol, List<String> aliases, Stock stock, StockType stockType) {
-        super(symbol, aliases, stock, stockType);
+    protected RealStockTicker(String symbol, List<String> aliases, Stock stock) {
+        super(symbol, aliases, stock, StockType.REAL);
     }
 
     /**

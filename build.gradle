@@ -18,7 +18,6 @@ subprojects {
                 includeGroup "org.spigotmc"
             }
         }
-        maven { url = "https://repo.incendo.org/content/repositories/snapshots" }
         maven { url = "https://oss.sonatype.org/content/repositories/snapshots" }
         maven { url = "https://oss.sonatype.org/content/repositories/central" }
         maven { url = "https://repo.aikar.co/content/groups/aikar/" }
