@@ -14,7 +14,7 @@ Using a real-world-market in a controlled environment can cause unforeseen econo
 - Vault Support
 - PlaceholderAPI Support
 - No Rate Limiting
-- Configurable Buy/Sell Limits
+- Full API integration
 - Command and Interface Trading
 - View Values & Trend Graphs In-Game
 
