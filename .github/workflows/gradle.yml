@@ -28,5 +28,5 @@ jobs:
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2.2.4
         with:
-          name: SpaceChat Artifacts
-          path: build/libs/ChatGames*.jar
+          name: Ecoporium Artifacts
+          path: build/libs/Ecoporium*.jar
