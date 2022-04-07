@@ -1,31 +1,22 @@
 package com.yakovliam.ecoporium;
 
-import com.yakovliam.ecoporium.api.message.Message;
 import com.yakovliam.ecoporium.command.CommandManager;
-import com.yakovliam.ecoporium.config.EcoporiumConfig;
+import com.yakovliam.ecoporium.config.ConfigSupervisor;
 import com.yakovliam.ecoporium.expansion.EcoporiumExpansion;
 import com.yakovliam.ecoporium.listener.PlayerListener;
 import com.yakovliam.ecoporium.market.MarketCacheImpl;
-import com.yakovliam.ecoporium.message.Messages;
 import com.yakovliam.ecoporium.storage.Storage;
 import com.yakovliam.ecoporium.storage.implementation.json.JsonStorageImplementation;
 import com.yakovliam.ecoporium.task.MarketUpdateTask;
 import com.yakovliam.ecoporium.user.UserCacheImpl;
+import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.ServicePriority;
 
 public class EcoporiumPlugin extends com.yakovliam.ecoporium.api.EcoporiumPlugin {
 
-    /**
-     * Ecoporium configuration
-     */
-    private EcoporiumConfig ecoporiumConfig;
-
-    /**
-     * Language config
-     */
-    private EcoporiumConfig langConfig;
+    private static BukkitAudiences audiences;
 
     /**
      * Market cache
@@ -38,9 +29,9 @@ public class EcoporiumPlugin extends com.yakovliam.ecoporium.api.EcoporiumPlugin
     private Storage storage;
 
     /**
-     * Messages
+     * Config supervisor
      */
-    private Messages messages;
+    private ConfigSupervisor configSupervisor;
 
     /**
      * User cache
@@ -51,6 +42,10 @@ public class EcoporiumPlugin extends com.yakovliam.ecoporium.api.EcoporiumPlugin
      * Economy
      */
     private Economy economy;
+
+    public static BukkitAudiences audiences() {
+        return audiences;
+    }
 
     @Override
     public void onLoad() {
@@ -64,10 +59,11 @@ public class EcoporiumPlugin extends com.yakovliam.ecoporium.api.EcoporiumPlugin
         this.getServer().getServicesManager().register(com.yakovliam.ecoporium.api.EcoporiumPlugin.class, this, this, ServicePriority.Normal);
 
         // initialize audience provider
-        Message.initAudience(this);
+        audiences = BukkitAudiences.create(this);
 
-        this.ecoporiumConfig = new EcoporiumConfig(this, provideConfigAdapter("config.yml"));
-        this.langConfig = new EcoporiumConfig(this, provideConfigAdapter("lang.yml"));
+        // load configurations (messages, etc.)
+        this.configSupervisor = new ConfigSupervisor(this);
+
         this.marketCacheImpl = new MarketCacheImpl(this);
 
         this.storage = new Storage(new JsonStorageImplementation(this));
@@ -75,8 +71,6 @@ public class EcoporiumPlugin extends com.yakovliam.ecoporium.api.EcoporiumPlugin
         this.userCacheImpl = new UserCacheImpl(this);
 
         new CommandManager(this);
-
-        loadMessages();
 
         this.getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
 
@@ -99,15 +93,6 @@ public class EcoporiumPlugin extends com.yakovliam.ecoporium.api.EcoporiumPlugin
     }
 
     /**
-     * Returns the Ecoporium config
-     *
-     * @return config
-     */
-    public EcoporiumConfig getEcoporiumConfig() {
-        return ecoporiumConfig;
-    }
-
-    /**
      * Returns the market cache
      *
      * @return market cache
@@ -127,12 +112,12 @@ public class EcoporiumPlugin extends com.yakovliam.ecoporium.api.EcoporiumPlugin
     }
 
     /**
-     * Returns messages
+     * Returns the config supervisor
      *
-     * @return messages
+     * @return config supervisor
      */
-    public Messages getMessages() {
-        return messages;
+    public ConfigSupervisor configSupervisor() {
+        return configSupervisor;
     }
 
     /**
@@ -152,22 +137,6 @@ public class EcoporiumPlugin extends com.yakovliam.ecoporium.api.EcoporiumPlugin
      */
     public Economy getEconomy() {
         return economy;
-    }
-
-    /**
-     * Returns lang config
-     *
-     * @return lang config
-     */
-    public EcoporiumConfig getLangConfig() {
-        return langConfig;
-    }
-
-    /**
-     * Loads messages
-     */
-    public void loadMessages() {
-        this.messages = new Messages(this);
     }
 
     /**

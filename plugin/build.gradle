@@ -21,9 +21,12 @@ dependencies {
     implementation 'de.sfuhrm:YahooFinanceAPI:3.16.3'
     implementation 'me.mattstudios:triumph-msg-adventure:2.2.4-SNAPSHOT'
     implementation 'me.mattstudios:triumph-msg:2.2.4-SNAPSHOT'
-    implementation 'org.spongepowered:configurate-gson:4.1.2'
 
-    compileOnly 'com.github.ben-manes.caffeine:caffeine:2.9.3'
+    implementation 'org.spongepowered:configurate-gson:4.1.2'
+    implementation 'org.spongepowered:configurate-yaml:4.1.2'
+    implementation 'net.kyori:adventure-serializer-configurate4:4.10.1'
+
+    compileOnly 'com.github.ben-manes.caffeine:caffeine:3.0.6'
 }
 
 shadowJar {

@@ -16,7 +16,7 @@ dependencies {
 
     compileOnly "de.sfuhrm:YahooFinanceAPI:3.16.3"
 
-    implementation 'com.github.ben-manes.caffeine:caffeine:2.9.3'
+    implementation 'com.github.ben-manes.caffeine:caffeine:3.0.6'
 }
 
 shadowJar {

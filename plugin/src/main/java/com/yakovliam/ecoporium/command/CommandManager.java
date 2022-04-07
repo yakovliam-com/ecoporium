@@ -21,7 +21,6 @@ public class CommandManager extends BukkitCommandManager {
         setFormat(MessageType.ERROR, ChatColor.RED);
         setFormat(MessageType.SYNTAX, ChatColor.GRAY);
 
-        // TODO add more commands here, registering them
         Arrays.asList(
                 new EcoporiumCommand(this, plugin),
                 new StockCommand(this, plugin)
