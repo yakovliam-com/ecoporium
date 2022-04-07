@@ -37,7 +37,7 @@ public class FakeStockTickerImpl extends FakeStockTicker {
                         this.fakeStockProviderImpl.calculatePrice(this.currentQuote.orElse(
                                 // this won't happen, but java
                                 new SimpleStockQuote(0.0f, Date.from(Instant.now()))
-                        ).getPrice()),
+                        ).price()),
                         Date.from(Instant.now()))
         );
         updateHistory();

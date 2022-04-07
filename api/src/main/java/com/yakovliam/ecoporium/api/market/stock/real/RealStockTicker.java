@@ -29,14 +29,14 @@ public abstract class RealStockTicker extends StockTicker<Stock> {
      *
      * @return history
      */
-    public abstract Map<Date, StockQuote> getYfHistory();
+    public abstract Map<Date, StockQuote> yFHistory();
 
     /**
      * Returns the previous history
      *
      * @return history
      */
-    public abstract Map<Calendar, HistoricalQuote> getYfPreviousHistory();
+    public abstract Map<Calendar, HistoricalQuote> previousYfHistory();
 
     /**
      * Updates a ticker

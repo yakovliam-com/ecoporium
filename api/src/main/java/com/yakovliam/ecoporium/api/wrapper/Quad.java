@@ -16,35 +16,35 @@ public class Quad<A, B, C, D> {
         this.d = d;
     }
 
-    public A getA() {
+    public A a() {
         return a;
     }
 
-    public void setA(A a) {
+    public void a(A a) {
         this.a = a;
     }
 
-    public B getB() {
+    public B b() {
         return b;
     }
 
-    public void setB(B b) {
+    public void b(B b) {
         this.b = b;
     }
 
-    public C getC() {
+    public C c() {
         return c;
     }
 
-    public void setC(C c) {
+    public void c(C c) {
         this.c = c;
     }
 
-    public D getD() {
+    public D d() {
         return d;
     }
 
-    public void setD(D d) {
+    public void d(D d) {
         this.d = d;
     }
 }

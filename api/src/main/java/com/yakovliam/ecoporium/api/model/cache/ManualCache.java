@@ -24,7 +24,7 @@ public class ManualCache<K, V> {
      *
      * @return map
      */
-    public Map<K, V> getMap() {
+    public Map<K, V> map() {
         return map;
     }
 
@@ -33,7 +33,7 @@ public class ManualCache<K, V> {
      *
      * @param map map
      */
-    public void setMap(Map<K, V> map) {
+    public void map(Map<K, V> map) {
         this.map = map;
     }
 

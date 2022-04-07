@@ -96,10 +96,10 @@ public class MarketSerializer implements TypeSerializer<Market<?>> {
             return;
         }
 
-        node.node("handle").set(obj.getHandle());
-        node.node("type").set(obj.getMarketType().name());
+        node.node("handle").set(obj.handle());
+        node.node("type").set(obj.marketType().name());
 
-        @SuppressWarnings({"unchecked", "rawtypes"}) List<StockTicker> tickers = (List<StockTicker>) obj.getTickerCache().values().stream()
+        @SuppressWarnings({"unchecked", "rawtypes"}) List<StockTicker> tickers = (List<StockTicker>) obj.tickerCache().values().stream()
                 .collect(Collectors.toList());
         node.node("stocks").setList(StockTicker.class, tickers);
     }

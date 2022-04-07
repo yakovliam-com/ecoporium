@@ -23,12 +23,12 @@ public class MarketCacheImpl extends MarketCache {
      */
     @Override
     public boolean existsInAnyMarket(String symbol) {
-        return this.getCache().synchronous().asMap().values().stream()
+        return this.cache().synchronous().asMap().values().stream()
                 .anyMatch(m -> {
-                    if (m.getMarketType() == MarketType.FAKE) {
-                        return ((FakeMarketImpl) m).getTickerCache().containsKey(symbol);
-                    } else if (m.getMarketType() == MarketType.REAL) {
-                        return ((RealMarketImpl) m).getTickerCache().containsKey(symbol);
+                    if (m.marketType() == MarketType.FAKE) {
+                        return ((FakeMarketImpl) m).tickerCache().containsKey(symbol);
+                    } else if (m.marketType() == MarketType.REAL) {
+                        return ((RealMarketImpl) m).tickerCache().containsKey(symbol);
                     } else {
                         return false;
                     }

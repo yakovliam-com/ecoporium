@@ -30,7 +30,7 @@ public class SimpleStockQuote {
      *
      * @return price
      */
-    public float getPrice() {
+    public float price() {
         return price;
     }
 
@@ -39,7 +39,7 @@ public class SimpleStockQuote {
      *
      * @return date
      */
-    public Date getDate() {
+    public Date date() {
         return date;
     }
 }

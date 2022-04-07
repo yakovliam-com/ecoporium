@@ -42,7 +42,7 @@ public class StockCommand extends AbstractEcoporiumCommand {
         EcoporiumPlugin.audiences().player(player).sendMessage(plugin.configSupervisor().messages().ecoporiumMarketGettingData());
 
         // does market already exist?
-        plugin.marketCache().getCache().get(market).thenAccept(marketObj -> {
+        plugin.marketCache().cache().get(market).thenAccept(marketObj -> {
             // if doesn't exist
             if (marketObj == null) {
                 EcoporiumPlugin.audiences().player(player).sendMessage(plugin.configSupervisor().messages().ecoporiumMarketNonexistent());
@@ -57,13 +57,13 @@ public class StockCommand extends AbstractEcoporiumCommand {
                 return;
             }
 
-            StockTicker<?> stockTicker = marketObj.getStock(symbol);
+            StockTicker<?> stockTicker = marketObj.stock(symbol);
             if (stockTicker.getCurrentQuote().isEmpty()) {
                 EcoporiumPlugin.audiences().player(player).sendMessage(plugin.configSupervisor().messages().stockPriceNotAvailable());
                 return;
             }
 
-            pricePerShare = stockTicker.getCurrentQuote().get().getPrice();
+            pricePerShare = stockTicker.getCurrentQuote().get().price();
 
             // if the user has enough to pay for the stocks they are buying
             float amountNeededToBuy = pricePerShare * amountToBuy;
@@ -76,10 +76,10 @@ public class StockCommand extends AbstractEcoporiumCommand {
             }
 
             // get user
-            EcoporiumUserImpl user = plugin.userCache().getCache().get(player.getUniqueId()).join();
+            EcoporiumUserImpl user = plugin.userCache().cache().get(player.getUniqueId()).join();
 
             // give user shares
-            user.addShares(marketObj.getHandle(), stockTicker.getSymbol(), amountToBuy, pricePerShare);
+            user.addShares(marketObj.handle(), stockTicker.getSymbol(), amountToBuy, pricePerShare);
             // save user
             plugin.storage().saveUser(user, true);
 
@@ -100,7 +100,7 @@ public class StockCommand extends AbstractEcoporiumCommand {
         EcoporiumPlugin.audiences().player(player).sendMessage(plugin.configSupervisor().messages().ecoporiumMarketGettingData());
 
         // does market already exist?
-        plugin.marketCache().getCache().get(market).thenAccept(marketObj -> {
+        plugin.marketCache().cache().get(market).thenAccept(marketObj -> {
             // if doesn't exist
             if (marketObj == null) {
                 EcoporiumPlugin.audiences().player(player).sendMessage(plugin.configSupervisor().messages().ecoporiumMarketNonexistent());
@@ -115,20 +115,20 @@ public class StockCommand extends AbstractEcoporiumCommand {
                 return;
             }
 
-            StockTicker<?> stockTicker = marketObj.getStock(symbol);
+            StockTicker<?> stockTicker = marketObj.stock(symbol);
 
             if (stockTicker.getCurrentQuote().isEmpty()) {
                 EcoporiumPlugin.audiences().player(player).sendMessage(plugin.configSupervisor().messages().stockPriceNotAvailable());
                 return;
             }
 
-            pricePerShare = stockTicker.getCurrentQuote().get().getPrice();
+            pricePerShare = stockTicker.getCurrentQuote().get().price();
 
             // get user
-            EcoporiumUserImpl user = plugin.userCache().getCache().get(player.getUniqueId()).join();
+            EcoporiumUserImpl user = plugin.userCache().cache().get(player.getUniqueId()).join();
 
             // if user doesn't have enough shares
-            int sharesOwned = user.numberOfShares(marketObj.getHandle(), stockTicker.getSymbol());
+            int sharesOwned = user.numberOfShares(marketObj.handle(), stockTicker.getSymbol());
 
             if (sharesOwned < amountToSell) {
                 EcoporiumPlugin.audiences().player(player).sendMessage(plugin.configSupervisor().messages().stockSellNotEnough());
@@ -141,7 +141,7 @@ public class StockCommand extends AbstractEcoporiumCommand {
             plugin.economy().depositPlayer(player, amountToGive);
 
             // remove user shares
-            user.removeShares(marketObj.getHandle(), stockTicker.getSymbol(), amountToSell);
+            user.removeShares(marketObj.handle(), stockTicker.getSymbol(), amountToSell);
             // save user
             plugin.storage().saveUser(user, true);
 
@@ -159,7 +159,7 @@ public class StockCommand extends AbstractEcoporiumCommand {
         EcoporiumPlugin.audiences().sender(sender).sendMessage(plugin.configSupervisor().messages().ecoporiumMarketGettingData());
 
         // does market already exist?
-        plugin.marketCache().getCache().get(market).thenAccept(marketObj -> {
+        plugin.marketCache().cache().get(market).thenAccept(marketObj -> {
             // if doesn't exist
             if (marketObj == null) {
                 EcoporiumPlugin.audiences().sender(sender).sendMessage(plugin.configSupervisor().messages().ecoporiumMarketNonexistent());
@@ -174,11 +174,11 @@ public class StockCommand extends AbstractEcoporiumCommand {
                 return;
             }
 
-            StockTicker<?> stockTicker = marketObj.getStock(symbol);
+            StockTicker<?> stockTicker = marketObj.stock(symbol);
             stockTicker.getCurrentQuote().ifPresentOrElse((quote) -> {
                 EcoporiumPlugin.audiences().sender(sender).sendMessage(plugin.configSupervisor().messages().stockPrice()
                         .replaceText(builder -> builder.matchLiteral("%symbol%").replacement(stockTicker.getSymbol()))
-                        .replaceText(builder -> builder.matchLiteral("%price-per-share%").replacement(NumberUtil.formatToPlaces(quote.getPrice(), 2))));
+                        .replaceText(builder -> builder.matchLiteral("%price-per-share%").replacement(NumberUtil.formatToPlaces(quote.price(), 2))));
             }, () -> {
                 EcoporiumPlugin.audiences().sender(sender).sendMessage(plugin.configSupervisor().messages().stockPriceNotAvailable());
             });
@@ -189,7 +189,7 @@ public class StockCommand extends AbstractEcoporiumCommand {
     @Description("Views your portfolio")
     public void onPortfolio(Player player) {
         // get user
-        EcoporiumUser user = plugin.userCache().getCache().get(player.getUniqueId()).join();
+        EcoporiumUser user = plugin.userCache().cache().get(player.getUniqueId()).join();
 
         // portfolio header
         EcoporiumPlugin.audiences().player(player).sendMessage(plugin.configSupervisor().messages().stockPortfolio());
@@ -203,7 +203,7 @@ public class StockCommand extends AbstractEcoporiumCommand {
                 // get current price per share
 
                 // does market already exist?
-                Market<?> marketObj = plugin.marketCache().getCache().get(market).join();
+                Market<?> marketObj = plugin.marketCache().cache().get(market).join();
 
                 // continue in stream by returning
                 if (marketObj == null) {
@@ -216,7 +216,7 @@ public class StockCommand extends AbstractEcoporiumCommand {
                     return;
                 }
 
-                StockTicker<?> stockTicker = marketObj.getStock(stock);
+                StockTicker<?> stockTicker = marketObj.stock(stock);
 
                 SimpleStockQuote quote = stockTicker.getCurrentQuote().orElse(null);
 
@@ -229,16 +229,16 @@ public class StockCommand extends AbstractEcoporiumCommand {
                 int totalOwnedShares = ownedShares.size();
 
                 // calculate position percent (up or down)
-                float positionSpent = ownedShares.stream().map(OwnedShare::getPriceOfEachShare).reduce(0.0f, Float::sum);
+                float positionSpent = ownedShares.stream().map(OwnedShare::priceOfEachShare).reduce(0.0f, Float::sum);
 
-                String positionPercent = NumberUtil.formatToPlaces(Math.abs(((quote.getPrice() * totalOwnedShares / positionSpent) - 1) * 100), 2);
+                String positionPercent = NumberUtil.formatToPlaces(Math.abs(((quote.price() * totalOwnedShares / positionSpent) - 1) * 100), 2);
 
                 // get position message
                 Component positionComponent;
 
-                if (quote.getPrice() * totalOwnedShares > positionSpent) {
+                if (quote.price() * totalOwnedShares > positionSpent) {
                     positionComponent = plugin.configSupervisor().messages().stockPortfolioPositionUp();
-                } else if (quote.getPrice() * totalOwnedShares < positionSpent) {
+                } else if (quote.price() * totalOwnedShares < positionSpent) {
                     positionComponent = plugin.configSupervisor().messages().stockPortfolioPositionDown();
                 } else {
                     positionComponent = plugin.configSupervisor().messages().stockPortfolioPositionUnchanged();

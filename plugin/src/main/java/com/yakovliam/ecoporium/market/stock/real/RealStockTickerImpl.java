@@ -64,7 +64,7 @@ public class RealStockTickerImpl extends RealStockTicker {
      * @return history
      */
     @Override
-    public Map<Date, StockQuote> getYfHistory() {
+    public Map<Date, StockQuote> yFHistory() {
         if (this.yfHistory.size() <= 0) {
             this.updateStockData(false).join();
         }
@@ -78,7 +78,7 @@ public class RealStockTickerImpl extends RealStockTicker {
      * @return history
      */
     @Override
-    public Map<Calendar, HistoricalQuote> getYfPreviousHistory() {
+    public Map<Calendar, HistoricalQuote> previousYfHistory() {
         return yfPreviousHistory;
     }
 

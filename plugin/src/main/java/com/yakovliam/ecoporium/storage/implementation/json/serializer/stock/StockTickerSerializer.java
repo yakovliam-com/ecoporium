@@ -87,7 +87,7 @@ public class StockTickerSerializer implements TypeSerializer<StockTicker<?>> {
 
 
             // closing price bypass, because it should never do this...ever
-            node.node("previousClosingPrice").set(fakeStockTickerImpl.getCurrentQuote().orElse(new SimpleStockQuote(0.0f, new Date())).getPrice());
+            node.node("previousClosingPrice").set(fakeStockTickerImpl.getCurrentQuote().orElse(new SimpleStockQuote(0.0f, new Date())).price());
         }
     }
 }

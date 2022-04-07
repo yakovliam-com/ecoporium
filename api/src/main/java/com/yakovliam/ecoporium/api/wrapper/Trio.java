@@ -17,27 +17,27 @@ public class Trio<L, M, R> {
         this.right = r;
     }
 
-    public L getLeft() {
+    public L left() {
         return left;
     }
 
-    public void setLeft(L left) {
+    public void left(L left) {
         this.left = left;
     }
 
-    public R getRight() {
+    public R right() {
         return right;
     }
 
-    public void setRight(R right) {
+    public void right(R right) {
         this.right = right;
     }
 
-    public M getMid() {
+    public M mid() {
         return mid;
     }
 
-    public void setMid(M mid) {
+    public void mid(M mid) {
         this.mid = mid;
     }
 }

@@ -92,7 +92,7 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
             MarketCacheImpl marketCacheImpl = plugin.marketCache();
 
             // does market already exist?
-            Market<?> marketPresent = marketCacheImpl.getCache().synchronous().getIfPresent(market);
+            Market<?> marketPresent = marketCacheImpl.cache().synchronous().getIfPresent(market);
 
             if (marketPresent != null) {
                 // exists already
@@ -122,7 +122,7 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
             // save market in storage, load into cache (async)
             Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
                 plugin.storage().saveMarket(marketObj);
-                plugin.marketCache().getCache().get(marketObj.getHandle());
+                plugin.marketCache().cache().get(marketObj.handle());
             });
         }
 
@@ -133,7 +133,7 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
                     .sendMessage(plugin.configSupervisor().messages().ecoporiumMarketGettingData());
 
             // does market already exist?
-            plugin.marketCache().getCache().get(market).thenAccept(marketObj -> {
+            plugin.marketCache().cache().get(market).thenAccept(marketObj -> {
                 // if doesn't exist
                 if (marketObj == null) {
                     EcoporiumPlugin.audiences().sender(sender)
@@ -144,7 +144,7 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
                 // delete
                 plugin.storage().deleteMarket(marketObj);
                 // invalidate from cache
-                plugin.marketCache().getCache().synchronous().invalidate(marketObj.getHandle());
+                plugin.marketCache().cache().synchronous().invalidate(marketObj.handle());
 
                 EcoporiumPlugin.audiences().sender(sender)
                         .sendMessage(plugin.configSupervisor().messages().ecoporiumMarketDeleted());
@@ -158,7 +158,7 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
                     .sendMessage(plugin.configSupervisor().messages().ecoporiumMarketGettingData());
 
             // does market already exist?
-            plugin.marketCache().getCache().get(market).thenAccept(marketObj -> {
+            plugin.marketCache().cache().get(market).thenAccept(marketObj -> {
                 // if doesn't exist
                 if (marketObj == null) {
                     EcoporiumPlugin.audiences().sender(sender)
@@ -167,10 +167,10 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
                 }
 
                 // if fake
-                if (marketObj.getMarketType() == MarketType.FAKE) {
+                if (marketObj.marketType() == MarketType.FAKE) {
                     FakeMarketImpl fakeMarketImpl = (FakeMarketImpl) marketObj;
                     // if ticker already exists
-                    if (fakeMarketImpl.getTickerCache().containsKey(symbol)) {
+                    if (fakeMarketImpl.tickerCache().containsKey(symbol)) {
                         EcoporiumPlugin.audiences().sender(sender)
                                 .sendMessage(plugin.configSupervisor().messages().ecoporiumMarketSymbolAlreadyExists());
                         return;
@@ -180,11 +180,11 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
                     FakeStockTickerImpl fakeStockTickerImpl = new FakeStockTickerFactory().build(new Pair<>(symbol, alias));
 
                     // add to ticker cache
-                    fakeMarketImpl.getTickerCache().put(fakeStockTickerImpl.getSymbol(), fakeStockTickerImpl);
-                } else if (marketObj.getMarketType() == MarketType.REAL) {
+                    fakeMarketImpl.tickerCache().put(fakeStockTickerImpl.getSymbol(), fakeStockTickerImpl);
+                } else if (marketObj.marketType() == MarketType.REAL) {
                     RealMarketImpl realMarketImpl = (RealMarketImpl) marketObj;
                     // if ticker already exists
-                    if (realMarketImpl.getTickerCache().containsKey(symbol)) {
+                    if (realMarketImpl.tickerCache().containsKey(symbol)) {
                         EcoporiumPlugin.audiences().sender(sender)
                                 .sendMessage(plugin.configSupervisor().messages().ecoporiumMarketSymbolAlreadyExists());
                         return;
@@ -194,7 +194,7 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
                     RealStockTickerImpl realStockTickerImpl = new RealStockTickerFactory().build(symbol);
 
                     // add to ticker cache
-                    realMarketImpl.getTickerCache().put(realStockTickerImpl.getSymbol(), realStockTickerImpl);
+                    realMarketImpl.tickerCache().put(realStockTickerImpl.getSymbol(), realStockTickerImpl);
                 } else {
                     EcoporiumPlugin.audiences().sender(sender)
                             .sendMessage(plugin.configSupervisor().messages().somethingWentWrong());
@@ -214,7 +214,7 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
             EcoporiumPlugin.audiences().sender(sender)
                     .sendMessage(plugin.configSupervisor().messages().ecoporiumMarketGettingData());
             // does market already exist?
-            plugin.marketCache().getCache().get(market).thenAccept(marketObj -> {
+            plugin.marketCache().cache().get(market).thenAccept(marketObj -> {
                 // if doesn't exist
                 if (marketObj == null) {
                     EcoporiumPlugin.audiences().sender(sender)
@@ -223,28 +223,28 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
                 }
 
                 // if fake
-                if (marketObj.getMarketType() == MarketType.FAKE) {
+                if (marketObj.marketType() == MarketType.FAKE) {
                     FakeMarketImpl fakeMarketImpl = (FakeMarketImpl) marketObj;
                     // if ticker doesn't exist
-                    if (!fakeMarketImpl.getTickerCache().containsKey(symbol)) {
+                    if (!fakeMarketImpl.tickerCache().containsKey(symbol)) {
                         EcoporiumPlugin.audiences().sender(sender)
                                 .sendMessage(plugin.configSupervisor().messages().ecoporiumMarketSymbolDoesntExist());
                         return;
                     }
 
                     // remove from cache
-                    fakeMarketImpl.getTickerCache().remove(symbol);
-                } else if (marketObj.getMarketType() == MarketType.REAL) {
+                    fakeMarketImpl.tickerCache().remove(symbol);
+                } else if (marketObj.marketType() == MarketType.REAL) {
                     RealMarketImpl realMarketImpl = (RealMarketImpl) marketObj;
                     // if ticker doesn't exist
-                    if (!realMarketImpl.getTickerCache().containsKey(symbol)) {
+                    if (!realMarketImpl.tickerCache().containsKey(symbol)) {
                         EcoporiumPlugin.audiences().sender(sender)
                                 .sendMessage(plugin.configSupervisor().messages().ecoporiumMarketSymbolDoesntExist());
                         return;
                     }
 
                     // remove from cache
-                    realMarketImpl.getTickerCache().remove(symbol);
+                    realMarketImpl.tickerCache().remove(symbol);
                 } else {
                     EcoporiumPlugin.audiences().sender(sender)
                             .sendMessage(plugin.configSupervisor().messages().somethingWentWrong());
@@ -264,7 +264,7 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
             EcoporiumPlugin.audiences().sender(sender)
                     .sendMessage(plugin.configSupervisor().messages().ecoporiumMarketGettingData());
             // does market already exist?
-            plugin.marketCache().getCache().get(market).thenAccept(marketObj -> {
+            plugin.marketCache().cache().get(market).thenAccept(marketObj -> {
                 // if doesn't exist
                 if (marketObj == null) {
                     EcoporiumPlugin.audiences().sender(sender)
@@ -275,17 +275,17 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
                 // get all tickers
                 List<String> symbols = new ArrayList<>();
 
-                if (marketObj.getMarketType() == MarketType.FAKE) {
-                    ((FakeMarketImpl) marketObj).getTickerCache().values().forEach(t -> symbols.add(t.getSymbol()));
-                } else if (marketObj.getMarketType() == MarketType.REAL) {
-                    ((RealMarketImpl) marketObj).getTickerCache().values().forEach(t -> symbols.add(t.getSymbol()));
+                if (marketObj.marketType() == MarketType.FAKE) {
+                    ((FakeMarketImpl) marketObj).tickerCache().values().forEach(t -> symbols.add(t.getSymbol()));
+                } else if (marketObj.marketType() == MarketType.REAL) {
+                    ((RealMarketImpl) marketObj).tickerCache().values().forEach(t -> symbols.add(t.getSymbol()));
                 } else {
                     EcoporiumPlugin.audiences().sender(sender)
                             .sendMessage(plugin.configSupervisor().messages().somethingWentWrong());
                     return;
                 }
 
-                Component component = Component.text("Market info (" + marketObj.getHandle() + "):", NamedTextColor.GRAY)
+                Component component = Component.text("Market info (" + marketObj.handle() + "):", NamedTextColor.GRAY)
                         .append(Component.newline())
                         .append(Component.text("Symbols: ", NamedTextColor.GRAY))
                         .append(Component.text(symbols.size(), NamedTextColor.WHITE));

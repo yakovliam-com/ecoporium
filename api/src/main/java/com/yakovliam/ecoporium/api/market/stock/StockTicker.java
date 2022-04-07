@@ -135,8 +135,8 @@ public abstract class StockTicker<T> {
         float lastPrice = 0;
         float secondToLastPrice = 0;
         try {
-            lastPrice = historyCopy.takeLast().getPrice();
-            secondToLastPrice = historyCopy.takeLast().getPrice();
+            lastPrice = historyCopy.takeLast().price();
+            secondToLastPrice = historyCopy.takeLast().price();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

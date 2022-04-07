@@ -85,7 +85,7 @@ public class EcoporiumPlugin extends com.yakovliam.ecoporium.api.EcoporiumPlugin
     @Override
     public void onDisable() {
         // save users
-        this.userCache().getCache().synchronous().asMap().values().forEach(user -> storage().saveUser(user, false));
+        this.userCache().cache().synchronous().asMap().values().forEach(user -> storage().saveUser(user, false));
     }
 
     /**

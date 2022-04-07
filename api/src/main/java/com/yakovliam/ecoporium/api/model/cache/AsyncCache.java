@@ -23,7 +23,7 @@ public class AsyncCache<K, V> {
      *
      * @return cache
      */
-    public AsyncLoadingCache<K, V> getCache() {
+    public AsyncLoadingCache<K, V> cache() {
         return cache;
     }
 }

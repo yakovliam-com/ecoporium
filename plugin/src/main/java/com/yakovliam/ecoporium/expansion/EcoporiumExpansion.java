@@ -59,7 +59,7 @@ public class EcoporiumExpansion extends PlaceholderExpansion {
             String marketHandle = parts[1];
             String symbol = parts[2];
 
-            Market<?> market = plugin.marketCache().getCache().get(marketHandle).join();
+            Market<?> market = plugin.marketCache().cache().get(marketHandle).join();
 
             if (market == null) {
                 return null;
@@ -69,13 +69,13 @@ public class EcoporiumExpansion extends PlaceholderExpansion {
                 return null;
             }
 
-            StockTicker<?> ticker = market.getStock(symbol);
+            StockTicker<?> ticker = market.stock(symbol);
 
             if (ticker.getCurrentQuote().isEmpty()) {
                 return "unavailable";
             }
 
-            return NumberUtil.formatToPlaces(ticker.getCurrentQuote().get().getPrice(), 2);
+            return NumberUtil.formatToPlaces(ticker.getCurrentQuote().get().price(), 2);
         }
 
         if (request.equalsIgnoreCase("direction") || request.equalsIgnoreCase("historical-analysis")) {
@@ -86,7 +86,7 @@ public class EcoporiumExpansion extends PlaceholderExpansion {
             String marketHandle = parts[1];
             String symbol = parts[2];
 
-            Market<?> market = plugin.marketCache().getCache().get(marketHandle).join();
+            Market<?> market = plugin.marketCache().cache().get(marketHandle).join();
 
             if (market == null) {
                 return null;
@@ -96,7 +96,7 @@ public class EcoporiumExpansion extends PlaceholderExpansion {
                 return null;
             }
 
-            StockTicker<?> ticker = market.getStock(symbol);
+            StockTicker<?> ticker = market.stock(symbol);
 
             return ticker.getHistoricalAnalysis().name();
         }
@@ -108,7 +108,7 @@ public class EcoporiumExpansion extends PlaceholderExpansion {
             String marketHandle = parts[1];
             String symbol = parts[2];
 
-            EcoporiumUser user = plugin.userCache().getCache().get(player.getUniqueId()).join();
+            EcoporiumUser user = plugin.userCache().cache().get(player.getUniqueId()).join();
 
             return Integer.toString(user.numberOfShares(marketHandle, symbol));
         }

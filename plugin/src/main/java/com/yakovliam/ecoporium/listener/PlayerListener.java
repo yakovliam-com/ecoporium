@@ -19,12 +19,12 @@ public record PlayerListener(EcoporiumPlugin plugin) implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         // add to cache
-        plugin.userCache().getCache().get(event.getPlayer().getUniqueId());
+        plugin.userCache().cache().get(event.getPlayer().getUniqueId());
     }
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         // invalidate from cache
-        plugin.userCache().getCache().synchronous().invalidate(event.getPlayer().getUniqueId());
+        plugin.userCache().cache().synchronous().invalidate(event.getPlayer().getUniqueId());
     }
 }
