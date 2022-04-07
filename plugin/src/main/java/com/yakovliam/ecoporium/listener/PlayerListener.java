@@ -6,31 +6,25 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-public class PlayerListener implements Listener {
-
-    /**
-     * Ecoporium plugin
-     */
-    private final EcoporiumPlugin plugin;
+public record PlayerListener(EcoporiumPlugin plugin) implements Listener {
 
     /**
      * Player listener
      *
      * @param plugin plugin
      */
-    public PlayerListener(EcoporiumPlugin plugin) {
-        this.plugin = plugin;
+    public PlayerListener {
     }
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         // add to cache
-        plugin.getUserCache().getCache().get(event.getPlayer().getUniqueId());
+        plugin.userCache().getCache().get(event.getPlayer().getUniqueId());
     }
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         // invalidate from cache
-        plugin.getUserCache().getCache().synchronous().invalidate(event.getPlayer().getUniqueId());
+        plugin.userCache().getCache().synchronous().invalidate(event.getPlayer().getUniqueId());
     }
 }

@@ -22,6 +22,6 @@ public class MarketUpdateTask extends RepeatingTask {
 
     @Override
     public void run() {
-        plugin.getMarketCache().getCache().synchronous().asMap().values().forEach(market -> market.getTickerCache().forEach((symbol, ticker) -> ticker.update()));
+        plugin.marketCache().getCache().synchronous().asMap().values().forEach(market -> market.getTickerCache().forEach((symbol, ticker) -> ticker.update()));
     }
 }

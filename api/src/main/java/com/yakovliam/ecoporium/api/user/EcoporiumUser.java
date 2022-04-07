@@ -13,14 +13,14 @@ public abstract class EcoporiumUser {
      *
      * @return uuid
      */
-    public abstract UUID getUuid();
+    public abstract UUID uuid();
 
     /**
      * Returns the user's shares table
      *
      * @return shares table
      */
-    public abstract Table<String, String, List<OwnedShare>> getSharesOwnedTable();
+    public abstract Table<String, String, List<OwnedShare>> sharesOwnedTable();
 
     /**
      * Add shares
@@ -48,14 +48,14 @@ public abstract class EcoporiumUser {
      * @param marketHandle market handle
      * @return shares
      */
-    public abstract int getNumberOfShares(String marketHandle, String symbol);
+    public abstract int numberOfShares(String marketHandle, String symbol);
 
     /**
      * Get total number of shares
      *
      * @return shares
      */
-    public abstract int getTotalNumberOfShares();
+    public abstract int totalNumberOfShares();
 
     /**
      * Get owned shares object array for a symbol
@@ -64,5 +64,5 @@ public abstract class EcoporiumUser {
      * @param marketHandle market handle
      * @return shares
      */
-    public abstract List<OwnedShare> getOwnedShares(String marketHandle, String symbol);
+    public abstract List<OwnedShare> ownedShares(String marketHandle, String symbol);
 }

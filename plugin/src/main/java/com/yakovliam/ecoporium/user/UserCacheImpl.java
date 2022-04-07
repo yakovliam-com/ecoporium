@@ -11,6 +11,6 @@ public class UserCacheImpl extends UserCache<EcoporiumUserImpl> {
      * @param plugin plugin
      */
     public UserCacheImpl(EcoporiumPlugin plugin) {
-        super(u -> plugin.getStorage().loadUser(u));
+        super(u -> plugin.storage().loadUser(u));
     }
 }

@@ -38,7 +38,7 @@ public class EcoporiumUserImpl extends EcoporiumUser {
      * @return uuid
      */
     @Override
-    public UUID getUuid() {
+    public UUID uuid() {
         return uuid;
     }
 
@@ -48,7 +48,7 @@ public class EcoporiumUserImpl extends EcoporiumUser {
      * @return shares table
      */
     @Override
-    public Table<String, String, List<OwnedShare>> getSharesOwnedTable() {
+    public Table<String, String, List<OwnedShare>> sharesOwnedTable() {
         return sharesOwnedTable;
     }
 
@@ -118,12 +118,12 @@ public class EcoporiumUserImpl extends EcoporiumUser {
      * @return shares
      */
     @Override
-    public int getNumberOfShares(String marketHandle, String symbol) {
-        return getOwnedShares(marketHandle, symbol).size();
+    public int numberOfShares(String marketHandle, String symbol) {
+        return ownedShares(marketHandle, symbol).size();
     }
 
     @Override
-    public int getTotalNumberOfShares() {
+    public int totalNumberOfShares() {
         return sharesOwnedTable.columnMap()
                 .values()
                 .stream()
@@ -142,7 +142,7 @@ public class EcoporiumUserImpl extends EcoporiumUser {
      * @return shares
      */
     @Override
-    public List<OwnedShare> getOwnedShares(String marketHandle, String symbol) {
+    public List<OwnedShare> ownedShares(String marketHandle, String symbol) {
         return sharesOwnedTable.contains(marketHandle, symbol) ? Objects.requireNonNull(sharesOwnedTable.get(marketHandle, symbol)) : new ArrayList<>();
     }
 }

@@ -89,7 +89,7 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
         @Subcommand("create")
         @CommandPermission("ecoporium.command.ecoporium.market.create")
         public void onMarketCreate(CommandSender sender, @Single String market, @Syntax("<market type>") @Single MarketType marketType) {
-            MarketCacheImpl marketCacheImpl = plugin.getMarketCache();
+            MarketCacheImpl marketCacheImpl = plugin.marketCache();
 
             // does market already exist?
             Market<?> marketPresent = marketCacheImpl.getCache().synchronous().getIfPresent(market);
@@ -121,8 +121,8 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
 
             // save market in storage, load into cache (async)
             Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-                plugin.getStorage().saveMarket(marketObj);
-                plugin.getMarketCache().getCache().get(marketObj.getHandle());
+                plugin.storage().saveMarket(marketObj);
+                plugin.marketCache().getCache().get(marketObj.getHandle());
             });
         }
 
@@ -133,7 +133,7 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
                     .sendMessage(plugin.configSupervisor().messages().ecoporiumMarketGettingData());
 
             // does market already exist?
-            plugin.getMarketCache().getCache().get(market).thenAccept(marketObj -> {
+            plugin.marketCache().getCache().get(market).thenAccept(marketObj -> {
                 // if doesn't exist
                 if (marketObj == null) {
                     EcoporiumPlugin.audiences().sender(sender)
@@ -142,9 +142,9 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
                 }
 
                 // delete
-                plugin.getStorage().deleteMarket(marketObj);
+                plugin.storage().deleteMarket(marketObj);
                 // invalidate from cache
-                plugin.getMarketCache().getCache().synchronous().invalidate(marketObj.getHandle());
+                plugin.marketCache().getCache().synchronous().invalidate(marketObj.getHandle());
 
                 EcoporiumPlugin.audiences().sender(sender)
                         .sendMessage(plugin.configSupervisor().messages().ecoporiumMarketDeleted());
@@ -158,7 +158,7 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
                     .sendMessage(plugin.configSupervisor().messages().ecoporiumMarketGettingData());
 
             // does market already exist?
-            plugin.getMarketCache().getCache().get(market).thenAccept(marketObj -> {
+            plugin.marketCache().getCache().get(market).thenAccept(marketObj -> {
                 // if doesn't exist
                 if (marketObj == null) {
                     EcoporiumPlugin.audiences().sender(sender)
@@ -202,7 +202,7 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
                 }
 
                 // save market
-                plugin.getStorage().saveMarket(marketObj);
+                plugin.storage().saveMarket(marketObj);
                 EcoporiumPlugin.audiences().sender(sender)
                         .sendMessage(plugin.configSupervisor().messages().ecoporiumMarketStockAdded());
             });
@@ -214,7 +214,7 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
             EcoporiumPlugin.audiences().sender(sender)
                     .sendMessage(plugin.configSupervisor().messages().ecoporiumMarketGettingData());
             // does market already exist?
-            plugin.getMarketCache().getCache().get(market).thenAccept(marketObj -> {
+            plugin.marketCache().getCache().get(market).thenAccept(marketObj -> {
                 // if doesn't exist
                 if (marketObj == null) {
                     EcoporiumPlugin.audiences().sender(sender)
@@ -252,7 +252,7 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
                 }
 
                 // save market
-                plugin.getStorage().saveMarket(marketObj);
+                plugin.storage().saveMarket(marketObj);
                 EcoporiumPlugin.audiences().sender(sender)
                         .sendMessage(plugin.configSupervisor().messages().ecoporiumMarketStockDeleted());
             });
@@ -264,7 +264,7 @@ public class EcoporiumCommand extends AbstractEcoporiumCommand {
             EcoporiumPlugin.audiences().sender(sender)
                     .sendMessage(plugin.configSupervisor().messages().ecoporiumMarketGettingData());
             // does market already exist?
-            plugin.getMarketCache().getCache().get(market).thenAccept(marketObj -> {
+            plugin.marketCache().getCache().get(market).thenAccept(marketObj -> {
                 // if doesn't exist
                 if (marketObj == null) {
                     EcoporiumPlugin.audiences().sender(sender)

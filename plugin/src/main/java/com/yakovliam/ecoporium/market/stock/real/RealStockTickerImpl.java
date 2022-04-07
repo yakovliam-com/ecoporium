@@ -159,7 +159,7 @@ public class RealStockTickerImpl extends RealStockTicker {
      */
     private void updatePreviousHistory() {
         try {
-            new HistQuotes2Request(this.symbol).getResult()
+            new HistQuotes2Request(this.symbol).result()
                     .stream()
                     .filter(Objects::nonNull)
                     .forEach(quote -> this.yfPreviousHistory.put(quote.getDate(), quote));

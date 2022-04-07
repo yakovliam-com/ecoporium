@@ -59,7 +59,7 @@ public class EcoporiumExpansion extends PlaceholderExpansion {
             String marketHandle = parts[1];
             String symbol = parts[2];
 
-            Market<?> market = plugin.getMarketCache().getCache().get(marketHandle).join();
+            Market<?> market = plugin.marketCache().getCache().get(marketHandle).join();
 
             if (market == null) {
                 return null;
@@ -86,7 +86,7 @@ public class EcoporiumExpansion extends PlaceholderExpansion {
             String marketHandle = parts[1];
             String symbol = parts[2];
 
-            Market<?> market = plugin.getMarketCache().getCache().get(marketHandle).join();
+            Market<?> market = plugin.marketCache().getCache().get(marketHandle).join();
 
             if (market == null) {
                 return null;
@@ -108,9 +108,9 @@ public class EcoporiumExpansion extends PlaceholderExpansion {
             String marketHandle = parts[1];
             String symbol = parts[2];
 
-            EcoporiumUser user = plugin.getUserCache().getCache().get(player.getUniqueId()).join();
+            EcoporiumUser user = plugin.userCache().getCache().get(player.getUniqueId()).join();
 
-            return Integer.toString(user.getNumberOfShares(marketHandle, symbol));
+            return Integer.toString(user.numberOfShares(marketHandle, symbol));
         }
 
         return null;

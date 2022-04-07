@@ -11,7 +11,7 @@ public abstract class EcoporiumPlugin extends Plugin {
      *
      * @return market cache
      */
-    public abstract MarketCache getMarketCache();
+    public abstract MarketCache marketCache();
 
 
     /**
@@ -19,5 +19,5 @@ public abstract class EcoporiumPlugin extends Plugin {
      *
      * @return user cache
      */
-    public abstract UserCache<? extends EcoporiumUser> getUserCache();
+    public abstract UserCache<? extends EcoporiumUser> userCache();
 }

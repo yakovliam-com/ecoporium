@@ -12,7 +12,7 @@ public class MarketCacheImpl extends MarketCache {
      * @param plugin plugin
      */
     public MarketCacheImpl(EcoporiumPlugin plugin) {
-        super(handle -> plugin.getStorage().loadMarket(handle));
+        super(handle -> plugin.storage().loadMarket(handle));
     }
 
     /**

@@ -61,7 +61,7 @@ public class FakeStockTickerImpl extends FakeStockTicker {
      *
      * @return stock provider
      */
-    public FakeStockProviderImpl getFakeStockProvider() {
+    public FakeStockProviderImpl fakeStockProvider() {
         return fakeStockProviderImpl;
     }
 }

@@ -78,7 +78,7 @@ public class JsonStorageImplementation implements StorageImplementation {
             List<EcoporiumUserImpl> userList = node.getList(EcoporiumUserImpl.class);
 
             // remove if exists
-            Objects.requireNonNull(userList).removeIf(u -> u.getUuid().equals(user.getUuid()));
+            Objects.requireNonNull(userList).removeIf(u -> u.uuid().equals(user.uuid()));
             // add to list
             userList.add(user);
             // save to node
@@ -98,7 +98,7 @@ public class JsonStorageImplementation implements StorageImplementation {
         try {
             List<EcoporiumUserImpl> userList = node.getList(EcoporiumUserImpl.class);
             EcoporiumUserImpl ecoporiumUserImpl = Objects.requireNonNull(userList).stream()
-                    .filter(u -> u.getUuid().equals(uuid))
+                    .filter(u -> u.uuid().equals(uuid))
                     .findFirst()
                     .orElse(null);
 

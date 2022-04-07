@@ -42,7 +42,7 @@ public class StockCommand extends AbstractEcoporiumCommand {
         EcoporiumPlugin.audiences().player(player).sendMessage(plugin.configSupervisor().messages().ecoporiumMarketGettingData());
 
         // does market already exist?
-        plugin.getMarketCache().getCache().get(market).thenAccept(marketObj -> {
+        plugin.marketCache().getCache().get(market).thenAccept(marketObj -> {
             // if doesn't exist
             if (marketObj == null) {
                 EcoporiumPlugin.audiences().player(player).sendMessage(plugin.configSupervisor().messages().ecoporiumMarketNonexistent());
@@ -67,7 +67,7 @@ public class StockCommand extends AbstractEcoporiumCommand {
 
             // if the user has enough to pay for the stocks they are buying
             float amountNeededToBuy = pricePerShare * amountToBuy;
-            float balance = (float) plugin.getEconomy().getBalance(player);
+            float balance = (float) plugin.economy().getBalance(player);
 
             if (balance < amountNeededToBuy) {
                 EcoporiumPlugin.audiences().player(player).sendMessage(plugin.configSupervisor().messages().stockBuyNotEnough().replaceText((builder ->
@@ -76,15 +76,15 @@ public class StockCommand extends AbstractEcoporiumCommand {
             }
 
             // get user
-            EcoporiumUserImpl user = plugin.getUserCache().getCache().get(player.getUniqueId()).join();
+            EcoporiumUserImpl user = plugin.userCache().getCache().get(player.getUniqueId()).join();
 
             // give user shares
             user.addShares(marketObj.getHandle(), stockTicker.getSymbol(), amountToBuy, pricePerShare);
             // save user
-            plugin.getStorage().saveUser(user, true);
+            plugin.storage().saveUser(user, true);
 
             // withdraw
-            plugin.getEconomy().withdrawPlayer(player, amountNeededToBuy);
+            plugin.economy().withdrawPlayer(player, amountNeededToBuy);
 
             EcoporiumPlugin.audiences().player(player).sendMessage(plugin.configSupervisor().messages().stockBuyBought()
                     .replaceText((b) -> b.matchLiteral("%shares%").replacement(Integer.toString(amountToBuy)))
@@ -100,7 +100,7 @@ public class StockCommand extends AbstractEcoporiumCommand {
         EcoporiumPlugin.audiences().player(player).sendMessage(plugin.configSupervisor().messages().ecoporiumMarketGettingData());
 
         // does market already exist?
-        plugin.getMarketCache().getCache().get(market).thenAccept(marketObj -> {
+        plugin.marketCache().getCache().get(market).thenAccept(marketObj -> {
             // if doesn't exist
             if (marketObj == null) {
                 EcoporiumPlugin.audiences().player(player).sendMessage(plugin.configSupervisor().messages().ecoporiumMarketNonexistent());
@@ -125,10 +125,10 @@ public class StockCommand extends AbstractEcoporiumCommand {
             pricePerShare = stockTicker.getCurrentQuote().get().getPrice();
 
             // get user
-            EcoporiumUserImpl user = plugin.getUserCache().getCache().get(player.getUniqueId()).join();
+            EcoporiumUserImpl user = plugin.userCache().getCache().get(player.getUniqueId()).join();
 
             // if user doesn't have enough shares
-            int sharesOwned = user.getNumberOfShares(marketObj.getHandle(), stockTicker.getSymbol());
+            int sharesOwned = user.numberOfShares(marketObj.getHandle(), stockTicker.getSymbol());
 
             if (sharesOwned < amountToSell) {
                 EcoporiumPlugin.audiences().player(player).sendMessage(plugin.configSupervisor().messages().stockSellNotEnough());
@@ -138,12 +138,12 @@ public class StockCommand extends AbstractEcoporiumCommand {
             // calculate amount to give player
             float amountToGive = pricePerShare * amountToSell;
             // deposit
-            plugin.getEconomy().depositPlayer(player, amountToGive);
+            plugin.economy().depositPlayer(player, amountToGive);
 
             // remove user shares
             user.removeShares(marketObj.getHandle(), stockTicker.getSymbol(), amountToSell);
             // save user
-            plugin.getStorage().saveUser(user, true);
+            plugin.storage().saveUser(user, true);
 
             EcoporiumPlugin.audiences().player(player).sendMessage(plugin.configSupervisor().messages().stockSellSold()
                     .replaceText((b) -> b.matchLiteral("%shares%").replacement(amountToSell.toString()))
@@ -159,7 +159,7 @@ public class StockCommand extends AbstractEcoporiumCommand {
         EcoporiumPlugin.audiences().sender(sender).sendMessage(plugin.configSupervisor().messages().ecoporiumMarketGettingData());
 
         // does market already exist?
-        plugin.getMarketCache().getCache().get(market).thenAccept(marketObj -> {
+        plugin.marketCache().getCache().get(market).thenAccept(marketObj -> {
             // if doesn't exist
             if (marketObj == null) {
                 EcoporiumPlugin.audiences().sender(sender).sendMessage(plugin.configSupervisor().messages().ecoporiumMarketNonexistent());
@@ -189,21 +189,21 @@ public class StockCommand extends AbstractEcoporiumCommand {
     @Description("Views your portfolio")
     public void onPortfolio(Player player) {
         // get user
-        EcoporiumUser user = plugin.getUserCache().getCache().get(player.getUniqueId()).join();
+        EcoporiumUser user = plugin.userCache().getCache().get(player.getUniqueId()).join();
 
         // portfolio header
         EcoporiumPlugin.audiences().player(player).sendMessage(plugin.configSupervisor().messages().stockPortfolio());
 
         // run this async
         CompletableFuture.runAsync(() -> {
-            user.getSharesOwnedTable().cellSet().forEach((cell) -> {
+            user.sharesOwnedTable().cellSet().forEach((cell) -> {
                 String market = cell.getRowKey();
                 String stock = cell.getColumnKey();
 
                 // get current price per share
 
                 // does market already exist?
-                Market<?> marketObj = plugin.getMarketCache().getCache().get(market).join();
+                Market<?> marketObj = plugin.marketCache().getCache().get(market).join();
 
                 // continue in stream by returning
                 if (marketObj == null) {

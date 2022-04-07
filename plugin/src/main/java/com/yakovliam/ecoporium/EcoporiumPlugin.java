@@ -43,10 +43,6 @@ public class EcoporiumPlugin extends com.yakovliam.ecoporium.api.EcoporiumPlugin
      */
     private Economy economy;
 
-    public static BukkitAudiences audiences() {
-        return audiences;
-    }
-
     @Override
     public void onLoad() {
     }
@@ -89,7 +85,7 @@ public class EcoporiumPlugin extends com.yakovliam.ecoporium.api.EcoporiumPlugin
     @Override
     public void onDisable() {
         // save users
-        this.getUserCache().getCache().synchronous().asMap().values().forEach(user -> getStorage().saveUser(user, false));
+        this.userCache().getCache().synchronous().asMap().values().forEach(user -> storage().saveUser(user, false));
     }
 
     /**
@@ -98,7 +94,7 @@ public class EcoporiumPlugin extends com.yakovliam.ecoporium.api.EcoporiumPlugin
      * @return market cache
      */
     @Override
-    public MarketCacheImpl getMarketCache() {
+    public MarketCacheImpl marketCache() {
         return marketCacheImpl;
     }
 
@@ -107,7 +103,7 @@ public class EcoporiumPlugin extends com.yakovliam.ecoporium.api.EcoporiumPlugin
      *
      * @return storage
      */
-    public Storage getStorage() {
+    public Storage storage() {
         return storage;
     }
 
@@ -126,7 +122,7 @@ public class EcoporiumPlugin extends com.yakovliam.ecoporium.api.EcoporiumPlugin
      * @return user cache
      */
     @Override
-    public UserCacheImpl getUserCache() {
+    public UserCacheImpl userCache() {
         return userCacheImpl;
     }
 
@@ -135,7 +131,7 @@ public class EcoporiumPlugin extends com.yakovliam.ecoporium.api.EcoporiumPlugin
      *
      * @return economy
      */
-    public Economy getEconomy() {
+    public Economy economy() {
         return economy;
     }
 
@@ -157,5 +153,13 @@ public class EcoporiumPlugin extends com.yakovliam.ecoporium.api.EcoporiumPlugin
         this.economy = rsp.getProvider();
 
         return true;
+    }
+
+    /**
+     * Bukkit audiences
+     * @return bukkit audiences
+     */
+    public static BukkitAudiences audiences() {
+        return audiences;
     }
 }
