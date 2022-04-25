@@ -6,20 +6,14 @@ import com.yakovliam.ecoporium.user.EcoporiumUserImpl;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-public class Storage {
-
-    /**
-     * Storage implementation
-     */
-    private final StorageImplementation storageImplementation;
+public record Storage(StorageImplementation storageImplementation) {
 
     /**
      * Storage
      *
      * @param storageImplementation storage implementation
      */
-    public Storage(StorageImplementation storageImplementation) {
-        this.storageImplementation = storageImplementation;
+    public Storage {
     }
 
     /**
@@ -27,7 +21,8 @@ public class Storage {
      *
      * @return implementation
      */
-    public StorageImplementation getStorageImplementation() {
+    @Override
+    public StorageImplementation storageImplementation() {
         return storageImplementation;
     }
 

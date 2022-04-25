@@ -23,7 +23,7 @@ public class MarketWhitelistOptions {
      *
      * @return tickers
      */
-    public List<String> getTickers() {
+    public List<String> tickers() {
         return tickers;
     }
 }

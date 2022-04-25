@@ -23,7 +23,7 @@ public abstract class Cache<K, V> {
      *
      * @return cache
      */
-    public LoadingCache<K, V> getCache() {
+    public LoadingCache<K, V> cache() {
         return cache;
     }
 }

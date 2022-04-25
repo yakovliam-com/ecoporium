@@ -13,19 +13,19 @@ public class Pair<L, R> {
         this.right = right;
     }
 
-    public L getLeft() {
+    public L left() {
         return left;
     }
 
-    public void setLeft(L left) {
+    public void left(L left) {
         this.left = left;
     }
 
-    public R getRight() {
+    public R right() {
         return right;
     }
 
-    public void setRight(R right) {
+    public void right(R right) {
         this.right = right;
     }
 
@@ -35,6 +35,6 @@ public class Pair<L, R> {
             return false;
         }
 
-        return pair.getLeft().equals(this.left) && pair.getRight().equals(this.right);
+        return pair.left().equals(this.left) && pair.right().equals(this.right);
     }
 }

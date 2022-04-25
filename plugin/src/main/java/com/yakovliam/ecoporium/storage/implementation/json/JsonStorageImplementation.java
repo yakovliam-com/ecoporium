@@ -78,7 +78,7 @@ public class JsonStorageImplementation implements StorageImplementation {
             List<EcoporiumUserImpl> userList = node.getList(EcoporiumUserImpl.class);
 
             // remove if exists
-            Objects.requireNonNull(userList).removeIf(u -> u.getUuid().equals(user.getUuid()));
+            Objects.requireNonNull(userList).removeIf(u -> u.uuid().equals(user.uuid()));
             // add to list
             userList.add(user);
             // save to node
@@ -98,7 +98,7 @@ public class JsonStorageImplementation implements StorageImplementation {
         try {
             List<EcoporiumUserImpl> userList = node.getList(EcoporiumUserImpl.class);
             EcoporiumUserImpl ecoporiumUserImpl = Objects.requireNonNull(userList).stream()
-                    .filter(u -> u.getUuid().equals(uuid))
+                    .filter(u -> u.uuid().equals(uuid))
                     .findFirst()
                     .orElse(null);
 
@@ -126,7 +126,7 @@ public class JsonStorageImplementation implements StorageImplementation {
             List<Market<?>> marketList = node.getList(marketType);
 
             // remove if exists
-            Objects.requireNonNull(marketList).removeIf(m -> m.getHandle().equals(market.getHandle()));
+            Objects.requireNonNull(marketList).removeIf(m -> m.handle().equals(market.handle()));
             // add to list
             marketList.add(market);
             // save to node
@@ -147,7 +147,7 @@ public class JsonStorageImplementation implements StorageImplementation {
             List<Market<?>> marketList = node.getList(marketType);
 
             // remove if exists
-            Objects.requireNonNull(marketList).removeIf(m -> m.getHandle().equals(market.getHandle()));
+            Objects.requireNonNull(marketList).removeIf(m -> m.handle().equals(market.handle()));
             // save to node
             node.setList(marketType, marketList);
 
@@ -165,7 +165,7 @@ public class JsonStorageImplementation implements StorageImplementation {
         try {
             List<Market<?>> marketList = node.getList(marketType);
             return Objects.requireNonNull(marketList).stream()
-                    .filter(m -> m.getHandle().equals(handle))
+                    .filter(m -> m.handle().equals(handle))
                     .findFirst()
                     .orElse(null);
         } catch (SerializationException e) {
@@ -178,7 +178,7 @@ public class JsonStorageImplementation implements StorageImplementation {
     /**
      * Saves the file
      */
-    private void save() {
+    private synchronized void save() {
         try {
             marketsProvider.getLoader().save(marketsProvider.getRoot());
         } catch (ConfigurateException e) {

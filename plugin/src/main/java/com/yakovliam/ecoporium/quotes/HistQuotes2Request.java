@@ -101,7 +101,7 @@ public class HistQuotes2Request {
         return cal;
     }
 
-    public List<HistoricalQuote> getResult() throws IOException {
+    public List<HistoricalQuote> result() throws IOException {
 
         List<HistoricalQuote> result = new ArrayList<>();
 

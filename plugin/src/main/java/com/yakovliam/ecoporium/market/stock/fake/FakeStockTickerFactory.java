@@ -15,6 +15,6 @@ public class FakeStockTickerFactory implements Factory<Pair<String, String>, Fak
      */
     @Override
     public FakeStockTickerImpl build(Pair<String, String> context) {
-        return new FakeStockTickerImpl(context.getLeft(), context.getRight() == null ? Collections.emptyList() : Collections.singletonList(context.getRight()), new FakeStockProviderImpl());
+        return new FakeStockTickerImpl(context.left(), context.right() == null ? Collections.emptyList() : Collections.singletonList(context.right()), new FakeStockProviderImpl());
     }
 }

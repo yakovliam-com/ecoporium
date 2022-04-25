@@ -21,7 +21,7 @@ public class OwnedShare {
      *
      * @return price of this share
      */
-    public float getPriceOfEachShare() {
+    public float priceOfEachShare() {
         return priceOfShare;
     }
 }

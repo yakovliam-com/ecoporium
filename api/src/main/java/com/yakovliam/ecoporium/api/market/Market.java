@@ -44,7 +44,7 @@ public abstract class Market<T extends StockTicker<?>> {
      *
      * @return ticker cache
      */
-    public Map<String, T> getTickerCache() {
+    public Map<String, T> tickerCache() {
         return tickerCache;
     }
 
@@ -66,7 +66,7 @@ public abstract class Market<T extends StockTicker<?>> {
      * @param symbolOrAlias symbol or alias
      * @return symbol or alias
      */
-    public T getStock(String symbolOrAlias) {
+    public T stock(String symbolOrAlias) {
         return tickerCache.values().stream()
                 .filter(t -> t.getSymbol().equalsIgnoreCase(symbolOrAlias) || t.getAliases().stream()
                         .anyMatch(a -> a.equalsIgnoreCase(symbolOrAlias)))
@@ -79,7 +79,7 @@ public abstract class Market<T extends StockTicker<?>> {
      *
      * @return handle
      */
-    public String getHandle() {
+    public String handle() {
         return handle;
     }
 
@@ -88,7 +88,7 @@ public abstract class Market<T extends StockTicker<?>> {
      *
      * @return type
      */
-    public MarketType getMarketType() {
+    public MarketType marketType() {
         return marketType;
     }
 }

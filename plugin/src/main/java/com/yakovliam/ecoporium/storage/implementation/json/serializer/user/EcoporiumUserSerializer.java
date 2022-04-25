@@ -70,7 +70,7 @@ public class EcoporiumUserSerializer implements TypeSerializer<EcoporiumUserImpl
      */
     @Override
     public void serialize(Type type, @Nullable EcoporiumUserImpl obj, ConfigurationNode node) throws SerializationException {
-        node.node("uuid").set(Objects.requireNonNull(obj).getUuid().toString());
-        node.node("sharesOwnedTable").set(tableType, obj.getSharesOwnedTable());
+        node.node("uuid").set(Objects.requireNonNull(obj).uuid().toString());
+        node.node("sharesOwnedTable").set(tableType, obj.sharesOwnedTable());
     }
 }

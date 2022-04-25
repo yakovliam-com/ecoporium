@@ -68,7 +68,7 @@ public class JsonConfigurationProvider {
      * Resolves the path of the json storage file
      *
      * @param path path
-     * @return path path
+     * @return path
      */
     private Path resolve(String path) {
         Path configFile = plugin.getDataFolder().toPath().resolve(path);
